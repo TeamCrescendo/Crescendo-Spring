@@ -80,7 +80,7 @@ class MemberRepositoryTest {
     }
 
     @Test
-    @DisplayName("유저 아이디랑 이메일 중복 검사")
+    @DisplayName("유저 아이디랑 이메일 유저이름 중복 검사")
     void duplicationTest() {
         //given
         String type = "account";
@@ -88,11 +88,16 @@ class MemberRepositoryTest {
 
         String type1 = "email";
         String keyword1 = "member1@naver.com";
+
+        String type2 = "user_name";
+        String keyword2 = "회원2";
         //when
         int duplication = memberRepository.isDuplication(type, keyword);
         int duplication1 = memberRepository.isDuplication(type1, keyword1);
+        int duplication2 = memberRepository.isDuplication(type2, keyword2);
         //then
         assertEquals(0, duplication);
+        assertEquals(1, duplication1);
         assertEquals(1, duplication1);
     }
 
