@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -99,6 +100,20 @@ class MemberRepositoryTest {
         assertEquals(0, duplication);
         assertEquals(1, duplication1);
         assertEquals(1, duplication1);
+    }
+
+    @Test
+    @DisplayName("전체 조회를 하면 3명이 조회된다")
+    void findAllTest() {
+        //given
+
+        //when
+        List<Member> all = memberRepository.findAll();
+        //then
+        assertEquals(3, all.size());
+        System.out.println("\n\n\n");
+        System.out.println("all = " + all);
+        System.out.println("\n\n\n");
     }
 
 }
