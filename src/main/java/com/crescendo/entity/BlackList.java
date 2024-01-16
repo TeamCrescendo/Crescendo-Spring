@@ -34,4 +34,6 @@ public class BlackList {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime blackDateTime;
+
+    //join 더 살펴보기
 }
