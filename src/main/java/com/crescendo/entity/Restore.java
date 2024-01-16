@@ -27,8 +27,8 @@ public class Restore{
     @JoinColumn(name = "account")
     private Member member;
 
-    @Column(name = "delete_time")
+    @Column(name = "delete_time", updatable = false)
     @CreationTimestamp
     @Builder.Default
-    private LocalDateTime deleteTime = LocalDateTime.now().plusSeconds(15);
+    private LocalDateTime deleteTime = LocalDateTime.now().plusHours(24);
 }

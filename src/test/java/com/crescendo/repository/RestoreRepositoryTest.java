@@ -15,8 +15,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-//@Transactional
-//@Rollback
+@Transactional
+@Rollback
 class RestoreRepositoryTest {
     @Autowired
     RestoreRepository restoreRepository;

@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface RestoreRepository extends JpaRepository<Restore, String> {
 
+    // 현재 시간 보다 작으면 ID 가져오는 쿼리
     @Query("SELECT r.restoreNo FROM Restore r WHERE r.deleteTime <= CURRENT_TIMESTAMP")
     List<String> getRestoreByOverTime();
 }
