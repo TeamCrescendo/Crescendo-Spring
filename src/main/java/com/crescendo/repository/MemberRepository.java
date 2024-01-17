@@ -13,7 +13,8 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     // 게정명 이랑 이메일 중복검사
     @Query("SELECT COUNT(m) FROM Member m WHERE " +
             "(:type = 'account' AND m.account = :keyword) OR " +
-            "(:type = 'email' AND m.email = :keyword)")
+            "(:type = 'email' AND m.email = :keyword) OR " +
+            "(:type = 'nick_name' AND m.userName = :keyword)")
     int isDuplication(@Param("type") String type, @Param("keyword") String keyword);
 
 }

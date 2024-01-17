@@ -32,7 +32,7 @@ public class Member {
     private String profileImageUrl; // 유저 프로필 이미지
 
     @CreationTimestamp
-    @Column(updatable = false)
+    @Column(name = "reg_date_time",updatable = false)
     private LocalDateTime regDateTime; // 유저 가입 시간
 
     @Enumerated(EnumType.STRING)
@@ -46,6 +46,10 @@ public class Member {
     @Column(name = "auto_login")
     @Builder.Default
     private boolean autoLogin = false; // 유저 오토 로그인 여부
+
+    @Column(name = "user_download_chance")
+    @Builder.Default
+    private int userDownloadChance = 5;
 
     public enum Auth{
         ADMIN, USER

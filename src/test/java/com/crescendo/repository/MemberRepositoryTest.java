@@ -9,13 +9,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Rollback()
+@Rollback(value = false)
 class MemberRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
@@ -80,7 +81,7 @@ class MemberRepositoryTest {
     }
 
     @Test
-    @DisplayName("유저 아이디랑 이메일 중복 검사")
+    @DisplayName("유저 아이디랑 이메일 유저이름 중복 검사")
     void duplicationTest() {
         //given
         String type = "account";
@@ -88,12 +89,31 @@ class MemberRepositoryTest {
 
         String type1 = "email";
         String keyword1 = "member1@naver.com";
+
+        String type2 = "user_name";
+        String keyword2 = "회원2";
         //when
         int duplication = memberRepository.isDuplication(type, keyword);
         int duplication1 = memberRepository.isDuplication(type1, keyword1);
+        int duplication2 = memberRepository.isDuplication(type2, keyword2);
         //then
         assertEquals(0, duplication);
         assertEquals(1, duplication1);
+        assertEquals(1, duplication1);
+    }
+
+    @Test
+    @DisplayName("전체 조회를 하면 3명이 조회된다")
+    void findAllTest() {
+        //given
+
+        //when
+        List<Member> all = memberRepository.findAll();
+        //then
+        assertEquals(3, all.size());
+        System.out.println("\n\n\n");
+        System.out.println("all = " + all);
+        System.out.println("\n\n\n");
     }
 
 }
