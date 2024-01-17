@@ -1,5 +1,6 @@
 package com.crescendo.service;
 
+import com.crescendo.dto.request.SignInRequestDTO;
 import com.crescendo.dto.request.SignUpRequestDTO;
 import com.crescendo.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,14 @@ public class MemberService {
 
     // 회원 가입 처리
     public void signUp(SignUpRequestDTO dto){
+        memberRepository.save(dto.toEntity());
+    }
+
+    // 로그인 처리
+    public void signIn(SignInRequestDTO dto){
 
     }
+
 
 
 }
