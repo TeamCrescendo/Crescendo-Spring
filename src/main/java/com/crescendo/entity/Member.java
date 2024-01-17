@@ -21,7 +21,7 @@ public class Member {
     @Column(name = "account")
     private String account; // 유저 아이디
 
-    @Column(name = "password",nullable = false, length = 30)
+    @Column(name = "password",nullable = false, length = 200)
     private String password; // 유저 패스워드
 
     @Column(name = "user_name", nullable = false)
