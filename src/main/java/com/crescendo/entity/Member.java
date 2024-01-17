@@ -5,6 +5,8 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Set;
 
 @Setter
 @Getter @ToString
@@ -57,6 +59,7 @@ public class Member {
     public enum Status{
         NORMAL, TEMPORARY, BAN
     }
+
 }
 
 
