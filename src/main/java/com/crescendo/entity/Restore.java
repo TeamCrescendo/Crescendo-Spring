@@ -3,6 +3,7 @@ package com.crescendo.entity;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,9 +20,10 @@ import java.util.UUID;
 @Table(name = "restore")
 public class Restore{
     @Id
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     @Column(name = "restore_no")
-    @Builder.Default
-    private String restoreNo = UUID.randomUUID().toString();
+    private String restoreNo;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "account")

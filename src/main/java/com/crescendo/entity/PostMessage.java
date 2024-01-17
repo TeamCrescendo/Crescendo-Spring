@@ -1,6 +1,7 @@
 package com.crescendo.entity;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -16,8 +17,10 @@ import java.util.UUID;
 @Table(name = "post_message")
 public class PostMessage {
     @Id
-    @Builder.Default
-    private String postMessageId = UUID.randomUUID().toString();
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @Column(name = "post_message_id")
+    private String postMessageId;
 
     // 쓴 사람
     @ManyToOne

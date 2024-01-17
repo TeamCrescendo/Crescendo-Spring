@@ -2,6 +2,7 @@ package com.crescendo.entity;
 
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -18,8 +19,10 @@ import java.util.UUID;
 @Table(name = "inquiry")
 public class Inquiry {
     @Id
-    @Builder.Default
-    private String inquiryId = UUID.randomUUID().toString();
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @Column(name = "inquiry_id")
+    private String inquiryId;
 
     @Column(nullable = false, name = "inquiry_title")
     private String inquiryTitle;

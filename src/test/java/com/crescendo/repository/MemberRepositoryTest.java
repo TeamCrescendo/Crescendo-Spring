@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Rollback()
+@Rollback(value = false)
 class MemberRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
