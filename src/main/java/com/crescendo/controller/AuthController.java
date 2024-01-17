@@ -31,8 +31,13 @@ public class AuthController {
     // 로그인
     @PostMapping("/login")
     public ResponseEntity<?> signIn(@RequestBody SignInRequestDTO dto){
-        //memberService.authenti
-        return null;
+        String result = memberService.signIn(dto);
+        if(result.equals("일치하는 계정이 없습니다.")){
+            ResponseEntity.ok().body(result);
+        }else if(result.equals("비밀번호가 틀렸습니다.")){
+            ResponseEntity.ok().body(result);
+        }
+        return ResponseEntity.ok().body(result);
     }
 
 

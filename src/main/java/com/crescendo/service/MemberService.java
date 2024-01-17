@@ -2,6 +2,7 @@ package com.crescendo.service;
 
 import com.crescendo.dto.request.SignInRequestDTO;
 import com.crescendo.dto.request.SignUpRequestDTO;
+import com.crescendo.entity.Member;
 import com.crescendo.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +26,17 @@ public class MemberService {
     }
 
     // 로그인 처리
-    public void signIn(SignInRequestDTO dto){
-        memberRepository.getOne(dto.getAccount());
+    public String signIn(SignInRequestDTO dto){
+        Member foundMember = memberRepository.getOne(dto.getAccount());
+        if(foundMember == null){
+            return "일치하는 계정이 없습니다.";
+        }
+        String encodedPassword = foundMember.getPassword();
+        String rawPassword = dto.getPassword();
+        if(!encoder.matches(rawPassword, encodedPassword)){
+            return "비밀번호가 틀렸습니다.";
+        }
+        return "로그인 성공 했습니다.";
     }
 
 

@@ -22,5 +22,5 @@ public class SignInRequestDTO {
     @Size(min = 4 , max = 20)
     private String password;
 
-
+    private boolean autoLogin;
 }
