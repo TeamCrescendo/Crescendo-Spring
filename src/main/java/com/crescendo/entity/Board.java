@@ -27,7 +27,7 @@ public class Board {
 
     // Member 테이블에 account를 board_writer에 join할 것임
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_writer",nullable = false)
+    @JoinColumn(name = "account",nullable = false)
     private Member member;
 
     @Column(name = "baord_like")
