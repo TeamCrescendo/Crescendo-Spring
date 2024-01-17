@@ -51,7 +51,7 @@ public class Member {
 
     @Column(name = "user_download_chance")
     @Builder.Default
-    private int userDownloadChance = 5;
+    private Integer userDownloadChance = 5;
 
     public enum Auth{
         ADMIN, USER
