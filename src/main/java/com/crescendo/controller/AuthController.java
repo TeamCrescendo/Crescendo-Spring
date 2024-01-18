@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final MemberService memberService;
 
-    // 회원가입
+    // 회원가입(계정명, 비밀번호, 이메일, 이름)
     @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@RequestBody SignUpRequestDTO dto){
         System.out.println("dto = " + dto);
@@ -28,7 +28,7 @@ public class AuthController {
         return ResponseEntity.ok().body("ok");
     }
 
-    // 로그인
+    // 로그인(계정명, 비밀번호, 자동로그인 여부)
     @PostMapping("/login")
     public ResponseEntity<?> signIn(@RequestBody SignInRequestDTO dto){
         String result = memberService.signIn(dto);
