@@ -21,11 +21,11 @@ public class AuthController {
     private final MemberService memberService;
 
     // 회원가입(계정명, 비밀번호, 이메일, 이름)
-    @PostMapping("/sign-up")
+    @PostMapping("/register")
     public ResponseEntity<?> signUp(@RequestBody SignUpRequestDTO dto){
         System.out.println("dto = " + dto);
         memberService.signUp(dto);
-        return ResponseEntity.ok().body("ok");
+        return ResponseEntity.ok().body(true);
     }
 
     // 로그인(계정명, 비밀번호, 자동로그인 여부)
