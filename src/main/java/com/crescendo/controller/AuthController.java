@@ -2,6 +2,8 @@ package com.crescendo.controller;
 
 import com.crescendo.dto.request.SignInRequestDTO;
 import com.crescendo.dto.request.SignUpRequestDTO;
+import com.crescendo.dto.response.FindUserPackResponseDTO;
+import com.crescendo.dto.response.FindUserResponseDTO;
 import com.crescendo.dto.response.LoginResultResponseDTO;
 import com.crescendo.dto.response.LoginUserResponseDTO;
 import com.crescendo.entity.Member;
@@ -45,14 +47,20 @@ public class AuthController {
         LoginUserResponseDTO login = new LoginUserResponseDTO(foundUser);
         System.out.println("login = " + login);
         session.setAttribute("login", login);
+        session.setMaxInactiveInterval(60*60);
 
-        return ResponseEntity.ok().body(LoginResultResponseDTO.builder().result(true).dto(login).build());
+        return ResponseEntity.ok().body(LoginResultResponseDTO.builder().result(true).build());
     }
 
     // 유저 정보 주기
     @GetMapping("/find/{account}")
     private ResponseEntity<?> findUser(@PathVariable String account){
-        
+        Member foundUser = memberService.findUser(account);
+        if(foundUser != null){
+            FindUserResponseDTO foundUserDTO = new FindUserResponseDTO(foundUser);
+            return ResponseEntity.ok().body(FindUserPackResponseDTO.builder().findUser(foundUserDTO).build());
+        }
+        return ResponseEntity.badRequest().body("그런 회원 없어");
     }
 
 

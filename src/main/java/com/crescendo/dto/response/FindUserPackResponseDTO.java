@@ -9,7 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LoginResultResponseDTO {
-    boolean result;
-
+public class FindUserPackResponseDTO {
+    private FindUserResponseDTO findUser;
 }
