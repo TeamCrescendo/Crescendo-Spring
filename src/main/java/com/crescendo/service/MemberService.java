@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 @Slf4j
@@ -45,7 +47,16 @@ public class MemberService {
     }
 
     public boolean modifyUser(ModifyMemberRequestDTO dto){
-        memberRepository
+        System.out.println("dto = " + dto);
+        Member foundMember = memberRepository.getOne(dto.getAccount());
+        System.out.println("foundMember = " + foundMember);
+        if (foundMember == null){
+            return false;
+        }
+        foundMember.setPassword(encoder.encode(dto.getPassword()));
+        foundMember.setEmail(dto.getEmail());
+        foundMember.setUserName(dto.getUserName());
+        return true;
     }
 
 }

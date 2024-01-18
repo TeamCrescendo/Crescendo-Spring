@@ -74,9 +74,16 @@ public class AuthController {
         return ResponseEntity.ok().body(attribute);
     }
     // 회원 정보 수정
-    @RequestMapping(method = {PUT, PATCH})
+    @RequestMapping(method = {PUT, PATCH}, path = "/modify")
     public ResponseEntity<?> updateUser(@RequestBody ModifyMemberRequestDTO dto){
-        memberService.
+        log.info("Modify!!");
+        try{
+            boolean flag = memberService.modifyUser(dto);
+            return ResponseEntity.ok().body(flag);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 
 }

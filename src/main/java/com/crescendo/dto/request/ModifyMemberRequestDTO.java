@@ -13,6 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ModifyMemberRequestDTO {
+    private String account;
     private String userName;
     private String password;
     private String email;
