@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -24,7 +25,7 @@ public class AuthController {
 
     // 회원가입(계정명, 비밀번호, 이메일, 이름)
     @PostMapping("/register")
-    public ResponseEntity<?> signUp(@RequestBody SignUpRequestDTO dto){
+    public ResponseEntity<?> signUp(@Validated @RequestBody SignUpRequestDTO dto){
         System.out.println("dto = " + dto);
         memberService.signUp(dto);
         return ResponseEntity.ok().body(true);
@@ -48,7 +49,11 @@ public class AuthController {
         return ResponseEntity.ok().body(LoginResultResponseDTO.builder().result(true).dto(login).build());
     }
 
-    // 로그인 성공하면
+    // 유저 정보 주기
+    @GetMapping("/find/{account}")
+    private ResponseEntity<?> findUser(@PathVariable String account){
+        
+    }
 
 
 }
