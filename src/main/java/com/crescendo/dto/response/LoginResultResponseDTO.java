@@ -11,5 +11,4 @@ import lombok.*;
 @Builder
 public class LoginResultResponseDTO {
     boolean result;
-
 }

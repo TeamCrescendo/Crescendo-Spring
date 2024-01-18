@@ -25,7 +25,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = {"http://localhost:3000"})
+@CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
 public class AuthController {
     private final MemberService memberService;
 
@@ -73,6 +73,15 @@ public class AuthController {
         LoginUserResponseDTO attribute = (LoginUserResponseDTO) session.getAttribute("login");
         return ResponseEntity.ok().body(attribute);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        // 세션 무효화
+        session.invalidate();
+        return ResponseEntity.ok().body("Logout successful");
+    }
+
+
     // 회원 정보 수정
     @RequestMapping(method = {PUT, PATCH}, path = "/modify")
     public ResponseEntity<?> updateUser(@RequestBody ModifyMemberRequestDTO dto){
