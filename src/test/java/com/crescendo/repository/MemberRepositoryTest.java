@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,25 +21,27 @@ import static org.junit.jupiter.api.Assertions.*;
 class MemberRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    PasswordEncoder encoder;
 
     @BeforeEach
     void insertBeforeTest() {
         Member member1 = Member.builder()
                 .account("member1")
                 .email("member1@naver.com")
-                .password("1234")
+                .password(encoder.encode("1234"))
                 .userName("회원1")
                 .build();
         Member member2 = Member.builder()
                 .account("member2")
                 .email("member2@naver.com")
-                .password("1234")
+                .password(encoder.encode("1234"))
                 .userName("회원2")
                 .build();
         Member member3 = Member.builder()
                 .account("member3")
                 .email("member3@naver.com")
-                .password("1234")
+                .password(encoder.encode("1234"))
                 .userName("회원3")
                 .build();
         memberRepository.save(member1);
@@ -52,10 +55,10 @@ class MemberRepositoryTest {
     void saveTest() {
         //given
         Member member1 = Member.builder()
-                .account("member1")
-                .email("member1@naver.com")
-                .password("1234")
-                .userName("회원1")
+                .account("member4")
+                .email("member4@naver.com")
+                .password(encoder.encode("1234"))
+                .userName("회원4")
                 .build();
         //when
         Member savedMember = memberRepository.save(member1);

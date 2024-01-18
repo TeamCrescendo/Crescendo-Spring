@@ -39,6 +39,8 @@ public class MemberService {
         return "로그인 성공 했습니다.";
     }
 
-
+    public Member findUser(String account){
+        return memberRepository.getOne(account);
+    }
 
 }
