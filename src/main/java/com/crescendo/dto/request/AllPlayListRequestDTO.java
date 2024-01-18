@@ -14,14 +14,15 @@ import lombok.*;
 public class AllPlayListRequestDTO {
 
     private String plName;
-    private Member member;
+    private String account;
     private boolean plShare;
 
-    public AllPlayList toEntity(){
-        return AllPlayList.builder()
-                .plName(plName)
-                .account(member)
-                .plShare(plShare)
-                .build();
-    }
-;}
+//    public AllPlayList toEntity(){
+//        return AllPlayList.builder()
+//                .plName(plName)
+//                .account(account);
+//                .plShare(plShare)
+//                .build();
+//    }
+;
+}

@@ -4,7 +4,10 @@ import com.crescendo.dto.request.AllPlayListRequestDTO;
 import com.crescendo.dto.response.AllPlayListResponseDTO;
 import com.crescendo.dto.response.AllPlayResponseDTO;
 import com.crescendo.entity.AllPlayList;
+import com.crescendo.entity.Board;
+import com.crescendo.entity.Member;
 import com.crescendo.repository.AllPlayListRepository;
+import com.crescendo.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,10 +23,16 @@ import java.util.stream.Collectors;
 public class AllPlayListService {
 
     private final AllPlayListRepository allPlayListRepository;
+    private final MemberRepository memberRepository;
 
     // AllPlayList에 나의 playList 등록 !
     public AllPlayResponseDTO create(AllPlayListRequestDTO dto){
-        allPlayListRepository.save(dto.toEntity());
+        Member member = memberRepository.getOne(dto.getAccount());
+        if(member == null){
+            return null;
+        }
+        AllPlayList build = AllPlayList.builder().plName(dto.getPlName()).account(member).plShare(dto.isPlShare()).build();
+        allPlayListRepository.save(build);
         log.info("새로운 PlayList를 내 마음속에 저★장★ : {}",dto.getPlName());
 
         return retrieve();
