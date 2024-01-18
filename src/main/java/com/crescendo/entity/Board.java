@@ -47,7 +47,8 @@ public class Board {
     private Long boardViewCount = 0L;
 
     @Column(name = "board_download_count")
-    private Long boardDownloadCount;
+    @Builder.Default
+    private Integer boardDownloadCount = 5;
 
     @Column(name = "score_img_url")
     private String scoreImgUrl;
