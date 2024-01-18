@@ -23,7 +23,7 @@ public class BoardService {
 
 
     //board에 등록
-    public BoardListResponseDTO create(BoardRequestDTO dto){
+    public BoardListResponseDTO create(BoardRequestDTO dto) {
         boardRepository.save(dto.toEntity());
         log.info("새로운 보드를 내 마음속에 저★장★ : {}", dto.getBoardTitle());
 
@@ -31,7 +31,7 @@ public class BoardService {
     }
 
     //board 불러오기
-    public BoardListResponseDTO retrieve(){
+    public BoardListResponseDTO retrieve() {
         List<Board> board = boardRepository.findAll();
 
         List<BoardResponseDTO> dtoList = board.stream()

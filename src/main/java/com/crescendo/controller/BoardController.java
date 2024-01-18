@@ -53,7 +53,7 @@ public class BoardController {
     @DeleteMapping("/{boardNo}")
     public ResponseEntity<?> deleteTodo(@PathVariable Long boardNo){
 
-        log.info("/api/doard/{} DELETE!!",boardNo);
+        log.info("/api/board/{} DELETE!!",boardNo);
 
         if (boardNo == null || boardNo.equals("")){
             return ResponseEntity
@@ -70,4 +70,5 @@ public class BoardController {
                     .body(BoardListResponseDTO.builder().error(e.getMessage()).build());
         }
     }
+
 }
