@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,6 +47,7 @@ public class AuthController {
         Member foundUser = memberService.findUser(dto.getAccount());
         LoginUserResponseDTO login = new LoginUserResponseDTO(foundUser);
         System.out.println("login = " + login);
+
         session.setAttribute("login", login);
         session.setMaxInactiveInterval(60*60);
 
@@ -54,13 +56,19 @@ public class AuthController {
 
     // 유저 정보 주기
     @GetMapping("/find/{account}")
-    private ResponseEntity<?> findUser(@PathVariable String account){
+    public ResponseEntity<?> findUser(@PathVariable String account){
         Member foundUser = memberService.findUser(account);
         if(foundUser != null){
             FindUserResponseDTO foundUserDTO = new FindUserResponseDTO(foundUser);
             return ResponseEntity.ok().body(FindUserPackResponseDTO.builder().findUser(foundUserDTO).build());
         }
         return ResponseEntity.badRequest().body("그런 회원 없어");
+    }
+
+    @GetMapping("/compare")
+    public ResponseEntity<?> compareTo(HttpSession session){
+        LoginUserResponseDTO attribute = (LoginUserResponseDTO) session.getAttribute("login");
+        return ResponseEntity.ok().body(attribute);
     }
 
 
