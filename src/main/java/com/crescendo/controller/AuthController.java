@@ -1,5 +1,6 @@
 package com.crescendo.controller;
 
+import com.crescendo.dto.request.ModifyMemberRequestDTO;
 import com.crescendo.dto.request.SignInRequestDTO;
 import com.crescendo.dto.request.SignUpRequestDTO;
 import com.crescendo.dto.response.FindUserPackResponseDTO;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.util.UUID;
+
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -70,6 +73,10 @@ public class AuthController {
         LoginUserResponseDTO attribute = (LoginUserResponseDTO) session.getAttribute("login");
         return ResponseEntity.ok().body(attribute);
     }
-
+    // 회원 정보 수정
+    @RequestMapping(method = {PUT, PATCH})
+    public ResponseEntity<?> updateUser(@RequestBody ModifyMemberRequestDTO dto){
+        memberService.
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.crescendo.service;
 
+import com.crescendo.dto.request.ModifyMemberRequestDTO;
 import com.crescendo.dto.request.SignInRequestDTO;
 import com.crescendo.dto.request.SignUpRequestDTO;
 import com.crescendo.entity.Member;
@@ -41,6 +42,10 @@ public class MemberService {
 
     public Member findUser(String account){
         return memberRepository.getOne(account);
+    }
+
+    public boolean modifyUser(ModifyMemberRequestDTO dto){
+        memberRepository
     }
 
 }
