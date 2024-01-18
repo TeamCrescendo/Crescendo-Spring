@@ -1,5 +1,6 @@
 package com.crescendo.service;
 
+import com.crescendo.dto.request.BoardModifyRequestDTO;
 import com.crescendo.dto.request.BoardRequestDTO;
 import com.crescendo.dto.response.BoardListResponseDTO;
 import com.crescendo.dto.response.BoardResponseDTO;
@@ -45,10 +46,21 @@ public class BoardService {
         List<BoardResponseDTO> dtoList = board.stream()
                 .map(BoardResponseDTO::new)
                 .collect(Collectors.toList());
-
         return BoardListResponseDTO.builder()
                 .boards(dtoList)
                 .build();
+    }
+
+    //board 수정
+    public boolean modifyBoard(BoardModifyRequestDTO dto){
+        Board board = boardRepository.getOne(dto.getBoardNo());
+        if(!board.getMember().getAccount().equals(dto.getAccount())){
+            return false;
+        }
+        board.setBoardTitle(dto.getBoardTitle());
+        board.setScoreImgUrl(dto.getScoreImgUrl());
+
+        return true;
     }
 
     //board 삭제 처리

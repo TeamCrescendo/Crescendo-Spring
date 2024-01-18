@@ -48,6 +48,18 @@ public class AllPlayListService {
         return AllPlayResponseDTO.builder().allPlayLists(collect).build();
     }
 
+    //AllPlayList 수정 하기
+    public boolean modifyAllPlayList(AllPlayListRequestDTO dto){
+        AllPlayList findId = allPlayListRepository.getOne(dto.getPlId());
+        if(!findId.getAccount().getAccount().equals(dto.getAccount())){
+            return false;
+        }
+
+        findId.setPlName(dto.getPlName());
+        findId.setPlShare(dto.isPlShare());
+        return true;
+    }
+
     //AllPlayList 삭제 !
     public AllPlayResponseDTO delete(Long boardNo){
         try{
