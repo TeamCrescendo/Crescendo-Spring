@@ -12,6 +12,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -49,6 +52,17 @@ public class AllPlayController {
 
         AllPlayResponseDTO retrieve = allPlayListService.retrieve();
         return ResponseEntity.ok().body(retrieve);
+    }
+
+    //AllPlayList 수정 요청
+    @RequestMapping(method = {PUT, PATCH}, path = "/modify")
+    public ResponseEntity<?> AllPlayListUpdate(@RequestBody AllPlayListRequestDTO dto){
+        try{
+            boolean update = allPlayListService.modifyAllPlayList(dto);
+            return ResponseEntity.ok().body(update);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     //AllPlayList 삭제 요청

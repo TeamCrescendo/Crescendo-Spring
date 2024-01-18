@@ -1,7 +1,9 @@
 package com.crescendo.controller;
 
+import com.crescendo.dto.request.BoardModifyRequestDTO;
 import com.crescendo.dto.request.BoardRequestDTO;
 import com.crescendo.dto.response.BoardListResponseDTO;
+import com.crescendo.repository.BoardRepository;
 import com.crescendo.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -49,9 +54,21 @@ public class BoardController {
         return ResponseEntity.ok().body(retrieve);
     }
 
+    //Board 수정
+    @RequestMapping(method = {PUT, PATCH}, path = "/modify")
+    public ResponseEntity<?> UpdateBoard(@RequestBody BoardModifyRequestDTO dto){
+
+        try{
+            boolean update = boardService.modifyBoard(dto);
+            return ResponseEntity.ok().body(update);
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     //Board 삭제 요청
     @DeleteMapping("/{boardNo}")
-    public ResponseEntity<?> deleteTodo(@PathVariable Long boardNo){
+    public ResponseEntity<?> deleteBoard(@PathVariable Long boardNo){
 
         log.info("/api/board/{} DELETE!!",boardNo);
 

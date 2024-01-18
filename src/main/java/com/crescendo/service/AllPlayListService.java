@@ -50,6 +50,7 @@ public class AllPlayListService {
 
     //AllPlayList 수정 하기
     public boolean modifyAllPlayList(AllPlayListRequestDTO dto){
+        log.info("수정 하기 service : {}",dto);
         AllPlayList findId = allPlayListRepository.getOne(dto.getPlId());
         if(!findId.getAccount().getAccount().equals(dto.getAccount())){
             return false;
@@ -57,6 +58,7 @@ public class AllPlayListService {
 
         findId.setPlName(dto.getPlName());
         findId.setPlShare(dto.isPlShare());
+
         return true;
     }
 
