@@ -3,7 +3,6 @@ package com.crescendo.member.controller;
 import com.crescendo.dto.request.ModifyMemberRequestDTO;
 import com.crescendo.member.dto.request.SignInRequestDTO;
 import com.crescendo.member.dto.request.SignUpRequestDTO;
-import com.crescendo.member.dto.response.FindUserPackResponseDTO;
 import com.crescendo.member.dto.response.FindUserResponseDTO;
 import com.crescendo.member.dto.response.LoginResultResponseDTO;
 import com.crescendo.member.dto.response.LoginUserResponseDTO;
@@ -73,15 +72,18 @@ public class AuthController {
 
     }
 
-    // 유저 정보 주기
+    // 유저 찾기
     @GetMapping("/find/{account}")
     public ResponseEntity<?> findUser(@PathVariable String account){
-        Member foundUser = memberService.findUser(account);
-        if(foundUser != null){
-            FindUserResponseDTO foundUserDTO = new FindUserResponseDTO(foundUser);
-            return ResponseEntity.ok().body(FindUserPackResponseDTO.builder().findUser(foundUserDTO).build());
+        if (account == null || account.isBlank()){
+            return ResponseEntity.badRequest().body("계정명을 정확히 적어주세요");
         }
-        return ResponseEntity.badRequest().body("그런 회원 없어");
+        try{
+            Member foundUser = memberService.findUser(account);
+            return ResponseEntity.ok().body(new FindUserResponseDTO(foundUser));
+        }catch (NoMatchAccountException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/compare")

@@ -58,7 +58,12 @@ public class MemberService {
     }
 
     public Member findUser(String account){
-        return memberRepository.getOne(account);
+
+        Member foundMember = memberRepository.getOne(account);
+        if(foundMember == null){
+            throw new NoMatchAccountException("일치하는 계정이 없습니다");
+        }
+        return foundMember;
     }
 
     public boolean modifyUser(ModifyMemberRequestDTO dto){
