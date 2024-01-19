@@ -30,7 +30,7 @@ public class AllPlayList {
     private String plName;
 
     @Column(name = "pl_share")
-    private boolean share;
+    private boolean plShare;
 
     @CreationTimestamp
     private LocalDateTime plCreateDateTime;

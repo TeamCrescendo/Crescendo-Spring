@@ -24,6 +24,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
+@CrossOrigin(origins = {"http://localhost:3000"})
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
 public class AuthController {
@@ -84,5 +85,6 @@ public class AuthController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 
 }

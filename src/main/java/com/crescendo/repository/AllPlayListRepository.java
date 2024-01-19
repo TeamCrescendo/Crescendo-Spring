@@ -17,7 +17,7 @@ public interface AllPlayListRepository extends JpaRepository<AllPlayList , Long>
 
 
     //플레이 리스트 만든 계정으로 조회하기
-    List<AllPlayList> findAllByAccount_Account(String account);
+    List<AllPlayList> findAllByAccount(String member);
 
     //플레이 리스트 내가 만든거 삭제하기
     @Modifying //SELECT가 아닌경우 무조건 붙히기
