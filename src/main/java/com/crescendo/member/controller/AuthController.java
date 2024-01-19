@@ -1,30 +1,30 @@
-package com.crescendo.controller;
+package com.crescendo.member.controller;
 
 import com.crescendo.dto.request.ModifyMemberRequestDTO;
-import com.crescendo.dto.request.SignInRequestDTO;
-import com.crescendo.dto.request.SignUpRequestDTO;
-import com.crescendo.dto.response.FindUserPackResponseDTO;
-import com.crescendo.dto.response.FindUserResponseDTO;
-import com.crescendo.dto.response.LoginResultResponseDTO;
-import com.crescendo.dto.response.LoginUserResponseDTO;
-import com.crescendo.entity.Member;
-import com.crescendo.service.MemberService;
+import com.crescendo.member.dto.request.SignInRequestDTO;
+import com.crescendo.member.dto.request.SignUpRequestDTO;
+import com.crescendo.member.dto.response.FindUserPackResponseDTO;
+import com.crescendo.member.dto.response.FindUserResponseDTO;
+import com.crescendo.member.dto.response.LoginResultResponseDTO;
+import com.crescendo.member.dto.response.LoginUserResponseDTO;
+import com.crescendo.member.entity.Member;
+import com.crescendo.member.exception.DuplicatedAccountException;
+import com.crescendo.member.exception.NoRegisteredArgumentsException;
+import com.crescendo.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
-import java.util.UUID;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000"})
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
 public class AuthController {
@@ -32,10 +32,22 @@ public class AuthController {
 
     // 회원가입(계정명, 비밀번호, 이메일, 이름)
     @PostMapping("/register")
-    public ResponseEntity<?> signUp(@Validated @RequestBody SignUpRequestDTO dto){
-        System.out.println("dto = " + dto);
-        memberService.signUp(dto);
-        return ResponseEntity.ok().body(true);
+    public ResponseEntity<?> signUp(@Validated @RequestBody SignUpRequestDTO dto, BindingResult result){
+        if(result.hasErrors()){
+            log.warn(result.toString());
+            return ResponseEntity.badRequest().body(result.getFieldError());
+        }
+        try {
+            boolean flag = memberService.signUp(dto);
+            return ResponseEntity.ok().body(true);
+        }catch (DuplicatedAccountException e){
+            log.warn("이메일이 중복되었습니다.");
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }catch (NoRegisteredArgumentsException e){
+            log.warn("계정정보가 안왔습니다.");
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 
     // 로그인(계정명, 비밀번호, 자동로그인 여부)

@@ -1,7 +1,7 @@
 //package com.crescendo.repository;
 //
 //import com.crescendo.entity.AllPlayList;
-//import com.crescendo.entity.Member;
+//import com.crescendo.member.entity.Member;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
 //import org.springframework.beans.factory.annotation.Autowired;

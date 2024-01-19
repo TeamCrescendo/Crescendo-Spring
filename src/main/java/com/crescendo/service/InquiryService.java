@@ -1,11 +1,10 @@
 package com.crescendo.service;
 
-import com.crescendo.Util.MemberUtil;
 import com.crescendo.dto.request.InquirySaveRequestDTO;
 import com.crescendo.entity.Inquiry;
-import com.crescendo.entity.Member;
+import com.crescendo.member.entity.Member;
 import com.crescendo.repository.InquiryRepository;
-import com.crescendo.repository.MemberRepository;
+import com.crescendo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

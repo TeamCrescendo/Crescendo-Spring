@@ -1,6 +1,5 @@
 package com.crescendo.dto.request;
 
-import com.crescendo.entity.Member;
 import lombok.*;
 
 

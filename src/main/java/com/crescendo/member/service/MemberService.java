@@ -1,18 +1,17 @@
-package com.crescendo.service;
+package com.crescendo.member.service;
 
 import com.crescendo.dto.request.ModifyMemberRequestDTO;
-import com.crescendo.dto.request.SignInRequestDTO;
-import com.crescendo.dto.request.SignUpRequestDTO;
-import com.crescendo.entity.Member;
-import com.crescendo.repository.MemberRepository;
+import com.crescendo.member.dto.request.SignInRequestDTO;
+import com.crescendo.member.dto.request.SignUpRequestDTO;
+import com.crescendo.member.entity.Member;
+import com.crescendo.member.exception.DuplicatedAccountException;
+import com.crescendo.member.exception.NoRegisteredArgumentsException;
+import com.crescendo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,8 +23,19 @@ public class MemberService {
 
 
     // 회원 가입 처리
-    public void signUp(SignUpRequestDTO dto){
-        memberRepository.save(dto.toEntity(encoder));
+    public boolean signUp(SignUpRequestDTO dto){
+        if(dto==null){
+            log.warn("회원정보가 없습니다");
+            throw new NoRegisteredArgumentsException("회원가입 입력정보가 없습니다!");
+        }
+        String account = dto.getAccount();
+        if(memberRepository.existsById(account)){
+            log.warn("계정이 중복되었습니다!! -{}.", account);
+            throw new DuplicatedAccountException("중복된 계정입니다!!");
+        }
+        Member save = memberRepository.save(dto.toEntity(encoder));
+        log.info("회원가입 성공!! saved user - {}", save);
+        return true;
     }
 
     // 로그인 처리

@@ -1,6 +1,6 @@
 package com.crescendo.repository;
 
-import com.crescendo.entity.Member;
+import com.crescendo.member.entity.Member;
 import com.crescendo.entity.Score;
 import org.springframework.data.jpa.repository.JpaRepository;
 

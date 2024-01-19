@@ -1,6 +1,6 @@
-package com.crescendo.dto.request;
+package com.crescendo.member.dto.request;
 
-import com.crescendo.entity.Member;
+import com.crescendo.member.entity.Member;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 

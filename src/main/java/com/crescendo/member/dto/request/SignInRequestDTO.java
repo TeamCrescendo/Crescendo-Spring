@@ -1,4 +1,4 @@
-package com.crescendo.dto.request;
+package com.crescendo.member.dto.request;
 
 import lombok.*;
 
