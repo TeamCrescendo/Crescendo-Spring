@@ -8,8 +8,7 @@ import com.crescendo.member.dto.response.FindUserResponseDTO;
 import com.crescendo.member.dto.response.LoginResultResponseDTO;
 import com.crescendo.member.dto.response.LoginUserResponseDTO;
 import com.crescendo.member.entity.Member;
-import com.crescendo.member.exception.DuplicatedAccountException;
-import com.crescendo.member.exception.NoRegisteredArgumentsException;
+import com.crescendo.member.exception.*;
 import com.crescendo.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +38,9 @@ public class AuthController {
         }
         try {
             boolean flag = memberService.signUp(dto);
-            return ResponseEntity.ok().body(true);
+            return ResponseEntity.ok().body(flag);
         }catch (DuplicatedAccountException e){
-            log.warn("이메일이 중복되었습니다.");
+            log.warn("계정이 중복되었습니다.");
             return ResponseEntity.badRequest().body(e.getMessage());
         }catch (NoRegisteredArgumentsException e){
             log.warn("계정정보가 안왔습니다.");
@@ -52,22 +51,26 @@ public class AuthController {
 
     // 로그인(계정명, 비밀번호, 자동로그인 여부)
     @PostMapping("/login")
-    public ResponseEntity<?> signIn(@RequestBody SignInRequestDTO dto, HttpSession session){
-        String result = memberService.signIn(dto);
-        if(result.equals("일치하는 계정이 없습니다.")){
-            return ResponseEntity.ok().body(LoginResultResponseDTO.builder().result(false).build());
-        }else if(result.equals("비밀번호가 틀렸습니다.")){
-            return ResponseEntity.ok().body(LoginResultResponseDTO.builder().result(false).build());
+    public ResponseEntity<?> signIn(@Validated @RequestBody SignInRequestDTO dto, HttpSession session, BindingResult result){
+        if(result.hasErrors()){
+            log.warn(result.toString());
+            return ResponseEntity.badRequest().body(result.getFieldError());
         }
 
-        Member foundUser = memberService.findUser(dto.getAccount());
-        LoginUserResponseDTO login = new LoginUserResponseDTO(foundUser);
-        System.out.println("login = " + login);
+        try{
+            Member foundMember = memberService.signIn(dto);
+            LoginUserResponseDTO login = new LoginUserResponseDTO(foundMember);
+            System.out.println("login = " + login);
 
-        session.setAttribute("login", login);
-        session.setMaxInactiveInterval(60*60);
+            session.setAttribute("login", login);
+            session.setMaxInactiveInterval(60*60);
 
-        return ResponseEntity.ok().body(LoginResultResponseDTO.builder().result(true).build());
+            return ResponseEntity.ok().body(LoginResultResponseDTO.builder().result(true).build());
+        }catch (NoLoginArgumentsException | NoMatchAccountException | IncorrectPasswordException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+
     }
 
     // 유저 정보 주기

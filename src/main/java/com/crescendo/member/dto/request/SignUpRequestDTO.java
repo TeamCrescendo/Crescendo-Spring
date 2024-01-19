@@ -16,14 +16,12 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Builder
 public class SignUpRequestDTO {
-
-
     @NotBlank
     @Size(min = 4 , max = 20)
     private String account;
 
     @NotBlank
-    @Size(min = 4 , max = 100)
+    @Size(min = 4 , max = 20)
     private String password;
 
     @NotBlank

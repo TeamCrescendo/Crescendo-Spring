@@ -4,8 +4,7 @@ import com.crescendo.dto.request.ModifyMemberRequestDTO;
 import com.crescendo.member.dto.request.SignInRequestDTO;
 import com.crescendo.member.dto.request.SignUpRequestDTO;
 import com.crescendo.member.entity.Member;
-import com.crescendo.member.exception.DuplicatedAccountException;
-import com.crescendo.member.exception.NoRegisteredArgumentsException;
+import com.crescendo.member.exception.*;
 import com.crescendo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,17 +38,23 @@ public class MemberService {
     }
 
     // 로그인 처리
-    public String signIn(SignInRequestDTO dto){
+    public Member signIn(SignInRequestDTO dto){
+        if(dto==null){
+            log.warn("로그인 정보가 없습니다.");
+            throw new NoLoginArgumentsException("로그인 정보가 없습니다");
+        }
         Member foundMember = memberRepository.getOne(dto.getAccount());
         if(foundMember == null){
-            return "일치하는 계정이 없습니다.";
+            log.warn("일치하는 계정이 없습니다.");
+            throw new NoMatchAccountException("일치하는 계정이 없습니다");
         }
         String encodedPassword = foundMember.getPassword();
         String rawPassword = dto.getPassword();
         if(!encoder.matches(rawPassword, encodedPassword)){
-            return "비밀번호가 틀렸습니다.";
+            log.warn("비밀번호가 틀렸습니다.");
+            throw new IncorrectPasswordException("비밀번호가 틀렸습니다.");
         }
-        return "로그인 성공 했습니다.";
+        return foundMember;
     }
 
     public Member findUser(String account){
