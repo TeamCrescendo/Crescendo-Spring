@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DeleteScheduler {
     private final RestoreRepository restoreRepository;
-    @Scheduled(fixedRate= 1000 * 10) // 10초 마다
+    //@Scheduled(fixedRate= 1000 * 10) // 10초 마다
     public void performDeleteTask(){
         List<String> restoreByOverTime = restoreRepository.getRestoreByOverTime();
         restoreByOverTime.forEach(restoreRepository::deleteById);
