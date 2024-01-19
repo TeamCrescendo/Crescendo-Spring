@@ -1,6 +1,6 @@
 package com.crescendo.member.controller;
 
-import com.crescendo.dto.request.ModifyMemberRequestDTO;
+import com.crescendo.member.dto.request.ModifyMemberRequestDTO;
 import com.crescendo.member.dto.request.SignInRequestDTO;
 import com.crescendo.member.dto.request.SignUpRequestDTO;
 import com.crescendo.member.dto.response.FindUserResponseDTO;
@@ -93,14 +93,16 @@ public class AuthController {
     }
     // 회원 정보 수정
     @RequestMapping(method = {PUT, PATCH}, path = "/modify")
-    public ResponseEntity<?> updateUser(@RequestBody ModifyMemberRequestDTO dto){
-        log.info("Modify!!");
+    public ResponseEntity<?> updateUser(@Validated @RequestBody ModifyMemberRequestDTO dto, BindingResult result){
+        if(result.hasErrors()){
+            return ResponseEntity.badRequest().body(result.toString());
+        }
         try{
             boolean flag = memberService.modifyUser(dto);
             return ResponseEntity.ok().body(flag);
-        }catch (Exception e){
+        }catch (NoMatchAccountException | DuplicateEmailException | DuplicateUserNameException e){
             return ResponseEntity.badRequest().body(e.getMessage());
-        }
+            }
     }
 
 

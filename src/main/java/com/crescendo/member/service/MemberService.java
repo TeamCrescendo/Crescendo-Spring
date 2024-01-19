@@ -1,6 +1,6 @@
 package com.crescendo.member.service;
 
-import com.crescendo.dto.request.ModifyMemberRequestDTO;
+import com.crescendo.member.dto.request.ModifyMemberRequestDTO;
 import com.crescendo.member.dto.request.SignInRequestDTO;
 import com.crescendo.member.dto.request.SignUpRequestDTO;
 import com.crescendo.member.entity.Member;
@@ -67,15 +67,31 @@ public class MemberService {
     }
 
     public boolean modifyUser(ModifyMemberRequestDTO dto){
-        System.out.println("dto = " + dto);
         Member foundMember = memberRepository.getOne(dto.getAccount());
-        System.out.println("foundMember = " + foundMember);
-        if (foundMember == null){
-            return false;
+        if(foundMember == null){
+            throw new NoMatchAccountException("일치하는 계정이 없습니다");
+        }
+        if(foundMember.getEmail().equals(dto.getEmail())){
+            foundMember.setEmail(dto.getEmail());
+        }else{
+            boolean emailFlag = memberRepository.existsByEmail(dto.getEmail());
+            if(emailFlag){
+                throw new DuplicateEmailException("이메일이 이미 있습니다");
+            }else {
+                foundMember.setEmail(dto.getEmail());
+            }
+        }
+        if(foundMember.getUserName().equals(dto.getUserName())){
+            foundMember.setUserName(dto.getUserName());
+        }else{
+            boolean userFlag = memberRepository.existsByUserName(dto.getUserName());
+            if(userFlag){
+                throw new DuplicateUserNameException("유저명이 이미 있습니다");
+            }else {
+                foundMember.setUserName(dto.getUserName());
+            }
         }
         foundMember.setPassword(encoder.encode(dto.getPassword()));
-        foundMember.setEmail(dto.getEmail());
-        foundMember.setUserName(dto.getUserName());
         return true;
     }
 

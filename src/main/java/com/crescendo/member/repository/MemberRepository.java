@@ -17,5 +17,7 @@ public interface MemberRepository extends JpaRepository<Member, String> {
             "(:type = 'nick_name' AND m.userName = :keyword)")
     int isDuplication(@Param("type") String type, @Param("keyword") String keyword);
 
-
+    boolean existsByAccount(String account);
+    boolean existsByEmail(String email);
+    boolean existsByUserName(String userName);
 }
