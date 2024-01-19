@@ -1,5 +1,6 @@
 package com.crescendo.member.controller;
 
+import com.crescendo.member.dto.request.DuplicateCheckDTO;
 import com.crescendo.member.dto.request.ModifyMemberRequestDTO;
 import com.crescendo.member.dto.request.SignInRequestDTO;
 import com.crescendo.member.dto.request.SignUpRequestDTO;
@@ -102,8 +103,21 @@ public class AuthController {
             return ResponseEntity.ok().body(flag);
         }catch (NoMatchAccountException | DuplicateEmailException | DuplicateUserNameException e){
             return ResponseEntity.badRequest().body(e.getMessage());
-            }
+        }
     }
 
+    // 중복 체크 ( 이메일 , 유저 이름, 계정)
+    @GetMapping("/duplicate")
+    public ResponseEntity<?> isDuplicate(@Validated @RequestBody DuplicateCheckDTO dto, BindingResult result){
+        if (result.hasErrors()){
+            return ResponseEntity.badRequest().body(result.toString());
+        }
+        try{
+            boolean flag = memberService.duplicateCheck(dto);
+            return ResponseEntity.ok().body(flag);
+        }catch (NoDuplicateCheckArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 }

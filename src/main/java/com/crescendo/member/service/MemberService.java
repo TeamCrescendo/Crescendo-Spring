@@ -1,5 +1,6 @@
 package com.crescendo.member.service;
 
+import com.crescendo.member.dto.request.DuplicateCheckDTO;
 import com.crescendo.member.dto.request.ModifyMemberRequestDTO;
 import com.crescendo.member.dto.request.SignInRequestDTO;
 import com.crescendo.member.dto.request.SignUpRequestDTO;
@@ -93,6 +94,26 @@ public class MemberService {
         }
         foundMember.setPassword(encoder.encode(dto.getPassword()));
         return true;
+    }
+
+    public boolean duplicateCheck(DuplicateCheckDTO dto){
+        if(dto == null){
+            throw new NoDuplicateCheckArgumentException("타겟과 벨류를 정확히 주세요");
+        }
+        if(dto.getTarget().equals("email")){
+            boolean contains = dto.getValue().contains("@");
+            if(!contains){
+                throw new NoDuplicateCheckArgumentException("이메일 형식으로 적어주세요");
+            }
+            return memberRepository.existsByEmail(dto.getValue());
+        }else if(dto.getTarget().equals("account")){
+            return memberRepository.existsByAccount(dto.getValue());
+        }else if(dto.getTarget().equals("userName")) {
+            return memberRepository.existsByUserName(dto.getValue());
+        }else{
+            throw new NoDuplicateCheckArgumentException("타겟을 정확히 정해라");
+        }
+
     }
 
 }

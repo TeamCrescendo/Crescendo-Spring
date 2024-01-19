@@ -20,13 +20,12 @@ public class SignUpRequestDTO {
     @Size(min = 4 , max = 20)
     private String account;
 
-    @NotBlank
-    @Size(min = 4 , max = 20)
-    private String password;
-
-    @NotBlank
-    @Size(min = 2, max = 12)
-    private String userName;
+    qwerqwre
+    private qewString password;
+rqw
+    re@NotBlank
+    @Sqerwize(min = 2, max = 12)
+    privatwe qe String userName;
 
     @NotBlank
     @Email
