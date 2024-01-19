@@ -1,7 +1,9 @@
 package com.crescendo.blackList.entity;
 
 import com.crescendo.board.entity.Board;
+import com.crescendo.entity.Member;
 import lombok.*;
+import net.bytebuddy.utility.nullability.MaybeNull;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -28,13 +30,12 @@ public class BlackList {
     @JoinColumn(name = "board_no",nullable = false)
     private Board board;
 
-    @Column(name = "board_dislike",nullable = false)
-    @Builder.Default
-    private Long boardDislike = 0L;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="account", nullable = false)
+    private Member member;
 
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime blackDateTime;
 
-    //join 더 살펴보기
 }

@@ -4,7 +4,7 @@ import com.crescendo.blackList.entity.BlackList;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BlackListRepository extends JpaRepository<BlackList,Long> {
-//    List<BlackList> findBlackListByBlackDisCount(Long boardNo, Long boardDislike);
+
 
 
 }

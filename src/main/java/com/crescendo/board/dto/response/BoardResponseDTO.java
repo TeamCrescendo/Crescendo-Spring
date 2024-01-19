@@ -21,7 +21,7 @@ public class BoardResponseDTO {
 
     private Long boardLike;
 
-    private Long boardDislike;
+    private Board.DisLike boardDislike;
 
     private Long boardViewCount;
 
@@ -34,7 +34,7 @@ public class BoardResponseDTO {
         this.boardTitle = board.getBoardTitle();
         this.member = board.getMember();
         this.boardLike = board.getBoardLike();
-        this.boardDislike = board.getBoardDislike();
+        this.boardDislike = board.getBoardDisLike();
         this.boardViewCount = board.getBoardViewCount();
         this.boardDownloadCount = board.getBoardDownloadCount();
         this.scoreImgUrl = board.getScoreImgUrl();
