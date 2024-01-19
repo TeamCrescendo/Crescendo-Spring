@@ -1,10 +1,9 @@
-package com.crescendo.controller;
+package com.crescendo.board.controller;
 
-import com.crescendo.dto.request.BoardModifyRequestDTO;
-import com.crescendo.dto.request.BoardRequestDTO;
-import com.crescendo.dto.response.BoardListResponseDTO;
-import com.crescendo.repository.BoardRepository;
-import com.crescendo.service.BoardService;
+import com.crescendo.board.dto.request.BoardModifyRequestDTO;
+import com.crescendo.board.dto.request.BoardRequestDTO;
+import com.crescendo.board.dto.response.BoardListResponseDTO;
+import com.crescendo.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

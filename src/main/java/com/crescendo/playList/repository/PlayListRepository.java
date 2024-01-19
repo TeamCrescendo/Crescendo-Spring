@@ -1,6 +1,6 @@
-package com.crescendo.repository;
+package com.crescendo.playList.repository;
 
-import com.crescendo.entity.PlayList;
+import com.crescendo.playList.entity.PlayList;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PlayListRepository extends JpaRepository<PlayList, Long > {

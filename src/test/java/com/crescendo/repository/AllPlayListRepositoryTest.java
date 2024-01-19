@@ -1,6 +1,6 @@
 //package com.crescendo.repository;
 //
-//import com.crescendo.entity.AllPlayList;
+//import com.crescendo.allPlayList.entity.AllPlayList;
 //import com.crescendo.entity.Member;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 //package com.crescendo.service;
 //
-//import com.crescendo.dto.request.BoardRequestDTO;
-//import com.crescendo.entity.Board;
+//import com.crescendo.board.dto.request.BoardRequestDTO;
+//import com.crescendo.board.entity.Board;
 //import com.crescendo.entity.Member;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;

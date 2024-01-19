@@ -1,5 +1,7 @@
-package com.crescendo.entity;
+package com.crescendo.playList.entity;
 
+import com.crescendo.allPlayList.entity.AllPlayList;
+import com.crescendo.entity.Score;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 

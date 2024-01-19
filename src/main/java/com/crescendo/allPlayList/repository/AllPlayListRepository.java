@@ -1,6 +1,6 @@
-package com.crescendo.repository;
+package com.crescendo.allPlayList.repository;
 
-import com.crescendo.entity.AllPlayList;
+import com.crescendo.allPlayList.entity.AllPlayList;
 import com.crescendo.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

@@ -1,6 +1,6 @@
-package com.crescendo.repository;
+package com.crescendo.board.repository;
 
-import com.crescendo.entity.Board;
+import com.crescendo.board.entity.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

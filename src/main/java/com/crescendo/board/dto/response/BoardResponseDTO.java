@@ -1,6 +1,6 @@
-package com.crescendo.dto.response;
+package com.crescendo.board.dto.response;
 
-import com.crescendo.entity.Board;
+import com.crescendo.board.entity.Board;
 import com.crescendo.entity.Member;
 import lombok.*;
 

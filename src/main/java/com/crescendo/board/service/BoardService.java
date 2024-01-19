@@ -1,12 +1,12 @@
-package com.crescendo.service;
+package com.crescendo.board.service;
 
-import com.crescendo.dto.request.BoardModifyRequestDTO;
-import com.crescendo.dto.request.BoardRequestDTO;
-import com.crescendo.dto.response.BoardListResponseDTO;
-import com.crescendo.dto.response.BoardResponseDTO;
-import com.crescendo.entity.Board;
+import com.crescendo.board.dto.request.BoardModifyRequestDTO;
+import com.crescendo.board.dto.request.BoardRequestDTO;
+import com.crescendo.board.dto.response.BoardListResponseDTO;
+import com.crescendo.board.dto.response.BoardResponseDTO;
+import com.crescendo.board.entity.Board;
 import com.crescendo.entity.Member;
-import com.crescendo.repository.BoardRepository;
+import com.crescendo.board.repository.BoardRepository;
 import com.crescendo.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

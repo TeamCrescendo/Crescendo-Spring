@@ -1,5 +1,6 @@
-package com.crescendo.entity;
+package com.crescendo.blackList.entity;
 
+import com.crescendo.board.entity.Board;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 

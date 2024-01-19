@@ -1,6 +1,6 @@
-package com.crescendo.dto.response;
+package com.crescendo.allPlayList.dto.response;
 
-import com.crescendo.entity.AllPlayList;
+import com.crescendo.allPlayList.entity.AllPlayList;
 import com.crescendo.entity.Member;
 import lombok.*;
 

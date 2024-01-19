@@ -1,7 +1,5 @@
-package com.crescendo.dto.request;
+package com.crescendo.allPlayList.dto.request;
 
-import com.crescendo.entity.AllPlayList;
-import com.crescendo.entity.Member;
 import lombok.*;
 
 @Setter

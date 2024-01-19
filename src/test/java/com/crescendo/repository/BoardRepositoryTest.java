@@ -1,6 +1,7 @@
 package com.crescendo.repository;
 
-import com.crescendo.entity.Board;
+import com.crescendo.board.repository.BoardRepository;
+import com.crescendo.board.entity.Board;
 import com.crescendo.entity.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,10 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional

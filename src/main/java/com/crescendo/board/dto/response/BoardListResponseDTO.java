@@ -1,4 +1,4 @@
-package com.crescendo.dto.response;
+package com.crescendo.board.dto.response;
 
 import lombok.*;
 

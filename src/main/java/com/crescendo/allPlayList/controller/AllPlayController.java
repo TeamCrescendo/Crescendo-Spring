@@ -1,10 +1,9 @@
-package com.crescendo.controller;
+package com.crescendo.allPlayList.controller;
 
-import com.crescendo.dto.request.AllPlayListRequestDTO;
-import com.crescendo.dto.response.AllPlayListResponseDTO;
-import com.crescendo.dto.response.AllPlayResponseDTO;
-import com.crescendo.dto.response.BoardListResponseDTO;
-import com.crescendo.service.AllPlayListService;
+import com.crescendo.allPlayList.dto.request.AllPlayListRequestDTO;
+import com.crescendo.allPlayList.dto.response.AllPlayListResponseDTO;
+import com.crescendo.allPlayList.dto.response.AllPlayResponseDTO;
+import com.crescendo.allPlayList.service.AllPlayListService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

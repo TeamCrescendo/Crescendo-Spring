@@ -1,10 +1,7 @@
-package com.crescendo.dto.request;
+package com.crescendo.board.dto.request;
 
-import com.crescendo.entity.Board;
-import com.crescendo.entity.Member;
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Setter
