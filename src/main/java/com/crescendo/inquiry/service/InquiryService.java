@@ -46,9 +46,20 @@ public class InquiryService {
                     .account(inquiry.getMember().getAccount())
                     .inquiryContent(inquiry.getInquiryContent())
                     .inquiryTitle(inquiry.getInquiryTitle())
+                    .inquiryId(inquiry.getInquiryId())
                     .build();
             foundListPackage.add(dto);
         });
         return foundListPackage;
+    }
+
+
+    // 문의 아이디로 문의 삭제 하기
+    public boolean deleteById(String inquiryId){
+        if(!inquiryRepository.existsById(inquiryId)){
+            throw new NoMatchAccountException("정확한 아이디를 주세요"); // <- 만들기 귀찮아서 나중에 만들어라
+        }
+        inquiryRepository.deleteById(inquiryId);
+        return true;
     }
 }

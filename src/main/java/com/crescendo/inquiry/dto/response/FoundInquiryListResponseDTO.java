@@ -12,5 +12,6 @@ import lombok.*;
 public class FoundInquiryListResponseDTO {
     private String inquiryTitle;
     private String inquiryContent;
+    private String inquiryId;
     private String account;
 }
