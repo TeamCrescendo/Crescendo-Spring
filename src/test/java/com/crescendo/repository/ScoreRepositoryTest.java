@@ -1,7 +1,8 @@
 package com.crescendo.repository;
 
-import com.crescendo.entity.Member;
+import com.crescendo.member.entity.Member;
 import com.crescendo.entity.Score;
+import com.crescendo.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

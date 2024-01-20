@@ -1,11 +1,12 @@
-package com.crescendo.dto.request;
+package com.crescendo.member.dto.request;
 
-import com.crescendo.entity.Member;
+import com.crescendo.member.entity.Member;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Setter
@@ -16,18 +17,16 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @Builder
 public class SignUpRequestDTO {
-
-
     @NotBlank
     @Size(min = 4 , max = 20)
     private String account;
 
-    @NotBlank
-    @Size(min = 4 , max = 100)
+
     private String password;
 
     @NotBlank
     @Size(min = 2, max = 12)
+    @Pattern(regexp = "^[a-zA-Z가-힣]*$", message = "유저 이름은 한국어 또는 영어만 허용됩니다.")
     private String userName;
 
     @NotBlank

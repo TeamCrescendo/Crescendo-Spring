@@ -1,6 +1,6 @@
-package com.crescendo.dto.response;
+package com.crescendo.member.dto.response;
 
-import com.crescendo.entity.Member;
+import com.crescendo.member.entity.Member;
 import lombok.*;
 
 import java.time.LocalDateTime;

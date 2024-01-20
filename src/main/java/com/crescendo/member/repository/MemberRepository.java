@@ -1,6 +1,6 @@
-package com.crescendo.repository;
+package com.crescendo.member.repository;
 
-import com.crescendo.entity.Member;
+import com.crescendo.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,5 +17,7 @@ public interface MemberRepository extends JpaRepository<Member, String> {
             "(:type = 'nick_name' AND m.userName = :keyword)")
     int isDuplication(@Param("type") String type, @Param("keyword") String keyword);
 
-
+    boolean existsByAccount(String account);
+    boolean existsByEmail(String email);
+    boolean existsByUserName(String userName);
 }

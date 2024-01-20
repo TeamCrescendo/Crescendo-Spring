@@ -1,7 +1,8 @@
 package com.crescendo.repository;
 
 import com.crescendo.entity.Inquiry;
-import com.crescendo.entity.Member;
+import com.crescendo.member.entity.Member;
+import com.crescendo.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

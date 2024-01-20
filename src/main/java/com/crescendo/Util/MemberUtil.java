@@ -1,8 +1,7 @@
 package com.crescendo.Util;
 
-import com.crescendo.entity.Member;
-import com.crescendo.repository.MemberRepository;
-import com.crescendo.service.MemberService;
+import com.crescendo.member.entity.Member;
+import com.crescendo.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
