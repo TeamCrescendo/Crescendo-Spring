@@ -1,6 +1,6 @@
 package com.crescendo.repository;
 
-import com.crescendo.entity.Inquiry;
+import com.crescendo.inquiry.entity.Inquiry;
 import com.crescendo.inquiry.repository.InquiryRepository;
 import com.crescendo.member.entity.Member;
 import com.crescendo.member.repository.MemberRepository;
