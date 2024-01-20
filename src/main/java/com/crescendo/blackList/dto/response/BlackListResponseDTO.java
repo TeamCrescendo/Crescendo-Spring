@@ -1,7 +1,7 @@
 package com.crescendo.blackList.dto.response;
 
 import com.crescendo.blackList.entity.BlackList;
-import com.crescendo.entity.Member;
+import com.crescendo.member.entity.Member;
 import lombok.*;
 @Setter
 @Getter

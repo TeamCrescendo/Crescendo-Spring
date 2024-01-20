@@ -1,6 +1,6 @@
 package com.crescendo.board.entity;
 
-import com.crescendo.entity.Member;
+import com.crescendo.member.entity.Member;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 

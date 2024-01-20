@@ -4,7 +4,7 @@ import com.crescendo.blackList.entity.BlackList;
 import com.crescendo.blackList.repository.BlackListRepository;
 import com.crescendo.board.entity.Board;
 import com.crescendo.board.repository.BoardRepository;
-import com.crescendo.entity.Member;
+import com.crescendo.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class BlackListService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new RuntimeException("Board not found"));
 
-        if (board.getBoardDisLike() => 5) {
+        if (board.getBoardDisLike() =< 5) {
             // board의 dislike 수가 임계치 이상이면 블랙리스트에 추가하고 board에서 숨김 처리
             addToBlackList(board.getMember());
             hideBoard(board);

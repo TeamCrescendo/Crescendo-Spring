@@ -1,7 +1,7 @@
 package com.crescendo.blackList.entity;
 
 import com.crescendo.board.entity.Board;
-import com.crescendo.entity.Member;
+import com.crescendo.member.entity.Member;
 import lombok.*;
 import net.bytebuddy.utility.nullability.MaybeNull;
 import org.hibernate.annotations.CreationTimestamp;

@@ -1,11 +1,14 @@
 package com.crescendo.allPlayList.service;
 
-import com.crescendo.dto.request.AllPlayListRequestDTO;
-import com.crescendo.dto.response.AllPlayListResponseDTO;
-import com.crescendo.dto.response.AllPlayResponseDTO;
-import com.crescendo.entity.AllPlayList;
+import com.crescendo.allPlayList.dto.request.AllPlayListRequestDTO;
+import com.crescendo.allPlayList.entity.AllPlayList;
+import com.crescendo.allPlayList.repository.AllPlayListRepository;
+import com.crescendo.allPlayList.dto.request.AllPlayListRequestDTO;
+import com.crescendo.allPlayList.dto.response.AllPlayListResponseDTO;
+import com.crescendo.allPlayList.dto.response.AllPlayResponseDTO;
+import com.crescendo.allPlayList.entity.AllPlayList;
 import com.crescendo.member.entity.Member;
-import com.crescendo.repository.AllPlayListRepository;
+import com.crescendo.allPlayList.repository.AllPlayListRepository;
 import com.crescendo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

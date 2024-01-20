@@ -1,6 +1,6 @@
 package com.crescendo.allPlayList.repository;
 
-import com.crescendo.entity.AllPlayList;
+import com.crescendo.allPlayList.entity.AllPlayList;
 import com.crescendo.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface AllPlayListRepository extends JpaRepository<AllPlayList , Long> {
+public interface AllPlayListRepository extends JpaRepository<AllPlayList, Long> {
 
     //플레이 리스트 제목으로 검색하기
     @Query("SELECT title from  AllPlayList title WHERE title.plName LIKE %:title%")
