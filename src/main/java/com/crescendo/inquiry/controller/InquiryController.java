@@ -8,6 +8,7 @@ import com.crescendo.member.exception.NoMatchAccountException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +25,16 @@ public class InquiryController {
 
     // 문의 추가하기
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody InquirySaveRequestDTO dto){
-        boolean save = inquiryService.save(dto);
-        return ResponseEntity.ok().body(save);
+    public ResponseEntity<?> save(@Validated @RequestBody InquirySaveRequestDTO dto, BindingResult result){
+        if (result.hasErrors()){
+            return ResponseEntity.badRequest().body(result.toString());
+        }
+        try {
+            List<FoundInquiryListResponseDTO> save = inquiryService.save(dto);
+            return ResponseEntity.ok().body(save);
+        }catch (NoMatchAccountException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     // 계정명으로 문의 전체조회하기

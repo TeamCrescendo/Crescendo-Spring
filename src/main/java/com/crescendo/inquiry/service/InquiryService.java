@@ -24,17 +24,14 @@ public class InquiryService {
     private final MemberRepository memberRepository;
 
     //문의 추가하기
-    public boolean save(InquirySaveRequestDTO dto){
-        System.out.println("dto = " + dto);
+    public List<FoundInquiryListResponseDTO> save(InquirySaveRequestDTO dto){
         Member foundMember = memberRepository.getOne(dto.getAccount());
-        System.out.println("foundMember = " + foundMember);
-        if(foundMember != null){
-            Inquiry inquiry = Inquiry.builder().inquiryTitle(dto.getTitle()).inquiryContent(dto.getContent()).member(foundMember).build();
-            inquiryRepository.save(inquiry);
-            return true;
+        if (foundMember == null){
+            throw new NoMatchAccountException("일치하는 계정이 없습니다");
         }
-        return false;
-
+        Inquiry inquiry = Inquiry.builder().inquiryTitle(dto.getTitle()).inquiryContent(dto.getContent()).member(foundMember).build();
+        inquiryRepository.save(inquiry);
+        return findAllByAccount(dto.getAccount());
     }
 
     // 계정명으로 문의 전체 조회하기
