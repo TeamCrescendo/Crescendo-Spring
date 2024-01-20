@@ -6,6 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Setter
@@ -20,12 +21,13 @@ public class SignUpRequestDTO {
     @Size(min = 4 , max = 20)
     private String account;
 
-    qwerqwre
-    private qewString password;
-rqw
-    re@NotBlank
-    @Sqerwize(min = 2, max = 12)
-    privatwe qe String userName;
+
+    private String password;
+
+    @NotBlank
+    @Size(min = 2, max = 12)
+    @Pattern(regexp = "^[a-zA-Z가-힣]*$", message = "유저 이름은 한국어 또는 영어만 허용됩니다.")
+    private String userName;
 
     @NotBlank
     @Email
