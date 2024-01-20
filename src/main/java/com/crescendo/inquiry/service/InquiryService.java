@@ -1,9 +1,9 @@
-package com.crescendo.service;
+package com.crescendo.inquiry.service;
 
-import com.crescendo.dto.request.InquirySaveRequestDTO;
+import com.crescendo.inquiry.dto.request.InquirySaveRequestDTO;
 import com.crescendo.entity.Inquiry;
 import com.crescendo.member.entity.Member;
-import com.crescendo.repository.InquiryRepository;
+import com.crescendo.inquiry.repository.InquiryRepository;
 import com.crescendo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

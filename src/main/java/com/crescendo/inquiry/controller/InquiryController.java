@@ -1,7 +1,7 @@
-package com.crescendo.controller;
+package com.crescendo.inquiry.controller;
 
-import com.crescendo.dto.request.InquirySaveRequestDTO;
-import com.crescendo.service.InquiryService;
+import com.crescendo.inquiry.dto.request.InquirySaveRequestDTO;
+import com.crescendo.inquiry.service.InquiryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

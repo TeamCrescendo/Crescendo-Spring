@@ -1,4 +1,4 @@
-package com.crescendo.repository;
+package com.crescendo.inquiry.repository;
 
 import com.crescendo.entity.Inquiry;
 import org.springframework.data.jpa.repository.JpaRepository;

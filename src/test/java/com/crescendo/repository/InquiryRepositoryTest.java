@@ -1,6 +1,7 @@
 package com.crescendo.repository;
 
 import com.crescendo.entity.Inquiry;
+import com.crescendo.inquiry.repository.InquiryRepository;
 import com.crescendo.member.entity.Member;
 import com.crescendo.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
