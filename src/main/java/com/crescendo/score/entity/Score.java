@@ -27,7 +27,8 @@ public class Score {
     private Member member;
 
     @Column(name = "score_img_url")
-    private String scoreImageUrl;
+    @Builder.Default
+    private String scoreImageUrl = "";
 
     @CreationTimestamp
     @Column(name = "score_upload_date_time")
