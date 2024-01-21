@@ -52,8 +52,16 @@ public class ScoreController {
     }
 
     @DeleteMapping
-    private ResponseEntity<?> delete(String scoreId){
-        return ResponseEntity.ok().body("123");
+    private ResponseEntity<?> delete(int scoreId){
+        if(scoreId == 0){
+            return ResponseEntity.badRequest().body("악보아이디 제대로 주세요");
+        }
+        try{
+            boolean delete = scoreService.delete(scoreId);
+            return ResponseEntity.ok().body(delete);
+        }catch (NoArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 

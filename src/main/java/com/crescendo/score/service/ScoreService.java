@@ -85,4 +85,13 @@ public class ScoreService {
         });
         return responseDTOList;
     }
+
+    public boolean delete(int scoreId){
+        boolean flag = scoreRepository.existsById(scoreId);
+        if(!flag){
+            throw new NoArgumentException("해당 악보는 없습니다");
+        }
+        scoreRepository.deleteById(scoreId);
+        return true;
+    }
 }
