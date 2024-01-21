@@ -1,4 +1,4 @@
-package com.crescendo.repository;
+package com.crescendo.score.repository;
 
 import com.crescendo.member.entity.Member;
 import com.crescendo.entity.Score;
