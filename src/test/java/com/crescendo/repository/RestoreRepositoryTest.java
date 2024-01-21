@@ -3,6 +3,7 @@ package com.crescendo.repository;
 import com.crescendo.member.entity.Member;
 import com.crescendo.entity.Restore;
 import com.crescendo.member.repository.MemberRepository;
+import com.crescendo.restore.repository.RestoreRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

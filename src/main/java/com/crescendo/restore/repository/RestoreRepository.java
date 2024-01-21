@@ -1,4 +1,4 @@
-package com.crescendo.repository;
+package com.crescendo.restore.repository;
 
 import com.crescendo.entity.Restore;
 import org.springframework.data.jpa.repository.JpaRepository;

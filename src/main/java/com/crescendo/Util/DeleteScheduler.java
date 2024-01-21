@@ -1,9 +1,7 @@
 package com.crescendo.Util;
 
-import com.crescendo.entity.Restore;
-import com.crescendo.repository.RestoreRepository;
+import com.crescendo.restore.repository.RestoreRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

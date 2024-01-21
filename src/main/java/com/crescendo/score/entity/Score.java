@@ -1,4 +1,4 @@
-package com.crescendo.entity;
+package com.crescendo.score.entity;
 
 import com.crescendo.member.entity.Member;
 import lombok.*;
@@ -42,7 +42,28 @@ public class Score {
 
 
     public enum GENRE{
-        JAZZ, HIPHOP, POP, CLASSIC, BALLADE, DANCE, DISCO, HOUSE, ROCK, ELECTRONIC, TROT
+        VALUE1("JAZZ"),
+        VALUE2("HIPHOP"),
+        VALUE3("POP"),
+        VALUE4("CLASSIC"),
+        VALUE5("BALLADE"),
+        VALUE6("JADANCEZZ"),
+        VALUE7("DISCO"),
+        VALUE8("HOUSE"),
+        VALUE9("ROCK"),
+        VALUE10("ELECTRONIC"),
+        VALUE11("TROT"),
+        VALUE12("OTHER");
+
+        private final String stringValue;
+
+        GENRE(String stringValue){
+            this.stringValue = stringValue;
+        }
+
+        public String getStringValue(){
+            return stringValue;
+        }
     }
 
 

@@ -1,4 +1,4 @@
-package com.crescendo.repository;
+package com.crescendo.post_message.repository;
 
 import com.crescendo.entity.PostMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
