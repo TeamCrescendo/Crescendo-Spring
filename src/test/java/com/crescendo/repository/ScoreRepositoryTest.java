@@ -1,8 +1,9 @@
 package com.crescendo.repository;
 
 import com.crescendo.member.entity.Member;
-import com.crescendo.entity.Score;
+import com.crescendo.score.entity.Score;
 import com.crescendo.member.repository.MemberRepository;
+import com.crescendo.score.repository.ScoreRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ class ScoreRepositoryTest {
     void bulkInsert(){
         Member member2 = memberRepository.getOne("member2");
         Score summer = Score.builder()
-                .scoreGenre(Score.GENRE.JAZZ)
+                .scoreGenre(Score.GENRE.VALUE1)
                 .member(member2)
                 .scoreTitle("Summer 악보에요")
                 .build();
@@ -41,15 +42,15 @@ class ScoreRepositoryTest {
         //given
         Member member2 = memberRepository.getOne("member2");
         Score summer = Score.builder()
-                .scoreGenre(Score.GENRE.JAZZ)
+                .scoreGenre(Score.GENRE.VALUE1)
                 .member(member2)
-                .scoreTitle("Summer 악보에요")
+                .scoreTitle("Summer222 악보에요")
                 .build();
         //when
         Score save = scoreRepository.save(summer);
         //then
         assertNotNull(save);
-        assertEquals(1, scoreRepository.findAll().size());
+        assertEquals(2, scoreRepository.findAll().size());
         System.out.println("\n\n\n");
         System.out.println("save = " + save);
         System.out.println("\n\n\n");
