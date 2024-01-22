@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 @Slf4j
@@ -52,11 +54,17 @@ public class PostMessageService {
     }
 
     // 받은 쪽지 리스트
-    public boolean findMessageAll(String account){
-        boolean b = memberRepository.existsByAccount(account);
+    public boolean findMessageAll(String receiver){
+        boolean b = memberRepository.existsByAccount(receiver);
         if(!b){
             throw new NoMatchAccountException("정확한 계정명을 보내주세요!");
         }
+
+        List<PostMessage> allByPostMessageReceiver = postMessageRepository.findAllByPostMessageReceiver(receiver);
+        allByPostMessageReceiver.forEach(postMessage -> {
+            
+        });
+
         return false;
     }
 
