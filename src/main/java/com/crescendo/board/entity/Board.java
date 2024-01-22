@@ -31,12 +31,12 @@ public class Board {
     private Member member;
 
 
-    @Column(name = "board_like", nullable = false)
+    @Column(name = "board_likeCount", nullable = false)
     @Builder.Default
     private int boardLikeCount = 0;
 
 
-    @Column(name = "board_dislike", nullable = false)
+    @Column(name = "board_dislikeCount", nullable = false)
     @Builder.Default
     private int boardDislikeCount = 0;
 

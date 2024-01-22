@@ -41,9 +41,23 @@ class BoardRepositoryTest {
                 .password("1234")
                 .userName("회원3")
                 .build();
+        Member member4 = Member.builder()
+                .account("member4")
+                .email("member4@naver.com")
+                .password("1234")
+                .userName("회원4")
+                .build();
+        Member member5 = Member.builder()
+                .account("member5")
+                .email("member5@naver.com")
+                .password("1234")
+                .userName("회원5")
+                .build();
         memberRepository.save(member1);
         memberRepository.save(member2);
         memberRepository.save(member3);
+        memberRepository.save(member4);
+        memberRepository.save(member5);
 
         Board testTitle = Board.builder()
                 .boardTitle("TestTitle")
@@ -51,11 +65,13 @@ class BoardRepositoryTest {
                 .build();
         boardRepository.save(testTitle);
 
-        Board.builder()
+        Board testTitle1 = Board.builder()
                 .boardTitle("TestTitle1")
                 .member(member2)
                 .build();
+        boardRepository.save(testTitle1);
     }
+
 
     @Test
     @DisplayName("boardNo가 1인 회원을 조회 한다.")

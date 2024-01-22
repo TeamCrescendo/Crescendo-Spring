@@ -4,6 +4,7 @@ import com.crescendo.board.entity.Board;
 import com.crescendo.board.entity.Dislike;
 import com.crescendo.board.entity.Like;
 import com.crescendo.board.repository.BoardRepository;
+import com.crescendo.likeAndDislike.dto.request.LikeAndDislikeRequestDTO;
 import com.crescendo.likeAndDislike.repository.LikeAndDislikeRepository;
 import com.crescendo.member.entity.Member;
 import com.crescendo.member.repository.MemberRepository;
@@ -33,7 +34,10 @@ class BoardServiceTest {
        Long boardNo = 2L;
        String account = "member2";
 
-       boardService.LikeAndDislike(account,boardNo, null,Dislike.DISLIKE);
+       boardService.LikeAndDislike(LikeAndDislikeRequestDTO.builder()
+                       .boardNo(boardNo)
+                       .account(account)
+               .build());
 
     }
 }
