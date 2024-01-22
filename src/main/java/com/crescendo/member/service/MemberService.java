@@ -104,7 +104,9 @@ public class MemberService {
                 foundMember.setUserName(dto.getUserName());
             }
         }
-        foundMember.setPassword(encoder.encode(dto.getPassword()));
+        if(!dto.getPassword().isEmpty()){
+            foundMember.setPassword(encoder.encode(dto.getPassword()));
+        }
         return true;
     }
 

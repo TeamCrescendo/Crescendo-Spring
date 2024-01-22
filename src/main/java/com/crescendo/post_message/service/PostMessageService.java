@@ -51,4 +51,12 @@ public class PostMessageService {
 
     }
 
+    // 받은 쪽지 리스트
+    public boolean findMessageAll(String account){
+        boolean b = memberRepository.existsByAccount(account);
+        if(!b){
+            throw new NoMatchAccountException("정확한 계정명을 보내주세요!");
+        }
+    }
+
 }
