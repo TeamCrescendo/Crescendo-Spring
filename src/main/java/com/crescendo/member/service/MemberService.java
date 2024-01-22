@@ -128,7 +128,20 @@ public class MemberService {
         }else{
             throw new NoDuplicateCheckArgumentException("타겟을 정확히 정해라");
         }
-
     }
 
+    // 다운로드 회수 줄이기
+    public int download(String account){
+        if (!memberRepository.existsById(account)){
+            throw new NoMatchAccountException("해당 하는 계정명이 없습니다");
+        }
+        Member member = memberRepository.getOne(account);
+        Integer userDownloadChance = member.getUserDownloadChance();
+
+        if(userDownloadChance==0){
+            throw new NoDownloadChanceException("다운로드 기회가 없습니다");
+        }
+        member.setUserDownloadChance(member.getUserDownloadChance()-1);
+        return member.getUserDownloadChance();
+    }
 }
