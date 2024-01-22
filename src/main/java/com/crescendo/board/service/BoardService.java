@@ -9,6 +9,7 @@ import com.crescendo.board.dto.response.BoardResponseDTO;
 import com.crescendo.board.entity.Board;
 import com.crescendo.board.entity.Dislike;
 import com.crescendo.board.entity.Like;
+import com.crescendo.likeAndDislike.dto.request.LikeDisLikeRequestDTO;
 import com.crescendo.likeAndDislike.entity.LikeAndDislike;
 import com.crescendo.likeAndDislike.repository.LikeAndDislikeRepository;
 import com.crescendo.member.entity.Member;
@@ -87,9 +88,40 @@ public class BoardService {
 
 
     //좋아요와 싫어요 기능 처리
-    public boolean LikeAndDislike(String account, Long boardNo, boolean like, boolean dislike) {
+    public void LikeAndDislike(LikeDisLikeRequestDTO dto) {
 
+        Long boardNo = dto.getBoardNo();
         Optional<Board> boardId = boardRepository.findById(boardNo);
+        boardId.ifPresent(board -> {
+            Member member = memberRepository.getOne(dto.getAccount());
 
+            LikeAndDislike memberAccountAndBoardNo = likeAndDislikeRepository.findByMemberAccountAndBoard_BoardNo(dto.getAccount(), dto.getBoardNo());
+
+            if (memberAccountAndBoardNo == null) {
+                LikeAndDislike build = LikeAndDislike.builder()
+                        .boardLike(dto.isLike())
+                        .member(member)
+                        .board(board)
+                        .build();
+                likeAndDislikeRepository.save(build);
+                if (dto.isLike()) {
+                    board.setBoardLikeCount(board.getBoardLikeCount() + 1);
+                } else {
+                    board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
+                }
+            } else {
+                if (dto.isLike()) {
+                    if (!memberAccountAndBoardNo.isBoardLike()) {
+                        board.setBoardLikeCount(board.getBoardLikeCount() + 1);
+                        board.setBoardDislikeCount(board.getBoardDislikeCount() - 1);
+                    }
+                } else {
+                    if (memberAccountAndBoardNo.isBoardLike()) {
+                        board.setBoardLikeCount(board.getBoardLikeCount() - 1);
+                        board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
+                    }
+                }
+            }
+        });
     }
 }

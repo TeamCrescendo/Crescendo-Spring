@@ -22,8 +22,8 @@ public class LikeAndDislikeResponseDTO {
 
     public LikeAndDislikeResponseDTO(LikeAndDislike likeAndDislike){
         this.likeAndDislikeId = likeAndDislike.getLikeAndDislikeId();
-        this.boardDisLike  = likeAndDislike.getBoardDislike();
-        this.boardLike = likeAndDislike.getBoardLike();
+//        this.boardDisLike  = likeAndDislike.getBoardDislike();
+//        this.boardLike = likeAndDislike.getBoardLike();
         this.boardNo = this.getBoardNo();
         this.account = this.getAccount();
     }

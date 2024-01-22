@@ -40,8 +40,4 @@ public class LikeAndDislike {
     private boolean boardLike = false;
 
 
-    @Column(name = "board_dislike")
-    @Builder.Default
-    private boolean boardDislike = false;
-
 }
