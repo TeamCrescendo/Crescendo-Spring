@@ -23,8 +23,7 @@ public class ModifyMemberRequestDTO {
     @Size(min = 2, max = 12)
     private String userName;
 
-    @NotBlank
-    @Size(min = 4 , max = 20)
+
     private String password;
 
     @NotBlank
