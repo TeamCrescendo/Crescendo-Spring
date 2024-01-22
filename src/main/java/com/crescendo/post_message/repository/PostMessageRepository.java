@@ -10,4 +10,6 @@ public interface PostMessageRepository extends JpaRepository<PostMessage, String
     List<PostMessage> findAllByMemberAccount(String account);
 
     List<PostMessage> findAllByPostMessageReceiver(String receiver);
+
+    List<PostMessage> findALlByMemberAccount(String account);
 }

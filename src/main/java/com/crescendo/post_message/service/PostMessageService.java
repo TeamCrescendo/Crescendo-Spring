@@ -5,6 +5,7 @@ import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.member.repository.MemberRepository;
 import com.crescendo.post_message.dto.request.SendMessageRequestDTO;
 import com.crescendo.post_message.dto.response.ReceivedMessageResponseDTO;
+import com.crescendo.post_message.dto.response.SentMessageListResponseDTO;
 import com.crescendo.post_message.entity.PostMessage;
 import com.crescendo.post_message.repository.PostMessageRepository;
 import com.crescendo.score.exception.NoArgumentException;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -70,13 +72,48 @@ public class PostMessageService {
                     .sender(postMessage.getMember().getAccount())
                     .content(postMessage.getPostMessageContent())
                     .check(postMessage.isChecked())
+                    .messageId(postMessage.getPostMessageId())
                     .build();
             list.add(dto);
         });
 
         return list;
+    }
 
+    // 보낸 쪽지 리스트
+    public List<SentMessageListResponseDTO> findSentMessageAll(String sender){
+        boolean b = memberRepository.existsByAccount(sender);
+        if(!b){
+            throw new NoMatchAccountException("정확한 계정명을 보내주세요!");
+        }
 
+        List<PostMessage> allByPostMessageReceiver = postMessageRepository.findAllByMemberAccount(sender);
+        List<SentMessageListResponseDTO> list = new ArrayList<>();
+        allByPostMessageReceiver.forEach(postMessage -> {
+            SentMessageListResponseDTO dto = SentMessageListResponseDTO.builder()
+                    .receiver(postMessage.getPostMessageReceiver())
+                    .sender(postMessage.getMember().getAccount())
+                    .content(postMessage.getPostMessageContent())
+                    .check(postMessage.isChecked())
+                    .build();
+            list.add(dto);
+        });
+
+        return list;
+    }
+
+    // 쪽지 확인
+    public boolean checkedMessage(String messageId){
+        boolean flag = postMessageRepository.existsById(messageId);
+        if(!flag){
+            throw new NoArgumentException("정확한 메세지 ID를 보내주세요");
+        }
+
+        Optional<PostMessage> byId = postMessageRepository.findById(messageId);
+        byId.ifPresent(postMessage -> {
+            postMessage.setChecked(true);
+        });
+        return true;
     }
 
 }
