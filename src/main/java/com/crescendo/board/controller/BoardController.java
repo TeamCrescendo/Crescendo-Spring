@@ -3,6 +3,8 @@ package com.crescendo.board.controller;
 import com.crescendo.board.dto.request.BoardModifyRequestDTO;
 import com.crescendo.board.dto.request.BoardRequestDTO;
 import com.crescendo.board.dto.response.BoardListResponseDTO;
+import com.crescendo.board.entity.Dislike;
+import com.crescendo.board.entity.Like;
 import com.crescendo.board.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -87,4 +89,18 @@ public class BoardController {
         }
     }
 
+    //좋아요 싫어요 처리
+    @PostMapping("/likeAndDislike")
+    public ResponseEntity<?> likeAndDislike(
+            @RequestParam Long boardNo,
+            @RequestParam String account,
+            @RequestParam Like like,
+            @RequestParam Dislike dislike){
+        boolean result = boardService.LikeAndDislike(account, boardNo, like, dislike);
+        if (result) {
+            return ResponseEntity.ok("Success");
+        } else {
+            return ResponseEntity.badRequest().body("Failed");
+        }
+    }
 }

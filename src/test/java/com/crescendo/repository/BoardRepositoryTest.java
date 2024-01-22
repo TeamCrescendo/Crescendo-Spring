@@ -50,6 +50,11 @@ class BoardRepositoryTest {
                 .member(member1)
                 .build();
         boardRepository.save(testTitle);
+
+        Board.builder()
+                .boardTitle("TestTitle1")
+                .member(member2)
+                .build();
     }
 
     @Test

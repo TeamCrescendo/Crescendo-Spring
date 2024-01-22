@@ -30,13 +30,15 @@ public class Board {
     @JoinColumn(name = "account", nullable = false)
     private Member member;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "board_like")
-    private Like boardLike;
 
-    @Enumerated(EnumType.ORDINAL)
-    @Column(name = "board_dislike")
-    private Dislike boardDislike;
+    @Column(name = "board_like", nullable = false)
+    @Builder.Default
+    private int boardLikeCount = 0;
+
+
+    @Column(name = "board_dislike", nullable = false)
+    @Builder.Default
+    private int boardDislikeCount = 0;
 
     @CreationTimestamp
     @Column(updatable = false)

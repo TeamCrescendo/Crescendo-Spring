@@ -1,5 +1,6 @@
 package com.crescendo.board.service;
 
+import com.crescendo.blackList.entity.BlackList;
 import com.crescendo.blackList.repository.BlackListRepository;
 import com.crescendo.board.dto.request.BoardModifyRequestDTO;
 import com.crescendo.board.dto.request.BoardRequestDTO;
@@ -8,6 +9,8 @@ import com.crescendo.board.dto.response.BoardResponseDTO;
 import com.crescendo.board.entity.Board;
 import com.crescendo.board.entity.Dislike;
 import com.crescendo.board.entity.Like;
+import com.crescendo.likeAndDislike.entity.LikeAndDislike;
+import com.crescendo.likeAndDislike.repository.LikeAndDislikeRepository;
 import com.crescendo.member.entity.Member;
 import com.crescendo.board.repository.BoardRepository;
 import com.crescendo.member.repository.MemberRepository;
@@ -29,6 +32,7 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
     private final BlackListRepository blackListRepository;
+    private final LikeAndDislikeRepository likeAndDislikeRepository;
 
 
     //board에 등록
@@ -83,50 +87,75 @@ public class BoardService {
 
 
     //좋아요와 싫어요 기능 처리
-    public boolean boardLikeAndDislike(Long boardId) {
-        Optional<Board> optionalBoard = boardRepository.findById(boardId);
+    public boolean LikeAndDislike(String account, Long boardNo, Like like, Dislike dislike) {
 
-        //좋아요를 누르기 구현
-        if (optionalBoard.isPresent()) {
-            Board board = optionalBoard.get();
-            //좋아요를 누른 상태라면
-            if(board.getBoardLike() == Like.LIKE){
-                //좋아요를 취소하고
+        LikeAndDislike.builder()
+                .
+                .build();
+
+        //게시글을 가져오기
+        Optional<Board> boardId = boardRepository.findById(boardNo);
+
+        if (boardId.isPresent()) {
+            Board board = boardId.get();
+
+            //사용자를 가져오기
+            Member member = memberRepository.getOne(account);
+
+            if (member == null) {
+                log.error("사용자가 존재하지 않아요: {}", account);
+                return false;
+            }
+        }
+
+            //이미 좋아요를 눌렀는지 확인
+            //만약 좋아요가 비어있지 않고, 내가 좋아요를 누른 상태에서 좋아요를 누르면 좋아요 취소
+            if (like != null && board.getBoardLike() == Like.LIKE) {
+                log.info("이미 좋아요를 누른 게시글 입니다.");
                 board.setBoardLike(Like.UNLIKE);
-                //좋아요를 누른 상태에서 싫어요를 누르면
-            } else if (board.getBoardDislike() == Dislike.DISLIKE) {
-                //좋아요를 취고하고
-                board.setBoardLike(Like.UNLIKE);
-                //싫어요를 누르기
                 board.setBoardDislike(Dislike.DISLIKE);
-                //좋아요가 안눌러진 상태라면
-            }else {
+                return true; //좋아요 취소를 성공적으로 반환 했음
+            }
+            //이미 싫어요를 눌렀는지 확인
+            //만약 싫어요가 비어있지 않고, 내가 싫어요를 누른 상태에서 싫어요를 누르면 싫어요 취소
+            if(dislike != null && board.getBoardDislike() == Dislike.DISLIKE){
+                log.info("이미 싫어요를 누른 게시글 입니다.");
+                board.setBoardDislike(Dislike.UNDISLIKE);
                 board.setBoardLike(Like.LIKE);
+                return true; //싫어요 취소를 성공적으로 반환 했음
             }
-            return true;
-        }
 
-        //싫어요를 누르기 구현
-        if(optionalBoard.isPresent()){
-            Board board1 = optionalBoard.get();
-            //싫어요를 누른 상태라면
-            if(board1.getBoardDislike() == Dislike.DISLIKE){
-                //싫어요를 취소하기
-                board1.setBoardDislike(Dislike.UNDISLIKE);
-                //싫어요를 누른 상태에서 좋아요를 누르면
-            } else if (board1.getBoardLike() == Like.LIKE) {
-                //싫어요를 취소하고 좋아요를 누르기
-                board1.setBoardDislike(Dislike.UNDISLIKE);
-                board1.setBoardLike(Like.LIKE);
-                //싫어요가 안눌러진 상태라면
-            } else if (board1.getBoardDislike().getValue() >= 5) {
-
-            } else {
-                board1.setBoardDislike(Dislike.DISLIKE);
+            //만약 좋아요가 눌러있지 않은 상태라면
+            //좋아요를 누르기
+            if(like != null && board.getBoardLike() == Like.UNLIKE){
+                log.info("좋아요를 눌렀습니다 !");
+                board.setBoardLike(Like.LIKE);
+                return true;
             }
-            return true;
-        }
+            //만약 싫어요가 눌러있지 않은 상태라면
+            //싫어요를 누르기
+            if(dislike != null && board.getBoardDislike() == Dislike.UNDISLIKE){
+                log.info("싫어요를 눌렀습니다!");
+                board.setBoardDislike(Dislike.DISLIKE);
+                return true;
+            }
+            //만약 해당 게시물의 싫어요의 수가 5가 넘어가면, 그 게시물을 blackList에 추가
+            if(board.getBoardDislike()!= null && board.getBoardDislike().getValue() >= 5){
+                BlackList build = BlackList.builder()
+                        .board(board)
+                        .member(member)
+                        .build();
+                try {
+                    blackListRepository.save(build);
+                    boardRepository.delete(board);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+                return true;
+            }
+
+
         return false;
     }
-
 }

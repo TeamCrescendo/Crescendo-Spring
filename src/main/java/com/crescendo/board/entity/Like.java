@@ -2,15 +2,15 @@ package com.crescendo.board.entity;
 
 public enum Like {
 
-    LIKE(true), UNLIKE(false);
+    LIKE(0), UNLIKE(1);
 
-    private final boolean value;
+    private final int value;
 
-    Like(boolean value) {
+    Like(int value) {
         this.value = value;
     }
 
-    public boolean getValue() {
+    public int getValue() {
         return value;
     }
 }
