@@ -4,6 +4,7 @@ import com.crescendo.member.entity.Member;
 import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.member.repository.MemberRepository;
 import com.crescendo.post_message.dto.request.SendMessageRequestDTO;
+import com.crescendo.post_message.dto.response.ReceivedMessageResponseDTO;
 import com.crescendo.post_message.entity.PostMessage;
 import com.crescendo.post_message.repository.PostMessageRepository;
 import com.crescendo.score.exception.NoArgumentException;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -54,18 +56,27 @@ public class PostMessageService {
     }
 
     // 받은 쪽지 리스트
-    public boolean findMessageAll(String receiver){
+    public List<ReceivedMessageResponseDTO> findMessageAll(String receiver){
         boolean b = memberRepository.existsByAccount(receiver);
         if(!b){
             throw new NoMatchAccountException("정확한 계정명을 보내주세요!");
         }
 
         List<PostMessage> allByPostMessageReceiver = postMessageRepository.findAllByPostMessageReceiver(receiver);
+        List<ReceivedMessageResponseDTO> list = new ArrayList<>();
         allByPostMessageReceiver.forEach(postMessage -> {
-            
+            ReceivedMessageResponseDTO dto = ReceivedMessageResponseDTO.builder()
+                    .receiver(postMessage.getPostMessageReceiver())
+                    .sender(postMessage.getMember().getAccount())
+                    .content(postMessage.getPostMessageContent())
+                    .check(postMessage.isChecked())
+                    .build();
+            list.add(dto);
         });
 
-        return false;
+        return list;
+
+
     }
 
 }

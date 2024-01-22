@@ -2,6 +2,7 @@ package com.crescendo.post_message.controller;
 
 import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.post_message.dto.request.SendMessageRequestDTO;
+import com.crescendo.post_message.dto.response.ReceivedMessageResponseDTO;
 import com.crescendo.post_message.service.PostMessageService;
 import com.crescendo.score.exception.NoArgumentException;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,6 +31,20 @@ public class PostMessageController {
             boolean b = postMessageService.sendPostMessage(dto);
             return ResponseEntity.ok().body(b);
         }catch (NoArgumentException | NoMatchAccountException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getMessages(String receiver){
+        if(receiver == null || receiver.isEmpty()){
+            return ResponseEntity.badRequest().body("계정명 제대로 주세요");
+        }
+
+        try{
+            List<ReceivedMessageResponseDTO> messageAll = postMessageService.findMessageAll(receiver);
+            return ResponseEntity.ok().body(messageAll);
+        }catch (NoMatchAccountException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
