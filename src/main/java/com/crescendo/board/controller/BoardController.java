@@ -94,9 +94,9 @@ public class BoardController {
     public ResponseEntity<?> likeAndDislike(
             @RequestParam Long boardNo,
             @RequestParam String account,
-            @RequestParam Like like,
-            @RequestParam Dislike dislike){
-        boolean result = boardService.LikeAndDislike(account, boardNo, like, dislike);
+            @RequestParam boolean like,
+            @RequestParam boolean dislike){
+        boolean result = boardService.LikeAndDislike(account, boardNo,like, dislike);
         if (result) {
             return ResponseEntity.ok("Success");
         } else {
