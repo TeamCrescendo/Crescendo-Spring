@@ -1,6 +1,8 @@
 package com.crescendo.board.dto.response;
 
 import com.crescendo.board.entity.Board;
+import com.crescendo.board.entity.Dislike;
+import com.crescendo.board.entity.Like;
 import com.crescendo.member.entity.Member;
 import lombok.*;
 
@@ -19,9 +21,9 @@ public class BoardResponseDTO {
 
     private Member member;
 
-    private Long boardLike;
+    private Like boardLike;
 
-    private Board.DisLike boardDislike;
+    private Dislike boardDislike;
 
     private Long boardViewCount;
 
@@ -34,7 +36,7 @@ public class BoardResponseDTO {
         this.boardTitle = board.getBoardTitle();
         this.member = board.getMember();
         this.boardLike = board.getBoardLike();
-        this.boardDislike = board.getBoardDisLike();
+        this.boardDislike = board.getBoardDislike();
         this.boardViewCount = board.getBoardViewCount();
         this.boardDownloadCount = board.getBoardDownloadCount();
         this.scoreImgUrl = board.getScoreImgUrl();
