@@ -14,7 +14,7 @@ import java.util.List;
 public class DeleteScheduler {
     private final RestoreRepository restoreRepository;
     private final MemberRepository memberRepository;
-    @Scheduled(fixedRate= 1000 * 60 * 10) // 10분 마다
+    @Scheduled(fixedRate= 1000 * 60 * 1) // 1분 마다
     public void performDeleteTask(){
         List<Restore> restoreByOverTime = restoreRepository.getRestoreByOverTime();
         for (Restore restore : restoreByOverTime) {
