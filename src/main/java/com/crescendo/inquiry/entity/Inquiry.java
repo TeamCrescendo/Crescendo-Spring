@@ -38,5 +38,10 @@ public class Inquiry {
     @JoinColumn(name = "account")
     private Member member;
 
+    @PreRemove
+    public void PreRemove(){
+        this.member = null;
+    }
+
 
 }

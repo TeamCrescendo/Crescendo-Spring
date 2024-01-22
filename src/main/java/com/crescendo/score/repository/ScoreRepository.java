@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface ScoreRepository extends JpaRepository<Score, Integer> {
     List<Score> findAllByMember(Member member);
+
+    List<Score> findAllByMemberAccount(String account);
 }
