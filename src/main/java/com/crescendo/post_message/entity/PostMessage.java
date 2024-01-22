@@ -1,4 +1,4 @@
-package com.crescendo.entity;
+package com.crescendo.post_message.entity;
 
 import com.crescendo.member.entity.Member;
 import lombok.*;

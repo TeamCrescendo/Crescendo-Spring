@@ -1,7 +1,7 @@
 package com.crescendo.repository;
 
 import com.crescendo.member.entity.Member;
-import com.crescendo.entity.PostMessage;
+import com.crescendo.post_message.entity.PostMessage;
 import com.crescendo.member.repository.MemberRepository;
 import com.crescendo.post_message.repository.PostMessageRepository;
 import org.junit.jupiter.api.BeforeEach;
