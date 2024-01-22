@@ -24,13 +24,14 @@ public class PostMessageController {
         if(result.hasErrors()){
             return ResponseEntity.badRequest().body(result.toString());
         }
-
         try{
             boolean b = postMessageService.sendPostMessage(dto);
             return ResponseEntity.ok().body(b);
         }catch (NoArgumentException | NoMatchAccountException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
     }
+
+
+
 }

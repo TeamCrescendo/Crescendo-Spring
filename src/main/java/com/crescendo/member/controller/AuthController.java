@@ -45,6 +45,8 @@ public class AuthController {
         }catch (NoRegisteredArgumentsException e){
             log.warn("계정정보가 안왔습니다.");
             return ResponseEntity.badRequest().body(e.getMessage());
+        }catch (DuplicateUserNameException | DuplicateEmailException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
 
     }
