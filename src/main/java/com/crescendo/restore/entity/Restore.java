@@ -1,4 +1,4 @@
-package com.crescendo.entity;
+package com.crescendo.restore.entity;
 
 import com.crescendo.member.entity.Member;
 import lombok.*;
@@ -31,5 +31,5 @@ public class Restore{
     @Column(name = "delete_time", updatable = false)
     @CreationTimestamp
     @Builder.Default
-    private LocalDateTime deleteTime = LocalDateTime.now().plusHours(24);
+    private LocalDateTime deleteTime = LocalDateTime.now().plusMinutes(10);
 }
