@@ -23,6 +23,7 @@ import java.util.List;
 public class ScoreController {
     private final ScoreService scoreService;
 
+    // 악보 추가 하기
     @PostMapping
     public ResponseEntity<?> save(@Validated @RequestBody CreateScoreRequestDTO dto, BindingResult result){
         log.info("/api/score POST!!");
