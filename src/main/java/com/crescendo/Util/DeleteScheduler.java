@@ -1,5 +1,7 @@
 package com.crescendo.Util;
 
+import com.crescendo.member.repository.MemberRepository;
+import com.crescendo.restore.entity.Restore;
 import com.crescendo.restore.repository.RestoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -11,9 +13,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DeleteScheduler {
     private final RestoreRepository restoreRepository;
+    private final MemberRepository memberRepository;
     @Scheduled(fixedRate= 1000 * 60 * 10) // 10분 마다
     public void performDeleteTask(){
-        List<String> restoreByOverTime = restoreRepository.getRestoreByOverTime();
-        restoreByOverTime.forEach(restoreRepository::deleteById);
+        List<Restore> restoreByOverTime = restoreRepository.getRestoreByOverTime();
+        for (Restore restore : restoreByOverTime) {
+            String account = restore.getMember().getAccount();
+            restoreRepository.deleteById(restore.getRestoreNo());
+            memberRepository.deleteById(account);
+        }
+
+
     }
 }

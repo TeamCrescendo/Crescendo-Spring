@@ -107,7 +107,7 @@ public class AuthController {
     }
 
     // 중복 체크 ( 이메일 , 유저 이름, 계정)
-    @GetMapping("/duplicate")
+    @PostMapping("/duplicate")
     public ResponseEntity<?> isDuplicate(@Validated @RequestBody DuplicateCheckDTO dto, BindingResult result){
         if (result.hasErrors()){
             return ResponseEntity.badRequest().body(result.toString());
