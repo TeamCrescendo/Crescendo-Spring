@@ -1,11 +1,13 @@
 package com.crescendo.member.entity;
 
+import com.crescendo.inquiry.entity.Inquiry;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -52,6 +54,8 @@ public class Member {
     @Column(name = "user_download_chance")
     @Builder.Default
     private Integer userDownloadChance = 5;
+
+
 
     public enum Auth{
         ADMIN, USER
