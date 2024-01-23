@@ -1,0 +1,31 @@
+server:
+  port: 8484
+
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3307/crescendo
+    username: root
+    password: mariadb
+  jpa:
+    # SQL??? ?? ? ?? DBMS? ???? ??
+    database-platform: org.hibernate.dialect.MariaDB106Dialect
+    hibernate:
+      # ddl? ???? ??
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true # SQL ??? ????? ??? ?? ??
+    database: mysql # DBMS ?? ??
+
+logging:
+  level:
+    root: info
+    org.hibernate.SQL: debug
+
+jwt:
+  secret: l+BNQ72ZaeWtKp5l/+dFOAtGOL/PQGH5GFGZIcxPuamk7aDrXW0YxR2J6hq1UE+kspImInqgfFy9gARxhCNQ0A==
+
+file:
+  upload:
+    root-path: D:/crescendo/upload/
