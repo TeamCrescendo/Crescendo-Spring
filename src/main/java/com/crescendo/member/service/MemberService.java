@@ -1,16 +1,15 @@
 package com.crescendo.member.service;
 
-import com.crescendo.member.dto.request.DuplicateCheckDTO;
-import com.crescendo.member.dto.request.ModifyMemberRequestDTO;
-import com.crescendo.member.dto.request.SignInRequestDTO;
-import com.crescendo.member.dto.request.SignUpRequestDTO;
+import com.crescendo.member.dto.request.*;
 import com.crescendo.member.dto.response.LoginUserResponseDTO;
 import com.crescendo.member.entity.Member;
 import com.crescendo.member.exception.*;
 import com.crescendo.member.repository.MemberRepository;
+import com.crescendo.member.util.FileUtil;
 import com.crescendo.member.util.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +22,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
+    @Value("${file.upload.root-path}")
+    private String rootPath;
 
 
     // 회원 가입 처리
@@ -148,5 +149,22 @@ public class MemberService {
         }
         member.setUserDownloadChance(member.getUserDownloadChance()-1);
         return member.getUserDownloadChance();
+    }
+
+
+    // 프로필 이미지 저장
+    public boolean uploadProfileImage(ProfileUploadRequestDTO dto){
+
+        String upload = FileUtil.upload(dto.getFile(), rootPath);
+
+        boolean b = memberRepository.existsByAccount(dto.getAccount());
+        if(!b){
+            throw new NoMatchAccountException("해당 회원은 없습니다");
+        }
+
+        Member foundMember = memberRepository.getOne(dto.getAccount());
+
+        foundMember.setProfileImageUrl(upload);
+        return true;
     }
 }
