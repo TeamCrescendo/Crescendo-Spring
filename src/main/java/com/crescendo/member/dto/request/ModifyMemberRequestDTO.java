@@ -32,6 +32,6 @@ public class ModifyMemberRequestDTO {
     @Size(min = 2, max = 30)
     private String email;
 
-    private MultipartFile file;
+    private MultipartFile profileImage;
 
 }

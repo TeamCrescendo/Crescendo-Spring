@@ -65,5 +65,10 @@ public class ScoreController {
         }
     }
 
+    @PostMapping("/{link}")
+    private ResponseEntity<?> youtubeLink(@PathVariable String link){
+        log.info("/api/score POST {}", link);
 
+        return ResponseEntity.ok().body("hello");
+    }
 }

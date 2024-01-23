@@ -122,6 +122,10 @@ public class MemberService {
         if(!dto.getPassword().isEmpty()){
             foundMember.setPassword(encoder.encode(dto.getPassword()));
         }
+        if(dto.getProfileImage() !=null){
+            String upload = FileUtil.upload(dto.getProfileImage(), rootPath);
+            foundMember.setProfileImageUrl(upload);
+        }
         return true;
     }
 
