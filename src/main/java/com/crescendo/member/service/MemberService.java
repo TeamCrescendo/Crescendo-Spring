@@ -4,9 +4,11 @@ import com.crescendo.member.dto.request.DuplicateCheckDTO;
 import com.crescendo.member.dto.request.ModifyMemberRequestDTO;
 import com.crescendo.member.dto.request.SignInRequestDTO;
 import com.crescendo.member.dto.request.SignUpRequestDTO;
+import com.crescendo.member.dto.response.LoginUserResponseDTO;
 import com.crescendo.member.entity.Member;
 import com.crescendo.member.exception.*;
 import com.crescendo.member.repository.MemberRepository;
+import com.crescendo.member.util.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder encoder;
+    private final TokenProvider tokenProvider;
 
 
     // 회원 가입 처리
@@ -51,7 +54,7 @@ public class MemberService {
     }
 
     // 로그인 처리
-    public Member signIn(SignInRequestDTO dto){
+    public LoginUserResponseDTO signIn(SignInRequestDTO dto){
         if(dto==null){
             log.warn("로그인 정보가 없습니다.");
             throw new NoLoginArgumentsException("로그인 정보가 없습니다");
@@ -67,11 +70,12 @@ public class MemberService {
             log.warn("비밀번호가 틀렸습니다.");
             throw new IncorrectPasswordException("비밀번호가 틀렸습니다.");
         }
-        return foundMember;
+
+        String token = tokenProvider.createToken(foundMember);
+        return new LoginUserResponseDTO(foundMember, token);
     }
 
     public Member findUser(String account){
-
         Member foundMember = memberRepository.getOne(account);
         if(foundMember == null){
             throw new NoMatchAccountException("일치하는 계정이 없습니다");
@@ -79,6 +83,7 @@ public class MemberService {
         return foundMember;
     }
 
+    // 유저 수정
     public boolean modifyUser(ModifyMemberRequestDTO dto){
         Member foundMember = memberRepository.getOne(dto.getAccount());
         if(foundMember == null){

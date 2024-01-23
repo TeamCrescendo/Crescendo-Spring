@@ -20,8 +20,9 @@ public class LoginUserResponseDTO {
     private Member.Auth auth;// 유저 권한
     private Member.Status status;
     private Integer userDownloadChance;
+    private String token;
 
-    public LoginUserResponseDTO(Member member) {
+    public LoginUserResponseDTO(Member member, String token) {
         this.account=member.getAccount();
         this.userName=member.getUserName();
         this.email=member.getEmail();
@@ -30,5 +31,6 @@ public class LoginUserResponseDTO {
         this.auth=member.getAuth();
         this.status = member.getStatus();
         this.userDownloadChance=member.getUserDownloadChance();
+        this.token = token;
     }
 }

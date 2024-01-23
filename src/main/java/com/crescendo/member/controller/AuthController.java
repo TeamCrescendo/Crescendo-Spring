@@ -60,14 +60,12 @@ public class AuthController {
         }
 
         try{
-            Member foundMember = memberService.signIn(dto);
-            LoginUserResponseDTO login = new LoginUserResponseDTO(foundMember);
-            System.out.println("login = " + login);
+            LoginUserResponseDTO loginUserResponseDTO = memberService.signIn(dto);
 
-            session.setAttribute("login", login);
-            session.setMaxInactiveInterval(60*60);
+//            session.setAttribute("login", login);
+//            session.setMaxInactiveInterval(60*60);
 
-            return ResponseEntity.ok().body(LoginResultResponseDTO.builder().result(true).build());
+            return ResponseEntity.ok().body(loginUserResponseDTO);
         }catch (NoLoginArgumentsException | NoMatchAccountException | IncorrectPasswordException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
