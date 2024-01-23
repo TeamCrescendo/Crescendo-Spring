@@ -34,10 +34,14 @@ public class Inquiry {
     @Column(name = "inquiry_date_time", updatable = false)
     private LocalDateTime inquiryDateTime;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "account")
-//    @Column(name = "inquiry_writer")
     private Member member;
+
+    @PreRemove
+    public void PreRemove(){
+        this.member = null;
+    }
 
 
 }

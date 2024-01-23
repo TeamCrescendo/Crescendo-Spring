@@ -1,4 +1,4 @@
-package com.crescendo.entity;
+package com.crescendo.restore.entity;
 
 import com.crescendo.member.entity.Member;
 import lombok.*;
@@ -24,12 +24,12 @@ public class Restore{
     @Column(name = "restore_no")
     private String restoreNo;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account")
     private Member member;
 
     @Column(name = "delete_time", updatable = false)
-    @CreationTimestamp
+    //@CreationTimestamp
     @Builder.Default
-    private LocalDateTime deleteTime = LocalDateTime.now().plusHours(24);
+    private LocalDateTime deleteTime = LocalDateTime.now().plusMinutes(10);
 }

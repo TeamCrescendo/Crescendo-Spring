@@ -30,7 +30,7 @@ public class InquiryController {
             return ResponseEntity.badRequest().body(result.toString());
         }
         try {
-            List<FoundInquiryListResponseDTO> save = inquiryService.save(dto);
+            boolean save = inquiryService.save(dto);
             return ResponseEntity.ok().body(save);
         }catch (NoMatchAccountException e){
             return ResponseEntity.badRequest().body(e.getMessage());
