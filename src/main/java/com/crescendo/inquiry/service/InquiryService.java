@@ -42,13 +42,7 @@ public class InquiryService {
         List<Inquiry> foundList = inquiryRepository.findAllByMemberAccountOrderByInquiryDateTimeDesc(account);
         List<FoundInquiryListResponseDTO> foundListPackage = new ArrayList<>();
         foundList.forEach(inquiry -> {
-            FoundInquiryListResponseDTO dto = FoundInquiryListResponseDTO.builder()
-                    .account(inquiry.getMember().getAccount())
-                    .inquiryContent(inquiry.getInquiryContent())
-                    .inquiryTitle(inquiry.getInquiryTitle())
-                    .inquiryId(inquiry.getInquiryId())
-                    .build();
-            foundListPackage.add(dto);
+            foundListPackage.add(new FoundInquiryListResponseDTO(inquiry));
         });
         return foundListPackage;
     }
