@@ -31,7 +31,7 @@ public class AuthController {
 
     // 회원가입(계정명, 비밀번호, 이메일, 이름)
     @PostMapping("/register")
-    public ResponseEntity<?> signUp(@Validated @RequestBody SignUpRequestDTO dto, BindingResult result){
+    public ResponseEntity<?> signUp(@Validated SignUpRequestDTO dto, BindingResult result){
         if(result.hasErrors()){
             log.warn(result.toString());
             return ResponseEntity.badRequest().body(result.getFieldError());

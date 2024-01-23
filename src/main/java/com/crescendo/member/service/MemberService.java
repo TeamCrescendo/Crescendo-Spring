@@ -49,6 +49,15 @@ public class MemberService {
             throw new DuplicateUserNameException("중복된 계정명입니다!!");
         }
 
+        if(dto.getProfileImage() !=null){
+            String upload = FileUtil.upload(dto.getProfileImage(), rootPath);
+            Member save = memberRepository.save(dto.toEntity(encoder));
+            save.setProfileImageUrl(upload);
+            log.info("회원가입 성공!! saved user - {}", save);
+            return true;
+        }
+
+
         Member save = memberRepository.save(dto.toEntity(encoder));
         log.info("회원가입 성공!! saved user - {}", save);
         return true;
