@@ -44,9 +44,23 @@ class MemberRepositoryTest {
                 .password(encoder.encode("1234"))
                 .userName("회원3")
                 .build();
+        Member member4 = Member.builder()
+                .account("member4")
+                .email("member4@naver.com")
+                .password(encoder.encode("1234"))
+                .userName("회원4")
+                .build();
+        Member member5 = Member.builder()
+                .account("member4")
+                .email("member4@naver.com")
+                .password(encoder.encode("1234"))
+                .userName("회원4")
+                .build();
         memberRepository.save(member1);
         memberRepository.save(member2);
         memberRepository.save(member3);
+        memberRepository.save(member4);
+        memberRepository.save(member5);
     }
 
 

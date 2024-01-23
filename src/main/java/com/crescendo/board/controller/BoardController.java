@@ -3,7 +3,10 @@ package com.crescendo.board.controller;
 import com.crescendo.board.dto.request.BoardModifyRequestDTO;
 import com.crescendo.board.dto.request.BoardRequestDTO;
 import com.crescendo.board.dto.response.BoardListResponseDTO;
+import com.crescendo.board.entity.Dislike;
+import com.crescendo.board.entity.Like;
 import com.crescendo.board.service.BoardService;
+import com.crescendo.likeAndDislike.dto.request.LikeAndDislikeRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -87,4 +90,10 @@ public class BoardController {
         }
     }
 
+    //좋아요 싫어요 처리
+    @PostMapping("/likeAndDislike")
+    public ResponseEntity<?> likeAndDisLike(@RequestBody LikeAndDislikeRequestDTO dto){
+    boardService.LikeAndDislike(dto);
+    return ResponseEntity.ok().body("성공적으로 좋아요와 싫어요 연결 성공");
+    }
 }

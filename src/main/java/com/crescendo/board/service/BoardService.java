@@ -1,10 +1,17 @@
 package com.crescendo.board.service;
 
+import com.crescendo.blackList.entity.BlackList;
+import com.crescendo.blackList.repository.BlackListRepository;
 import com.crescendo.board.dto.request.BoardModifyRequestDTO;
 import com.crescendo.board.dto.request.BoardRequestDTO;
 import com.crescendo.board.dto.response.BoardListResponseDTO;
 import com.crescendo.board.dto.response.BoardResponseDTO;
 import com.crescendo.board.entity.Board;
+import com.crescendo.board.entity.Dislike;
+import com.crescendo.board.entity.Like;
+import com.crescendo.likeAndDislike.dto.request.LikeAndDislikeRequestDTO;
+import com.crescendo.likeAndDislike.entity.LikeAndDislike;
+import com.crescendo.likeAndDislike.repository.LikeAndDislikeRepository;
 import com.crescendo.member.entity.Member;
 import com.crescendo.board.repository.BoardRepository;
 import com.crescendo.member.repository.MemberRepository;
@@ -12,8 +19,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,12 +33,14 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+    private final BlackListRepository blackListRepository;
+    private final LikeAndDislikeRepository likeAndDislikeRepository;
 
 
     //board에 등록
     public BoardListResponseDTO create(BoardRequestDTO dto) {
         Member member = memberRepository.getOne(dto.getAccount());
-        if(member == null) {
+        if (member == null) {
             return null;
         }
         Board build = Board.builder().boardTitle(dto.getBoardTitle()).member(member).build();
@@ -52,9 +63,9 @@ public class BoardService {
     }
 
     //board 수정
-    public boolean modifyBoard(BoardModifyRequestDTO dto){
+    public boolean modifyBoard(BoardModifyRequestDTO dto) {
         Board board = boardRepository.getOne(dto.getBoardNo());
-        if(!board.getMember().getAccount().equals(dto.getAccount())){
+        if (!board.getMember().getAccount().equals(dto.getAccount())) {
             return false;
         }
         board.setBoardTitle(dto.getBoardTitle());
@@ -64,11 +75,11 @@ public class BoardService {
     }
 
     //board 삭제 처리
-    public BoardListResponseDTO delete(Long boardNo){
+    public BoardListResponseDTO delete(Long boardNo) {
 
-        try{
+        try {
             boardRepository.deleteById(boardNo);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("board의 번호가 존재하지 않아서 삭제에 실패 했습니다. -{}, error : {}",
                     boardNo, e.getMessage());
             throw new RuntimeException("삭제에 실패 하셨습니다.");
@@ -76,4 +87,77 @@ public class BoardService {
         return retrieve();
     }
 
+
+    //좋아요와 싫어요 기능 처리
+    public void LikeAndDislike(LikeAndDislikeRequestDTO dto) {
+
+        //게시글의 번호를 찾기
+        Long boardNo = dto.getBoardNo();
+        log.info("boarNo : {}", boardNo);
+        try {
+            Optional<Board> boardId= boardRepository.findById(boardNo);
+
+            //게시글을 찾으면 이제 게시글 작성자를 찾아야 한다.
+            boardId.ifPresent(board -> {
+                //게시글 에서 작성자 찾기
+                try{
+                    //게시글에서 작성자와 member테이블의 member와 비교해서 찾음
+                    Member member = memberRepository.getOne(dto.getAccount());
+                    //나의 좋아요 수와 싫어요 수를 확인 하기 위해 ,
+                    //내 계정과 내가 좋아요나 싫어요를 누른 boardNo를 가져옴
+                    LikeAndDislike  memberAccountAndBoardNo =
+                            likeAndDislikeRepository.findByMemberAccountAndBoard_BoardNo(
+                                    dto.getAccount(), dto.getBoardNo());
+
+                    //만약에 좋아요나 싫어요를 누르지 않은 상태라면,
+                    //좋아요를 생성함
+                    if(memberAccountAndBoardNo == null){
+                        LikeAndDislike build = LikeAndDislike.builder()
+                                .boardLike(dto.isLike())
+                                .member(member)
+                                .board(board)
+                                .build();
+                        likeAndDislikeRepository.save(build);
+                        //만약에 좋아요를 누른 상태라면?
+                        if(dto.isLike()){
+                            //그 게시물에 좋아요 + 1 추가
+                            board.setBoardLikeCount(board.getBoardLikeCount() + 1);
+                        }else{
+                            //만약에 좋아요를 누르지 않은 상태라면 ? 싫어요 +1 추가
+                            board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
+                        }
+                        //아니면
+                    }else{
+                        //내가 좋아요를 누르려고 했을때, 좋아요가 눌러져 있지 않은 상태라면?
+                        if(dto.isLike()) {
+                            if (!memberAccountAndBoardNo.isBoardLike()) {
+                                board.setBoardLikeCount(board.getBoardLikeCount() + 1);
+                                board.setBoardDislikeCount(board.getBoardDislikeCount() - 1);
+                            }
+                        }else {
+                            if(memberAccountAndBoardNo.isBoardLike()){
+                                board.setBoardLikeCount(board.getBoardLikeCount() - 1);
+                                board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
+                            }else{
+                                //board의 dislikecount가 5이상이면 blacklist 테이블에 추가하기
+                                if (board.getBoardDislikeCount() >= 5){
+                                    System.out.println("싫어요 5개 달성");
+                                    BlackList build = BlackList.builder()
+                                            .board(board)
+                                            .member(member)
+                                            .build();
+                                    blackListRepository.save(build);
+                                }
+                            }
+                        }
+                    }
+
+                }catch (EntityNotFoundException e){
+                    System.out.println("작성자를 찾을 수 없습니다");
+                }
+            });
+        }catch (Exception e){
+            System.out.println("게시글을 찾는 도중 오류가 발생 했습니다.");
+        }
+    }
 }
