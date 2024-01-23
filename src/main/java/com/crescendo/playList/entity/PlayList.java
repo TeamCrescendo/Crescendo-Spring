@@ -25,11 +25,8 @@ public class PlayList {
     private Long plNo;
 
     @ManyToOne
-    @JoinColumn(name = "account", nullable = false)
-    private AllPlayList account;
-
-    @Column(name = "pl_adder")
-    private String plAdder;
+    @JoinColumn(name = "pl_id", nullable = false)
+    private AllPlayList pl_id;
 
     @OneToOne
     @JoinColumn(name = "score_no", nullable = false)
