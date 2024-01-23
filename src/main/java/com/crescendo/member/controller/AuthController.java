@@ -94,7 +94,7 @@ public class AuthController {
     }
     // 회원 정보 수정
     @RequestMapping(method = {PUT, PATCH}, path = "/modify")
-    public ResponseEntity<?> updateUser(@Validated @RequestBody ModifyMemberRequestDTO dto, BindingResult result){
+    public ResponseEntity<?> updateUser(@Validated ModifyMemberRequestDTO dto, BindingResult result){
         if(result.hasErrors()){
             return ResponseEntity.badRequest().body(result.toString());
         }
