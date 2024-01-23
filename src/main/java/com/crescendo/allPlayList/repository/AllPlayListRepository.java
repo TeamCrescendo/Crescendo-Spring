@@ -23,5 +23,8 @@ public interface AllPlayListRepository extends JpaRepository<AllPlayList, Long> 
     @Modifying //SELECT가 아닌경우 무조건 붙히기
     @Query("DELETE FROM AllPlayList  allplaylist WHERE allplaylist.account=?1 AND allplaylist.plId = ?2")
     void deleteByAccountWithJPQL(Member account, Long plId);
+
+    //플레이 리스트 아이디와 리스트번호를 조회
+    List<AllPlayList> findByAccount_AccountAndPlId(String account, Long plId);
 }
 

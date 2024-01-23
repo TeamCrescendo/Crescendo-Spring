@@ -128,12 +128,13 @@ public class BoardService {
                         }
                         //아니면
                     }else{
-                        //내가 좋아요를 누르려고 했을때, 좋아요가 눌러져 있지 않은 상태라면?
+                        //내가 좋아요를 눌렀을 때, 좋아요가 눌러져 있지 상태라면?
                         if(dto.isLike()) {
                             if (!memberAccountAndBoardNo.isBoardLike()) {
                                 board.setBoardLikeCount(board.getBoardLikeCount() + 1);
                                 board.setBoardDislikeCount(board.getBoardDislikeCount() - 1);
                             }
+                            //아니면 내가 싫어요를 눌렀을때, 좋아요를 눌러져 있는 상태라면?
                         }else {
                             if(memberAccountAndBoardNo.isBoardLike()){
                                 board.setBoardLikeCount(board.getBoardLikeCount() - 1);
@@ -151,11 +152,12 @@ public class BoardService {
                             }
                         }
                     }
-
+                    //게시글의 작성자를 찾을 수가 없다.
                 }catch (EntityNotFoundException e){
                     System.out.println("작성자를 찾을 수 없습니다");
                 }
             });
+            //게시글이 없다.
         }catch (Exception e){
             System.out.println("게시글을 찾는 도중 오류가 발생 했습니다.");
         }

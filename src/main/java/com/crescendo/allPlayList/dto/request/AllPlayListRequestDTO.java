@@ -23,5 +23,4 @@ public class AllPlayListRequestDTO {
 //                .plShare(plShare)
 //                .build();
 //    }
-;
 }
