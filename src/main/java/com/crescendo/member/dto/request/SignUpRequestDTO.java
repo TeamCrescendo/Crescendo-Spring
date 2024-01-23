@@ -3,6 +3,7 @@ package com.crescendo.member.dto.request;
 import com.crescendo.member.entity.Member;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -33,6 +34,8 @@ public class SignUpRequestDTO {
     @Email
     @Size(min = 2, max = 30)
     private String email;
+
+    private MultipartFile profileImage;
 
 
     public Member toEntity(PasswordEncoder encoder){

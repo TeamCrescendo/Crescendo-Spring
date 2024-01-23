@@ -31,7 +31,7 @@ public class AuthController {
 
     // 회원가입(계정명, 비밀번호, 이메일, 이름)
     @PostMapping("/register")
-    public ResponseEntity<?> signUp(@Validated @RequestBody SignUpRequestDTO dto, BindingResult result){
+    public ResponseEntity<?> signUp(@Validated SignUpRequestDTO dto, BindingResult result){
         if(result.hasErrors()){
             log.warn(result.toString());
             return ResponseEntity.badRequest().body(result.getFieldError());
@@ -60,14 +60,12 @@ public class AuthController {
         }
 
         try{
-            Member foundMember = memberService.signIn(dto);
-            LoginUserResponseDTO login = new LoginUserResponseDTO(foundMember);
-            System.out.println("login = " + login);
+            LoginUserResponseDTO loginUserResponseDTO = memberService.signIn(dto);
 
-            session.setAttribute("login", login);
+            session.setAttribute("login", loginUserResponseDTO);
             session.setMaxInactiveInterval(60*60);
 
-            return ResponseEntity.ok().body(LoginResultResponseDTO.builder().result(true).build());
+            return ResponseEntity.ok().body(loginUserResponseDTO);
         }catch (NoLoginArgumentsException | NoMatchAccountException | IncorrectPasswordException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -96,7 +94,7 @@ public class AuthController {
     }
     // 회원 정보 수정
     @RequestMapping(method = {PUT, PATCH}, path = "/modify")
-    public ResponseEntity<?> updateUser(@Validated @RequestBody ModifyMemberRequestDTO dto, BindingResult result){
+    public ResponseEntity<?> updateUser(@Validated ModifyMemberRequestDTO dto, BindingResult result){
         if(result.hasErrors()){
             return ResponseEntity.badRequest().body(result.toString());
         }

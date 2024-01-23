@@ -52,9 +52,6 @@ public class PostMessageService {
 
         postMessageRepository.save(build);
         return true;
-
-
-
     }
 
     // 받은 쪽지 리스트

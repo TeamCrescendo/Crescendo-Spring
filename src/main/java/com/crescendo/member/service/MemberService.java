@@ -1,14 +1,15 @@
 package com.crescendo.member.service;
 
-import com.crescendo.member.dto.request.DuplicateCheckDTO;
-import com.crescendo.member.dto.request.ModifyMemberRequestDTO;
-import com.crescendo.member.dto.request.SignInRequestDTO;
-import com.crescendo.member.dto.request.SignUpRequestDTO;
+import com.crescendo.member.dto.request.*;
+import com.crescendo.member.dto.response.LoginUserResponseDTO;
 import com.crescendo.member.entity.Member;
 import com.crescendo.member.exception.*;
 import com.crescendo.member.repository.MemberRepository;
+import com.crescendo.member.util.FileUtil;
+import com.crescendo.member.util.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder encoder;
+    private final TokenProvider tokenProvider;
+    @Value("${file.upload.root-path}")
+    private String rootPath;
 
 
     // 회원 가입 처리
@@ -45,13 +49,22 @@ public class MemberService {
             throw new DuplicateUserNameException("중복된 계정명입니다!!");
         }
 
+        if(dto.getProfileImage() !=null){
+            String upload = FileUtil.upload(dto.getProfileImage(), rootPath);
+            Member save = memberRepository.save(dto.toEntity(encoder));
+            save.setProfileImageUrl(upload);
+            log.info("회원가입 성공!! saved user - {}", save);
+            return true;
+        }
+
+
         Member save = memberRepository.save(dto.toEntity(encoder));
         log.info("회원가입 성공!! saved user - {}", save);
         return true;
     }
 
     // 로그인 처리
-    public Member signIn(SignInRequestDTO dto){
+    public LoginUserResponseDTO signIn(SignInRequestDTO dto){
         if(dto==null){
             log.warn("로그인 정보가 없습니다.");
             throw new NoLoginArgumentsException("로그인 정보가 없습니다");
@@ -67,11 +80,12 @@ public class MemberService {
             log.warn("비밀번호가 틀렸습니다.");
             throw new IncorrectPasswordException("비밀번호가 틀렸습니다.");
         }
-        return foundMember;
+
+        String token = tokenProvider.createToken(foundMember);
+        return new LoginUserResponseDTO(foundMember, token);
     }
 
     public Member findUser(String account){
-
         Member foundMember = memberRepository.getOne(account);
         if(foundMember == null){
             throw new NoMatchAccountException("일치하는 계정이 없습니다");
@@ -79,6 +93,7 @@ public class MemberService {
         return foundMember;
     }
 
+    // 유저 수정
     public boolean modifyUser(ModifyMemberRequestDTO dto){
         Member foundMember = memberRepository.getOne(dto.getAccount());
         if(foundMember == null){
@@ -106,6 +121,10 @@ public class MemberService {
         }
         if(!dto.getPassword().isEmpty()){
             foundMember.setPassword(encoder.encode(dto.getPassword()));
+        }
+        if(dto.getProfileImage() !=null){
+            String upload = FileUtil.upload(dto.getProfileImage(), rootPath);
+            foundMember.setProfileImageUrl(upload);
         }
         return true;
     }
@@ -143,5 +162,22 @@ public class MemberService {
         }
         member.setUserDownloadChance(member.getUserDownloadChance()-1);
         return member.getUserDownloadChance();
+    }
+
+
+    // 프로필 이미지 저장
+    public boolean uploadProfileImage(ProfileUploadRequestDTO dto){
+
+        String upload = FileUtil.upload(dto.getFile(), rootPath);
+
+        boolean b = memberRepository.existsByAccount(dto.getAccount());
+        if(!b){
+            throw new NoMatchAccountException("해당 회원은 없습니다");
+        }
+
+        Member foundMember = memberRepository.getOne(dto.getAccount());
+
+        foundMember.setProfileImageUrl(upload);
+        return true;
     }
 }
