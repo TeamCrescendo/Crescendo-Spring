@@ -11,8 +11,14 @@ import com.crescendo.score.exception.NoArgumentException;
 import com.crescendo.score.repository.ScoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +102,23 @@ public class ScoreService {
     }
 
     // 유튜브 링크 받아서 파이썬 으로 보내기
-    public void postToPython(String link){
-        
+    public String postToPython(String url){
+        System.out.println("url = " + url);
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String jsonData = "{\"url\": \"" + url + "\"}";
+
+        log.info("jsonData: " + jsonData);
+
+        HttpEntity<String> stringHttpEntity = new HttpEntity<>(jsonData, headers);
+
+        String pythonUrl = "http://127.0.0.1:8181/youtube/youtube/";
+
+        String s = restTemplate.postForObject(pythonUrl, stringHttpEntity, String.class);
+
+
+        return s;
     }
 }
