@@ -100,11 +100,17 @@ public class PlayListService {
             //재생목록 사용자가 있으면 for문을 통해 allPlayList에서 PlayList들을 찾기
             byAccountAccount.forEach(allPlayList -> {
                 List<PlayList> byPlId = playListRepository.findByPl_id(allPlayList);
+                if(byPlId == null){
+                    System.out.println("플레이 리스트가 없습니다!");
+                }
                 //score악보들을 담을 새로운 리스트를 생성
                 List<Score> scores = new ArrayList<>();
                 //playList에서 나의 악보들을 List에 담기
                 byPlId.forEach(playList -> {
                     Optional<Score> score = scoreRepository.findById(playList.getScore().getScoreNo());
+                    if(score == null){
+                        System.out.println("악보들을 찾으실 수 없습니다.");
+                    }
                     scores.add(score.get());
                 });
                 //이제 내가 찾은 악보들을 리스트에 저장해서 반환처리 한다.
@@ -135,6 +141,9 @@ public class PlayListService {
                 }
                 byPlId.forEach(playList -> {
                     Optional<Score> score = scoreRepository.findById(playList.getScore().getScoreNo());
+                    if(score == null) {
+                        System.out.println("악보들이 한개도 없습니다.");
+                    }
                 });
 
             });
