@@ -70,6 +70,7 @@ public class ScoreController {
     // 유튜브 링크 주소 받아주는 URL
     @PostMapping("/youtube")
     private ResponseEntity<?> youtubeLink(@RequestBody YoutubeLinkRequestDTO dto){
+        // 회원도 받아서 인증해야함.
         log.info("/api/score POST {}", dto.getUrl());
 
         // 서비스 한테 파이썬으로 값 보내야함 ..
