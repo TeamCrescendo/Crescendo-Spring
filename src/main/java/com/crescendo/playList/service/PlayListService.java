@@ -1,4 +1,4 @@
-package com.crescendo.playList.sevice;
+package com.crescendo.playList.service;
 
 import com.crescendo.allPlayList.entity.AllPlayList;
 import com.crescendo.allPlayList.repository.AllPlayListRepository;
@@ -6,6 +6,7 @@ import com.crescendo.member.entity.Member;
 import com.crescendo.member.repository.MemberRepository;
 import com.crescendo.playList.dto.requestDTO.PlayListRequestDTO;
 import com.crescendo.playList.dto.responseDTO.PlayListResponseDTO;
+import com.crescendo.playList.dto.responseDTO.PlayListofListResponseDTO;
 import com.crescendo.playList.entity.PlayList;
 import com.crescendo.playList.repository.PlayListRepository;
 import com.crescendo.score.entity.Score;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -30,12 +32,12 @@ public class PlayListService {
     private final PlayListRepository playListRepository;
     private final ScoreRepository scoreRepository;
 
-    //playList에 나의 곡들을 등록
-    public boolean myPlayList (final PlayListRequestDTO dto) {
+    //playList에 나의 악보들을 등록
+    public boolean myPlayList(final PlayListRequestDTO dto) {
+        try {
+            //일단 마음에 드는 score를 가져와야 한다.
 
-        try{
-        //일단 마음에 드는 score를 가져와야 한다.
-        Optional<Score> score = scoreRepository.findById(dto.getScoreNo());
+            Optional<Score> score = scoreRepository.findById(dto.getScoreNo());
             //그리고 나의 (AllPlayList)재생목록들을 가져와야 한다.
             List<AllPlayList> myPlayLists = allPlayListRepository
                     .findByAccount_AccountAndPlId(
@@ -80,10 +82,46 @@ public class PlayListService {
             System.out.println("선택하신 악보는 없는 악보 입니다..");
         }
        return true;
-    }
 }
 
+    //나의 playList 의 리스트들 불러오기
+    public PlayListofListResponseDTO getMyPlayLists(String account, Long plId) {
+        // 현재 allPlayList 사용자와 그 사용자가 어떤 재생목록을 사용하는지 가져올 것임
+        List<AllPlayList> allPlayLists = allPlayListRepository.findByAccount_AccountAndPlId(account, plId);
+        //allPlayList에 계정명과 allPlayList의 ID를 가져왔으면 거기에 해당하는 score들을 가져와야함
+        playListRepository.findByPl_id(allPlayLists.)
 
+    }
+
+
+
+
+//            Score score1 = score.get();
+//            Optional<AllPlayList> byId = allPlayListRepository.findById(dto.getPlId());
+//            AllPlayList allPlayList = byId.get();
+//            Member one = memberRepository.getOne(dto.getAccount());
+//            if(byId != null) {
+//                AllPlayList build = AllPlayList.builder()
+//                        .plName("123")
+//                        .plShare(false)
+//                        .account(one)
+//                        .build();
+//                allPlayListRepository.save(build);
+//                if(score!=null && allPlayList.getAccount().equals(dto.getAccount())){
+//                    playListRepository.save(PlayList.builder()
+//                                    .
+//                                    .score(score1)
+//                            .build())
+//                }
+//            }
+//            }
+//
+//            if(byId != null && score != null && allPlayList.getAccount().equals(dto.getAccount())){
+//                playListRepository.save(PlayList.builder()
+//                        .pl_id(allPlayList)
+//                                .score(score1)
+//                        .build());
+//            }
 
 
 
