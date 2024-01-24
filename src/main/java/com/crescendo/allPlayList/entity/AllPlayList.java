@@ -1,11 +1,13 @@
 package com.crescendo.allPlayList.entity;
 
 import com.crescendo.member.entity.Member;
+import com.crescendo.playList.entity.PlayList;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Setter
 @Getter
@@ -35,4 +37,5 @@ public class AllPlayList {
 
     @CreationTimestamp
     private LocalDateTime plCreateDateTime;
+
 }

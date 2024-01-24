@@ -16,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.image.PackedColorModel;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,7 +48,7 @@ public class PlayListService {
                             dto.getPlId());
 
             //만약 나의 재생목록이 없다면 재생목록을 만든다.
-            if(myPlayLists.isEmpty()){
+            if (myPlayLists.isEmpty()) {
                 //나의 새로운 재생 목록을 생성한다.
                 Member member = memberRepository.getOne(dto.getAccount());
                 AllPlayList newPlayList = AllPlayList.builder()
@@ -66,7 +69,7 @@ public class PlayListService {
 
                 log.info("새로운 저장소와 악보를 추가했습니다. ");
 
-            }else {
+            } else {
                 //만약 저장소가 있다면 ?
                 AllPlayList selectedPlayList = myPlayLists.get(0);
 
@@ -78,50 +81,66 @@ public class PlayListService {
                 playListRepository.save(build);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("선택하신 악보는 없는 악보 입니다..");
         }
-       return true;
-}
-
-    //나의 playList 의 리스트들 불러오기
-    public PlayListofListResponseDTO getMyPlayLists(String account, Long plId) {
-        // 현재 allPlayList 사용자와 그 사용자가 어떤 재생목록을 사용하는지 가져올 것임
-        List<AllPlayList> allPlayLists = allPlayListRepository.findByAccount_AccountAndPlId(account, plId);
-        //allPlayList에 계정명과 allPlayList의 ID를 가져왔으면 거기에 해당하는 score들을 가져와야함
-        playListRepository.findByPl_id(allPlayLists.)
-
+        return true;
     }
 
+    // 나의 playList 의 리스트들 만들기
+    public List<PlayListResponseDTO> getMyPlayLists(String account, Long plId) {
+        List<PlayListResponseDTO> list = new ArrayList<>();
+        try {
+            // 현재 사용자와 특정 플레이리스트 ID에 해당하는 AllPlayList 가져오기
+            List<AllPlayList> byAccountAccount = allPlayListRepository.findByAccount_Account(account);
+            //만약 재생목록을 사용하는 사용자가 없으면 내보내기
+            if(byAccountAccount == null){
+                throw new RuntimeException("이 계정의 재생목록PlayList가 없습니다!");
+            }
+            //재생목록 사용자가 있으면 for문을 통해 allPlayList에서 PlayList들을 찾기
+            byAccountAccount.forEach(allPlayList -> {
+                List<PlayList> byPlId = playListRepository.findByPl_id(allPlayList);
+                //score악보들을 담을 새로운 리스트를 생성
+                List<Score> scores = new ArrayList<>();
+                //playList에서 나의 악보들을 List에 담기
+                byPlId.forEach(playList -> {
+                    Optional<Score> score = scoreRepository.findById(playList.getScore().getScoreNo());
+                    scores.add(score.get());
+                });
+                //이제 내가 찾은 악보들을 리스트에 저장해서 반환처리 한다.
+                PlayListResponseDTO build = PlayListResponseDTO.builder()
+                        .scoreNo(scores)
+                        .plId(plId)
+                        .build();
+                list.add(build);
+            });
+            return list;
+        }catch (Exception e){
+            return null;
+        }
+    }
 
+    // 나의 playList 안에 score를 삭제
+    public List<PlayListResponseDTO> delete(String account ,Long playListId, Long scoreId) {
+        List<PlayListResponseDTO> list = new ArrayList<>();
+        try {
+            List<AllPlayList> allPlayLists = allPlayListRepository.findByAccount_Account(account);
+            if (allPlayLists == null) {
+                System.out.println("재생목록이 없습니다! 재생목록을 만들어주세요");
+            }
+            allPlayLists.forEach(allPlayList -> {
+                List<PlayList> byPlId = playListRepository.findByPl_id(allPlayList);
+                if (byPlId == null) {
+                    System.out.println("플레이 리스트가 하나도 없습니다!");
+                }
+                byPlId.forEach(playList -> {
+                    Optional<Score> score = scoreRepository.findById(playList.getScore().getScoreNo());
+                });
 
-
-//            Score score1 = score.get();
-//            Optional<AllPlayList> byId = allPlayListRepository.findById(dto.getPlId());
-//            AllPlayList allPlayList = byId.get();
-//            Member one = memberRepository.getOne(dto.getAccount());
-//            if(byId != null) {
-//                AllPlayList build = AllPlayList.builder()
-//                        .plName("123")
-//                        .plShare(false)
-//                        .account(one)
-//                        .build();
-//                allPlayListRepository.save(build);
-//                if(score!=null && allPlayList.getAccount().equals(dto.getAccount())){
-//                    playListRepository.save(PlayList.builder()
-//                                    .
-//                                    .score(score1)
-//                            .build())
-//                }
-//            }
-//            }
-//
-//            if(byId != null && score != null && allPlayList.getAccount().equals(dto.getAccount())){
-//                playListRepository.save(PlayList.builder()
-//                        .pl_id(allPlayList)
-//                                .score(score1)
-//                        .build());
-//            }
-
-
-
+            });
+        } catch (Exception e) {
+            System.out.println("재생목록을 불러오는 중 오류가 발생 했습니다!");
+        }
+        return null;
+    }
+}

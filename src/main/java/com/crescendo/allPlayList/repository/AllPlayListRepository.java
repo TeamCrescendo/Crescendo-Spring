@@ -26,5 +26,8 @@ public interface AllPlayListRepository extends JpaRepository<AllPlayList, Long> 
 
     //플레이 리스트 아이디와 리스트번호를 조회
     List<AllPlayList> findByAccount_AccountAndPlId(String account, Long plId);
+
+    //플레이 리스트 내 계정으로 조회
+    List<AllPlayList> findByAccount_Account (String account);
 }
 
