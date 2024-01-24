@@ -94,4 +94,9 @@ public class ScoreService {
         scoreRepository.deleteById(scoreId);
         return true;
     }
+
+    // 유튜브 링크 받아서 파이썬 으로 보내기
+    public void postToPython(String link){
+        
+    }
 }
