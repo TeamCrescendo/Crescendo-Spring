@@ -4,6 +4,7 @@ import com.crescendo.member.entity.Member;
 import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.member.repository.MemberRepository;
 import com.crescendo.post_message.dto.request.SendMessageRequestDTO;
+import com.crescendo.post_message.dto.response.MessageListResponseDTO;
 import com.crescendo.post_message.dto.response.ReceivedMessageResponseDTO;
 import com.crescendo.post_message.dto.response.SentMessageListResponseDTO;
 import com.crescendo.post_message.entity.PostMessage;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -117,21 +119,57 @@ public class PostMessageService {
     }
 
     // 쪽지 전체 조회
-    public List<SentMessageListResponseDTO> messageAll(String account){
+    public List<MessageListResponseDTO> messageAll(String account){
         Member member = memberRepository.getOne(account);
-        List<SentMessageListResponseDTO> list = new ArrayList<>();
-        List<SentMessageListResponseDTO> sentMessageAll = findSentMessageAll(account);
-        List<ReceivedMessageResponseDTO> messageAll = findMessageAll(account);
+        boolean b = memberRepository.existsByAccount(account);
+        if(!b){
+            throw new NoMatchAccountException("정확한 계정명을 보내주세요!");
+        }
+        List<MessageListResponseDTO> list = new ArrayList<>();
+        List<PostMessage> receivedMessageList = postMessageRepository.findAllByPostMessageReceiver(account);// 내가 받은 메세지 리스트
+        List<PostMessage> sendedMessageList = postMessageRepository.findAllByMemberAccount(account); // 내가 보낸 메세지 리스트
 
-        if(sentMessageAll != null){
-            sentMessageAll.forEach(list::add);
+        if (receivedMessageList!=null){
+            receivedMessageList.forEach(postMessage -> {
+                String account1 = postMessage.getMember().getAccount();//보낸 사람 아이디
+                String nickname1 = memberRepository.getOne(account1).getUserName(); // 보낸 사람 닉네임
+                String account2 = postMessage.getPostMessageReceiver();// 받는 사람 아이디
+                String nickname2 = memberRepository.getOne(account2).getUserName(); // 받는 사람 닉네임
+                LocalDateTime writtenMessageDate = postMessage.getWrittenMessageDate();// 작성 시간
+                String postMessageContent = postMessage.getPostMessageContent();// 내용
+                boolean checked = postMessage.isChecked(); // 체크 여부
+                MessageListResponseDTO build = MessageListResponseDTO.builder()
+                        .receiver(account2)
+                        .receiverNickname(nickname2)
+                        .sender(account1)
+                        .senderNickName(nickname1)
+                        .writtenTime(writtenMessageDate)
+                        .content(postMessageContent)
+                        .check(checked)
+                        .build();
+                list.add(build);
+            });
         }
-        if(messageAll != null){
-            for (ReceivedMessageResponseDTO dto : messageAll) {
-                SentMessageListResponseDTO dto2 = new SentMessageListResponseDTO(dto);
-                list.add(dto2);
-            }
-        }
+        if (sendedMessageList!=null){
+            sendedMessageList.forEach(postMessage -> {
+                String account1 = postMessage.getMember().getAccount();//보낸 사람 아이디
+                String nickname1 = memberRepository.getOne(account1).getUserName(); // 보낸 사람 닉네임
+                String account2 = postMessage.getPostMessageReceiver();// 받는 사람 아이디
+                String nickname2 = memberRepository.getOne(account2).getUserName(); // 받는 사람 닉네임
+                LocalDateTime writtenMessageDate = postMessage.getWrittenMessageDate();// 작성 시간
+                String postMessageContent = postMessage.getPostMessageContent();// 내용
+                boolean checked = postMessage.isChecked(); // 체크 여부
+                MessageListResponseDTO build = MessageListResponseDTO.builder()
+                        .receiver(account2)
+                        .receiverNickname(nickname2)
+                        .sender(account1)
+                        .senderNickName(nickname1)
+                        .writtenTime(writtenMessageDate)
+                        .content(postMessageContent)
+                        .check(checked)
+                        .build();
+                list.add(build);
+        });}
 
         return list;
     }
