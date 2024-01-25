@@ -10,9 +10,11 @@ import com.crescendo.member.dto.response.LoginUserResponseDTO;
 import com.crescendo.member.entity.Member;
 import com.crescendo.member.exception.*;
 import com.crescendo.member.service.MemberService;
+import com.crescendo.member.util.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -89,9 +91,10 @@ public class AuthController {
 
     // 비교
     @GetMapping("/compare")
-    public ResponseEntity<?> compareTo(HttpSession session){
-        LoginUserResponseDTO attribute = (LoginUserResponseDTO) session.getAttribute("login");
-        return ResponseEntity.ok().body(attribute);
+    public ResponseEntity<?> compareTo(@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
+        Member user = memberService.findUser(tokenUserInfo.getAccount());
+        LoginUserResponseDTO loginUserResponseDTO = new LoginUserResponseDTO(user);
+        return ResponseEntity.ok().body(loginUserResponseDTO);
     }
 
 
