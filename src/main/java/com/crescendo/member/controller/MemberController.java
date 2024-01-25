@@ -2,16 +2,20 @@ package com.crescendo.member.controller;
 
 import com.crescendo.member.dto.request.ModifyMemberRequestDTO;
 import com.crescendo.member.dto.request.ProfileUploadRequestDTO;
+import com.crescendo.member.dto.response.LoginUserResponseDTO;
+import com.crescendo.member.entity.Member;
 import com.crescendo.member.exception.DuplicateEmailException;
 import com.crescendo.member.exception.DuplicateUserNameException;
 import com.crescendo.member.exception.NoDownloadChanceException;
 import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.member.service.MemberService;
 import com.crescendo.member.util.FileUtil;
+import com.crescendo.member.util.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -34,13 +38,14 @@ public class MemberController {
     private final MemberService memberService;
 
     // 유저 다운로드 회수 차감
-    @PostMapping("/download/{account}")
-    public ResponseEntity<?> downloadScore(@PathVariable String account) {
-        if (account.isEmpty()) {
+    @GetMapping("/download")
+    public ResponseEntity<?> downloadScore(@AuthenticationPrincipal TokenUserInfo tokenUserInfo) {
+        log.info("/api/member/download");
+        if (tokenUserInfo.getAccount().isEmpty()) {
             return ResponseEntity.badRequest().body("계정명을 정확히 적어주세요");
         }
         try {
-            int download = memberService.download(account);
+            int download = memberService.download(tokenUserInfo.getAccount());
             return ResponseEntity.ok().body(download);
         } catch (NoMatchAccountException | NoDownloadChanceException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -72,5 +77,13 @@ public class MemberController {
         }catch (NoMatchAccountException | DuplicateEmailException | DuplicateUserNameException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    // 유저 정보 찾기
+    @GetMapping
+    public ResponseEntity<?> compareTo(@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
+        Member user = memberService.findUser(tokenUserInfo.getAccount());
+        LoginUserResponseDTO loginUserResponseDTO = new LoginUserResponseDTO(user);
+        return ResponseEntity.ok().body(loginUserResponseDTO);
     }
 }

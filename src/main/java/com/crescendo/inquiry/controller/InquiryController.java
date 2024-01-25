@@ -5,9 +5,11 @@ import com.crescendo.inquiry.dto.response.FoundInquiryListResponseDTO;
 import com.crescendo.inquiry.entity.Inquiry;
 import com.crescendo.inquiry.service.InquiryService;
 import com.crescendo.member.exception.NoMatchAccountException;
+import com.crescendo.member.util.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -39,13 +41,13 @@ public class InquiryController {
 
     // 계정명으로 문의 전체조회하기
     @GetMapping
-    private ResponseEntity<?> findAllByAccount(String account){
-        if(account ==null || account.isEmpty()){
+    private ResponseEntity<?> findAllByAccount(@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
+        if(tokenUserInfo.getAccount() ==null || tokenUserInfo.getAccount().isEmpty()){
             return ResponseEntity.badRequest().body("공백입니다 정확한 계정명을 주세요!");
         }
-        log.info("/api/inquiry/GET !! {}", account);
+        log.info("/api/inquiry/GET !! {}", tokenUserInfo.getAccount());
         try{
-            List<FoundInquiryListResponseDTO> allByAccount = inquiryService.findAllByAccount(account);
+            List<FoundInquiryListResponseDTO> allByAccount = inquiryService.findAllByAccount(tokenUserInfo.getAccount());
             return ResponseEntity.ok().body(allByAccount);
         }catch (NoMatchAccountException e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -53,6 +55,9 @@ public class InquiryController {
     }
 
     // 문의 아이디로 문의 삭제하기
+    /*
+        문의 아이디를 줘야 삭제 할 수 있음.
+     */
     @DeleteMapping
     private ResponseEntity<?> deleteById(String inquiryId){
         if (inquiryId == null || inquiryId.isEmpty()){

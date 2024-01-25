@@ -22,6 +22,17 @@ public class LoginUserResponseDTO {
     private Integer userDownloadChance;
     private String token;
 
+    public LoginUserResponseDTO(Member member) {
+        this.account=member.getAccount();
+        this.userName=member.getUserName();
+        this.email=member.getEmail();
+        this.profileImageUrl=member.getProfileImageUrl();
+        this.regDateTime=member.getRegDateTime();
+        this.auth=member.getAuth();
+        this.status = member.getStatus();
+        this.userDownloadChance=member.getUserDownloadChance();
+    }
+
     public LoginUserResponseDTO(Member member, String token) {
         this.account=member.getAccount();
         this.userName=member.getUserName();

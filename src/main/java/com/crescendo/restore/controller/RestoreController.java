@@ -2,12 +2,14 @@ package com.crescendo.restore.controller;
 
 
 import com.crescendo.member.exception.NoMatchAccountException;
+import com.crescendo.member.util.TokenUserInfo;
 import com.crescendo.restore.dto.response.RestoreWhetherResponseDTO;
 import com.crescendo.restore.exception.ExistsInRestoreException;
 import com.crescendo.restore.service.RestoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -20,15 +22,15 @@ public class RestoreController {
 
 
     // 삭제 요청 하기
-    @PostMapping("/{account}")
-    public ResponseEntity<?> save(@PathVariable String account){
+    @PostMapping
+    public ResponseEntity<?> save(@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
         //log.info("/api/restore Post!!");
-        if(account.isEmpty()){
+        if(tokenUserInfo.getAccount().isEmpty()){
             return ResponseEntity.badRequest().body("제대로된 계정명을 주세요");
         }
 
         try{
-            boolean add = restoreService.add(account);
+            boolean add = restoreService.add(tokenUserInfo.getAccount());
             return ResponseEntity.ok().body(add);
         }catch (ExistsInRestoreException | NoMatchAccountException e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -37,20 +39,18 @@ public class RestoreController {
 
     // 삭제 여부 확인
     @GetMapping
-    public ResponseEntity<?> find(String account){
-        log.info("/api/restore GET!! {}", account);
-        if(account.isEmpty()){
+    public ResponseEntity<?> find(@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
+        log.info("/api/restore GET!! {}", tokenUserInfo.getAccount());
+        if(tokenUserInfo.getAccount().isEmpty()){
             return ResponseEntity.badRequest().body("제대로된 계정명을 주세요");
         }
 
         try {
-            RestoreWhetherResponseDTO restoreWhetherResponseDTO = restoreService.find(account);
+            RestoreWhetherResponseDTO restoreWhetherResponseDTO = restoreService.find(tokenUserInfo.getAccount());
             return ResponseEntity.ok().body(restoreWhetherResponseDTO);
         }catch (ExistsInRestoreException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
-
     }
 
     // 삭제 취소 요청 하기
