@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,6 +71,7 @@ public class PostMessageService {
                     .content(postMessage.getPostMessageContent())
                     .check(postMessage.isChecked())
                     .messageId(postMessage.getPostMessageId())
+                    .localDate(postMessage.getWrittenMessageDate())
                     .build();
             list.add(dto);
         });
@@ -92,6 +94,7 @@ public class PostMessageService {
                     .sender(postMessage.getMember().getAccount())
                     .content(postMessage.getPostMessageContent())
                     .check(postMessage.isChecked())
+                    .writtenTime(postMessage.getWrittenMessageDate())
                     .build();
             list.add(dto);
         });

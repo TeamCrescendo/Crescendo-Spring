@@ -1,6 +1,10 @@
 package com.crescendo.post_message.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import lombok.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -15,4 +19,5 @@ public class ReceivedMessageResponseDTO {
     private String content; // 내용
     private boolean check; // 확인 여부
     private String messageId; // 메세지 ID
+    private LocalDateTime localDate;
 }
