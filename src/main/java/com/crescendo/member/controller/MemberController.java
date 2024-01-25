@@ -2,6 +2,8 @@ package com.crescendo.member.controller;
 
 import com.crescendo.member.dto.request.ModifyMemberRequestDTO;
 import com.crescendo.member.dto.request.ProfileUploadRequestDTO;
+import com.crescendo.member.dto.response.LoginUserResponseDTO;
+import com.crescendo.member.entity.Member;
 import com.crescendo.member.exception.DuplicateEmailException;
 import com.crescendo.member.exception.DuplicateUserNameException;
 import com.crescendo.member.exception.NoDownloadChanceException;
@@ -75,5 +77,13 @@ public class MemberController {
         }catch (NoMatchAccountException | DuplicateEmailException | DuplicateUserNameException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    // 유저 정보 찾기
+    @GetMapping
+    public ResponseEntity<?> compareTo(@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
+        Member user = memberService.findUser(tokenUserInfo.getAccount());
+        LoginUserResponseDTO loginUserResponseDTO = new LoginUserResponseDTO(user);
+        return ResponseEntity.ok().body(loginUserResponseDTO);
     }
 }

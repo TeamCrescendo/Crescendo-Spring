@@ -89,13 +89,7 @@ public class AuthController {
         }
     }
 
-    // 비교
-    @GetMapping("/compare")
-    public ResponseEntity<?> compareTo(@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
-        Member user = memberService.findUser(tokenUserInfo.getAccount());
-        LoginUserResponseDTO loginUserResponseDTO = new LoginUserResponseDTO(user);
-        return ResponseEntity.ok().body(loginUserResponseDTO);
-    }
+
 
 
 
