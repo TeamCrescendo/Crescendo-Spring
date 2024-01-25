@@ -24,7 +24,6 @@ public class ModifyMemberRequestDTO {
     @Size(min = 2, max = 12)
     private String userName;
 
-
     private String password;
 
     @NotBlank
@@ -32,6 +31,6 @@ public class ModifyMemberRequestDTO {
     @Size(min = 2, max = 30)
     private String email;
 
-    private MultipartFile profileImage;
+    private MultipartFile profileImage = null;
 
 }

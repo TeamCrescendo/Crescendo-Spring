@@ -87,24 +87,14 @@ public class AuthController {
         }
     }
 
+    // 비교
     @GetMapping("/compare")
     public ResponseEntity<?> compareTo(HttpSession session){
         LoginUserResponseDTO attribute = (LoginUserResponseDTO) session.getAttribute("login");
         return ResponseEntity.ok().body(attribute);
     }
-    // 회원 정보 수정
-    @RequestMapping(method = {PUT, PATCH}, path = "/modify")
-    public ResponseEntity<?> updateUser(@Validated ModifyMemberRequestDTO dto, BindingResult result){
-        if(result.hasErrors()){
-            return ResponseEntity.badRequest().body(result.toString());
-        }
-        try{
-            boolean flag = memberService.modifyUser(dto);
-            return ResponseEntity.ok().body(flag);
-        }catch (NoMatchAccountException | DuplicateEmailException | DuplicateUserNameException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+
+
 
     // 중복 체크 ( 이메일 , 유저 이름, 계정)
     @PostMapping("/duplicate")

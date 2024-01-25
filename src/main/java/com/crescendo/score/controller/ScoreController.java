@@ -2,6 +2,7 @@ package com.crescendo.score.controller;
 
 import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.score.dto.request.CreateScoreRequestDTO;
+import com.crescendo.score.dto.request.YoutubeLinkRequestDTO;
 import com.crescendo.score.dto.response.FindByAccountScoreResponseDTO;
 import com.crescendo.score.exception.InvalidGenreException;
 import com.crescendo.score.exception.NoArgumentException;
@@ -65,10 +66,17 @@ public class ScoreController {
         }
     }
 
-    @PostMapping("/{link}")
-    private ResponseEntity<?> youtubeLink(@PathVariable String link){
-        log.info("/api/score POST {}", link);
 
-        return ResponseEntity.ok().body("hello");
+    // 유튜브 링크 주소 받아주는 URL
+    @PostMapping("/youtube")
+    private ResponseEntity<?> youtubeLink(@RequestBody YoutubeLinkRequestDTO dto){
+        // 회원도 받아서 인증해야함.
+        log.info("/api/score POST {}", dto.getUrl());
+
+        // 서비스 한테 파이썬으로 값 보내야함 ..
+        String s = scoreService.postToPython(dto.getUrl());
+
+
+        return ResponseEntity.ok().body(s);
     }
 }

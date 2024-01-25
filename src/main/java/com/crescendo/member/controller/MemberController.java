@@ -1,6 +1,9 @@
 package com.crescendo.member.controller;
 
+import com.crescendo.member.dto.request.ModifyMemberRequestDTO;
 import com.crescendo.member.dto.request.ProfileUploadRequestDTO;
+import com.crescendo.member.exception.DuplicateEmailException;
+import com.crescendo.member.exception.DuplicateUserNameException;
 import com.crescendo.member.exception.NoDownloadChanceException;
 import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.member.service.MemberService;
@@ -9,10 +12,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+
+import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -49,6 +57,20 @@ public class MemberController {
         }catch (NoMatchAccountException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
 
+    // 회원 정보 수정
+    @RequestMapping(method = {PUT, PATCH}, path = "/modify")
+    public ResponseEntity<?> updateUser(@Validated ModifyMemberRequestDTO dto, BindingResult result){
+        log.info("dto: {}", dto.toString());
+        if(result.hasErrors()){
+            return ResponseEntity.badRequest().body(result.toString());
+        }
+        try{
+            boolean flag = memberService.modifyUser(dto);
+            return ResponseEntity.ok().body(flag);
+        }catch (NoMatchAccountException | DuplicateEmailException | DuplicateUserNameException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
