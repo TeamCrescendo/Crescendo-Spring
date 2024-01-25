@@ -137,6 +137,7 @@ public class PostMessageService {
                 String nickname2 = memberRepository.getOne(account2).getUserName(); // 받는 사람 닉네임
                 LocalDateTime writtenMessageDate = postMessage.getWrittenMessageDate();// 작성 시간
                 String postMessageContent = postMessage.getPostMessageContent();// 내용
+                String postMessageId = postMessage.getPostMessageId();
                 boolean checked = postMessage.isChecked(); // 체크 여부
                 MessageListResponseDTO build = MessageListResponseDTO.builder()
                         .receiver(account2)
@@ -146,6 +147,7 @@ public class PostMessageService {
                         .writtenTime(writtenMessageDate)
                         .content(postMessageContent)
                         .check(checked)
+                        .messageId(postMessageId)
                         .build();
                 list.add(build);
             });
@@ -159,6 +161,7 @@ public class PostMessageService {
                 LocalDateTime writtenMessageDate = postMessage.getWrittenMessageDate();// 작성 시간
                 String postMessageContent = postMessage.getPostMessageContent();// 내용
                 boolean checked = postMessage.isChecked(); // 체크 여부
+                String postMessageId = postMessage.getPostMessageId();
                 MessageListResponseDTO build = MessageListResponseDTO.builder()
                         .receiver(account2)
                         .receiverNickname(nickname2)
@@ -167,6 +170,7 @@ public class PostMessageService {
                         .writtenTime(writtenMessageDate)
                         .content(postMessageContent)
                         .check(checked)
+                        .messageId(postMessageId)
                         .build();
                 list.add(build);
         });}

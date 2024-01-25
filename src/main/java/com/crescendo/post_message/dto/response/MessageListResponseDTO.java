@@ -20,6 +20,7 @@ public class MessageListResponseDTO {
     private String content; // 내용
     private boolean check; // 확인 여부
     private LocalDateTime writtenTime; // 작성 시간
+    private String messageId; // 메세지 아이디
 
     public MessageListResponseDTO(PostMessage postMessage) {
 
