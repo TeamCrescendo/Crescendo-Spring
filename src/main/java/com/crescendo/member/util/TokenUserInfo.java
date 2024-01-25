@@ -12,6 +12,6 @@ import lombok.*;
 @Builder
 public class TokenUserInfo {
     private String userId;
-    private String email;
+    private String account;
     private Member.Auth auth;
 }

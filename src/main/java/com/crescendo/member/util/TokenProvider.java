@@ -32,7 +32,7 @@ public class TokenProvider {
 
         // 추가 클레임 정의
         Map<String, Object> claims = new HashMap<>();
-        claims.put("email", userEntity.getEmail());
+        claims.put("account", userEntity.getAccount());
         claims.put("auth", userEntity.getAuth());
 
 
@@ -72,8 +72,8 @@ public class TokenProvider {
 
         return TokenUserInfo.builder()
                 .userId(claims.getSubject())
-                .email(claims.get("email", String.class))
-                .auth(Member.Auth.valueOf(claims.get("role", String.class)))
+                .account(claims.get("account", String.class))
+                .auth(Member.Auth.valueOf(claims.get("auth", String.class)))
                 .build();
     }
 
