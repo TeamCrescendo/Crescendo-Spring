@@ -113,4 +113,23 @@ public class PostMessageService {
         return true;
     }
 
+    // 쪽지 전체 조회
+    public List<SentMessageListResponseDTO> messageAll(String account){
+        Member member = memberRepository.getOne(account);
+        List<SentMessageListResponseDTO> list = new ArrayList<>();
+        List<SentMessageListResponseDTO> sentMessageAll = findSentMessageAll(account);
+        List<ReceivedMessageResponseDTO> messageAll = findMessageAll(account);
+
+        if(sentMessageAll != null){
+            sentMessageAll.forEach(list::add);
+        }
+        if(messageAll != null){
+            for (ReceivedMessageResponseDTO dto : messageAll) {
+                SentMessageListResponseDTO dto2 = new SentMessageListResponseDTO(dto);
+                list.add(dto2);
+            }
+        }
+
+        return list;
+    }
 }
