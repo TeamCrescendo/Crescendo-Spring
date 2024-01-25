@@ -61,7 +61,7 @@ public class PlayListService {
                 allPlayListRepository.save(newPlayList);
                 //재생목록이 생겼으면 나의 playlist의 새로운 score(악보)들을 담는다.
                 PlayList build = PlayList.builder()
-                        .pl_id(newPlayList)
+                        .plId(newPlayList)
                         .score(score.get())
                         .build();
                 //나의 새로운 playList를 만든다
@@ -75,7 +75,7 @@ public class PlayListService {
 
                 // 선택한 재생목록에 악보를 추가한다.
                 PlayList build = PlayList.builder()
-                        .pl_id(selectedPlayList)
+                        .plId(selectedPlayList)
                         .score(score.get())
                         .build();
                 playListRepository.save(build);
@@ -99,7 +99,7 @@ public class PlayListService {
             }
             //재생목록 사용자가 있으면 for문을 통해 allPlayList에서 PlayList들을 찾기
             byAccountAccount.forEach(allPlayList -> {
-                List<PlayList> byPlId = playListRepository.findByPl_id(allPlayList);
+                List<PlayList> byPlId = playListRepository.findByPlId(allPlayList);
                 if(byPlId == null){
                     System.out.println("플레이 리스트가 없습니다!");
                 }
@@ -126,30 +126,30 @@ public class PlayListService {
         }
     }
 
-    // 나의 playList 안에 score를 삭제
-    public List<PlayListResponseDTO> delete(String account ,Long playListId, Long scoreId) {
-        List<PlayListResponseDTO> list = new ArrayList<>();
-        try {
-            List<AllPlayList> allPlayLists = allPlayListRepository.findByAccount_Account(account);
-            if (allPlayLists == null) {
-                System.out.println("재생목록이 없습니다! 재생목록을 만들어주세요");
-            }
-            allPlayLists.forEach(allPlayList -> {
-                List<PlayList> byPlId = playListRepository.findByPl_id(allPlayList);
-                if (byPlId == null) {
-                    System.out.println("플레이 리스트가 하나도 없습니다!");
-                }
-                byPlId.forEach(playList -> {
-                    Optional<Score> score = scoreRepository.findById(playList.getScore().getScoreNo());
-                    if(score == null) {
-                        System.out.println("악보들이 한개도 없습니다.");
-                    }
-                });
-
-            });
-        } catch (Exception e) {
-            System.out.println("재생목록을 불러오는 중 오류가 발생 했습니다!");
-        }
-        return null;
-    }
+//    // 나의 playList 안에 score를 삭제
+//    public List<PlayListResponseDTO> delete(String account ,Long playListId, Long scoreId) {
+//        List<PlayListResponseDTO> list = new ArrayList<>();
+//        try {
+//            List<AllPlayList> allPlayLists = allPlayListRepository.findByAccount_Account(account);
+//            if (allPlayLists == null) {
+//                System.out.println("재생목록이 없습니다! 재생목록을 만들어주세요");
+//            }
+//            allPlayLists.forEach(allPlayList -> {
+//                List<PlayList> byPlId = playListRepository.findByPlId(allPlayList);
+//                if (byPlId == null) {
+//                    System.out.println("플레이 리스트가 하나도 없습니다!");
+//                }
+//                byPlId.forEach(playList -> {
+//                    Optional<Score> score = scoreRepository.findById(playList.getScore().getScoreNo());
+//                    if(score == null) {
+//                        System.out.println("악보들이 한개도 없습니다.");
+//                    }
+//                });
+//
+//            });
+//        } catch (Exception e) {
+//            System.out.println("재생목록을 불러오는 중 오류가 발생 했습니다!");
+//        }
+//        return null;
+//    }
 }

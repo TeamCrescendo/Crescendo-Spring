@@ -9,5 +9,5 @@ import java.util.List;
 public interface PlayListRepository extends JpaRepository<PlayList, Long > {
 
 
-   List<PlayList> findByPl_id(AllPlayList allPlayList);
+   List<PlayList> findByPlId(AllPlayList allPlayList);
 }

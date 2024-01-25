@@ -26,7 +26,7 @@ public class PlayList {
 
     @ManyToOne
     @JoinColumn(name = "pl_id", nullable = false)
-    private AllPlayList pl_id;
+    private AllPlayList plId;
 
     @OneToOne
     @JoinColumn(name = "score_no", nullable = false)
