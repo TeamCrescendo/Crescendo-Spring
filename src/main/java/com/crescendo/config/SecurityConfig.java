@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                     .antMatchers("/", "/api/auth/**").permitAll()
                     .antMatchers("/api/score/**").permitAll()
+                    .antMatchers("/local/**").permitAll()
                     //.antMatchers("/**").permitAll();
                 .anyRequest().authenticated()
         ;
