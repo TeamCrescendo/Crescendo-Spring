@@ -24,7 +24,7 @@ public class PlayListResponseDTO {
     public PlayListResponseDTO(PlayList playList, List<Score> scoreNo){
         this.plNo = playList.getPlNo();
         this.plAddDateTime = playList.getPlAddDateTime();
-        this.plId = playList.getPl_id().getPlId();
+        this.plId = playList.getPlId().getPlId();
         this.scoreNo = scoreNo;
     }
 }

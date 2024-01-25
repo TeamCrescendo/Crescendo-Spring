@@ -73,7 +73,7 @@ public class TokenProvider {
         return TokenUserInfo.builder()
                 .userId(claims.getSubject())
                 .email(claims.get("email", String.class))
-                .role(Role.valueOf(claims.get("role", String.class)))
+                .auth(Member.Auth.valueOf(claims.get("role", String.class)))
                 .build();
     }
 

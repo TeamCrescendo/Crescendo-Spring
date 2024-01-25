@@ -60,6 +60,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             e.printStackTrace();
             log.warn("토큰이 위조되었습니다");
         }
+
+        // 필터체인에 내가 만든 필터를 실행하도록 명령
+        filterChain.doFilter(request, response);
     }
 
 
