@@ -18,6 +18,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     //멤버와 게시글 같이 찾기
    List<Board> findByMemberAndBoardNo(Member member , Long boardNo);
 
+   //보드 찾기
+    Board  findByBoardNo(Long boardNo);
+
 
 
 

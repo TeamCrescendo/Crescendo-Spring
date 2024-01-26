@@ -1,5 +1,7 @@
 package com.crescendo.report.dto.requestDTO;
 
+import com.crescendo.board.entity.Board;
+import com.crescendo.member.entity.Member;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -17,8 +19,8 @@ public class ReportRepuestDTO {
     private String report_content; //신고 내용
 
     @NotBlank
-    private String reportReporter; //신고자
+    private Member reportReporter; //신고자
 
     @NotBlank
-    private Long bardNo; //신고할 게시물 번호
+    private Board boardNo; //신고할 게시물 번호
 }
