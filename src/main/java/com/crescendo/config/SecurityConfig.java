@@ -33,6 +33,7 @@ public class SecurityConfig {
                     .antMatchers("/", "/api/auth/**").permitAll()
                     .antMatchers("/api/score/**").permitAll()
                     .antMatchers("/local/**").permitAll()
+                    .antMatchers("/api/board/**").permitAll()
                     //.antMatchers("/**").permitAll();
                 .anyRequest().authenticated()
         ;

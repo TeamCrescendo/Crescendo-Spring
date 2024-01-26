@@ -35,7 +35,6 @@ public class ScoreController {
         if(result.hasErrors()){
             return ResponseEntity.badRequest().body(result.toString());
          }
-
         try{
             boolean flag = scoreService.createScore(dto);
             return ResponseEntity.ok().body(flag);
@@ -69,8 +68,6 @@ public class ScoreController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-
     // 유튜브 링크 주소 받아주는 URL
     @PostMapping("/youtube")
     private ResponseEntity<?> youtubeLink(@RequestBody YoutubeLinkRequestDTO dto){

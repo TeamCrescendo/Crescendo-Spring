@@ -1,6 +1,7 @@
 package com.crescendo.board.entity;
 
 import com.crescendo.member.entity.Member;
+import com.crescendo.score.entity.Score;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -52,6 +53,7 @@ public class Board {
     @Builder.Default
     private Integer boardDownloadCount = 5;
 
-    @Column(name = "score_img_url")
-    private String scoreImgUrl;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "score_no", nullable = false)
+    private Score scoreNo;
 }
