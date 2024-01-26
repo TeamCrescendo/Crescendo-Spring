@@ -4,6 +4,7 @@ import com.crescendo.board.entity.Board;
 import com.crescendo.board.entity.Dislike;
 import com.crescendo.board.entity.Like;
 import com.crescendo.member.entity.Member;
+import com.crescendo.score.entity.Score;
 import lombok.*;
 
 @Setter
@@ -29,17 +30,15 @@ public class BoardResponseDTO {
 
     private Integer boardDownloadCount;
 
-    private String scoreImgUrl;
+    private Score scoreNo;
 
     public BoardResponseDTO(Board board){
         this.boardNo = board.getBoardNo();
         this.boardTitle = board.getBoardTitle();
         this.member = board.getMember();
-//        this.boardLike = board.getBoardLike();
-//        this.boardDislike = board.getBoardDislike();
         this.boardViewCount = board.getBoardViewCount();
         this.boardDownloadCount = board.getBoardDownloadCount();
-        this.scoreImgUrl = board.getScoreImgUrl();
+        this.scoreNo = board.getScoreNo();
     }
 }
 

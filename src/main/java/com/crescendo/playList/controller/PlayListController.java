@@ -50,7 +50,4 @@ public class PlayListController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-
-
 }

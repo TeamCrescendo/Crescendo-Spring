@@ -10,6 +10,7 @@ import com.crescendo.likeAndDislike.dto.request.LikeAndDislikeRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000"})
+@CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
 @RequestMapping("/api/board")
 public class BoardController {
 
@@ -44,7 +45,6 @@ public class BoardController {
             log.error(e.getMessage());
             return ResponseEntity.internalServerError().body(BoardListResponseDTO.builder().error(e.getMessage()).build());
         }
-
     }
 
     //Board 목록 조회 요청

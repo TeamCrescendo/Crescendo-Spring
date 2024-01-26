@@ -61,26 +61,24 @@ public class ReportService {
         }
         return true;
     }
-    //내가 작성한 신고 글들 확인하기
-    public ReportResponseDTO reportResponseDTO(String account,Long reportId){
-
-        //내 계정을 꺼내온다.
-        Member member = memberRepository.getOne(account);
-
-        //신고글을 꺼내온다.
-        List<Report> report = reportRepository.findByReportNo(reportId);
-
-        //내가 작성한 신고글 들을 조회 한다.
-        report.stream()
-                .map(ReportResponseDTO::new)
-                .collect(Collectors.toList());
-
-        return ReportResponseDTO.builder()
-                .reportReporter(member)
-
-                .build();
-
-    }
+//    //내가 작성한 신고 글들 확인하기
+//    public ReportResponseDTO reportResponseDTO(String account,Long reportId){
+//
+//        //내 계정을 꺼내온다.
+//        Member member = memberRepository.getOne(account);
+//
+//        //신고글을 꺼내온다.
+//        List<Report> report = reportRepository.findByReportNo(reportId);
+//
+//        //내가 작성한 신고글 들을 조회 한다.
+//        report.stream()
+//                .map(ReportResponseDTO::new)
+//                .collect(Collectors.toList());
+//
+//        return ReportResponseDTO.builder()
+//                .reportReporter(member)
+//                .build();
+//    }
 
 
 }

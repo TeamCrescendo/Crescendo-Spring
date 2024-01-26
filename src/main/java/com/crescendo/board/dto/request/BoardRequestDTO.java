@@ -1,5 +1,6 @@
 package com.crescendo.board.dto.request;
 
+import com.crescendo.score.entity.Score;
 import lombok.*;
 
 import javax.validation.constraints.Size;
@@ -18,6 +19,8 @@ public class BoardRequestDTO {
     private String boardTitle;
 
     private String account;
+
+    private int scoreNo;
 
 
 

@@ -15,6 +15,8 @@ import com.crescendo.likeAndDislike.repository.LikeAndDislikeRepository;
 import com.crescendo.member.entity.Member;
 import com.crescendo.board.repository.BoardRepository;
 import com.crescendo.member.repository.MemberRepository;
+import com.crescendo.score.entity.Score;
+import com.crescendo.score.repository.ScoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,6 +37,7 @@ public class BoardService {
     private final MemberRepository memberRepository;
     private final BlackListRepository blackListRepository;
     private final LikeAndDislikeRepository likeAndDislikeRepository;
+    private final ScoreRepository scoreRepository;
 
 
     //board에 등록
@@ -43,10 +46,13 @@ public class BoardService {
         if (member == null) {
             return null;
         }
-        Board build = Board.builder().boardTitle(dto.getBoardTitle()).member(member).build();
+        Score scoreNo = scoreRepository.findByScoreNo(dto.getScoreNo());
+        if(scoreNo == null){
+            return null;
+        }
+        Board build = Board.builder().boardTitle(dto.getBoardTitle()).member(member).scoreNo(scoreNo).build();
         boardRepository.save(build);
         log.info("새로운 보드를 내 마음속에 저★장★ : {}", dto.getBoardTitle());
-
         return retrieve();
     }
 
@@ -69,7 +75,7 @@ public class BoardService {
             return false;
         }
         board.setBoardTitle(dto.getBoardTitle());
-        board.setScoreImgUrl(dto.getScoreImgUrl());
+        board.setScoreNo(dto.getScoreNo());
 
         return true;
     }
