@@ -1,7 +1,9 @@
 package com.crescendo.post_message.controller;
 
 import com.crescendo.member.exception.NoMatchAccountException;
+import com.crescendo.member.util.TokenUserInfo;
 import com.crescendo.post_message.dto.request.SendMessageRequestDTO;
+import com.crescendo.post_message.dto.response.MessageListResponseDTO;
 import com.crescendo.post_message.dto.response.ReceivedMessageResponseDTO;
 import com.crescendo.post_message.dto.response.SentMessageListResponseDTO;
 import com.crescendo.post_message.service.PostMessageService;
@@ -9,6 +11,7 @@ import com.crescendo.score.exception.NoArgumentException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -85,4 +88,10 @@ public class PostMessageController {
         }
     }
 
+    // 쪽지 계정명으로 전체 조회
+    @GetMapping("/all")
+    public ResponseEntity<?> getMessageAll(@AuthenticationPrincipal TokenUserInfo userInfo){
+        List<MessageListResponseDTO> messageListResponseDTOS = postMessageService.messageAll(userInfo.getAccount());
+        return ResponseEntity.ok().body(messageListResponseDTOS);
+    }
 }

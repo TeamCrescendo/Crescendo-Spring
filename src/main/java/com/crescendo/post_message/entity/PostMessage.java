@@ -2,9 +2,11 @@ package com.crescendo.post_message.entity;
 
 import com.crescendo.member.entity.Member;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -40,4 +42,7 @@ public class PostMessage {
     @Builder.Default
     private boolean checked = false;
 
+    @CreationTimestamp
+    @Column(name = "written_message")
+    private LocalDateTime writtenMessageDate;
 }
