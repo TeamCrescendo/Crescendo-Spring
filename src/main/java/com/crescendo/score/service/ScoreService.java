@@ -1,5 +1,6 @@
 package com.crescendo.score.service;
 
+import com.crescendo.board.entity.Board;
 import com.crescendo.member.entity.Member;
 import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.member.repository.MemberRepository;
@@ -11,10 +12,9 @@ import com.crescendo.score.exception.NoArgumentException;
 import com.crescendo.score.repository.ScoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +22,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 
 @RequiredArgsConstructor
 @Service
@@ -102,11 +104,19 @@ public class ScoreService {
     }
 
     // 유튜브 링크 받아서 파이썬 으로 보내기
-    public String postToPython(String url){
+    public byte[] postToPython(String url){
         System.out.println("url = " + url);
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+
+        /*
+        youtube 링그 포장된 json
+        이런 형식으로
+        {
+            "url":"youtube url"
+        }
+         */
 
         String jsonData = "{\"url\": \"" + url + "\"}";
 
@@ -116,9 +126,21 @@ public class ScoreService {
 
         String pythonUrl = "http://127.0.0.1:8181/youtube/youtube/";
 
-        String s = restTemplate.postForObject(pythonUrl, stringHttpEntity, String.class);
+        //pdf 파일을 받아서 반환해야함.
+//        byte[] pdfBytes= Objects.requireNonNull(restTemplate.postForObject(pythonUrl, stringHttpEntity, String.class)).getBytes();
+
+        ResponseEntity<byte[]> response = restTemplate.exchange(pythonUrl, HttpMethod.POST, stringHttpEntity, byte[].class);
+
+        byte[] responseBody = response.getBody();
+
+        // ByteArrayResource를 사용하여 byte 배열을 Resource로 변환
+//        Resource pdfResource = new ByteArrayResource(responseBody);
+//       return  pdfResource;
+
+        return responseBody;
 
 
-        return s;
     }
+
+
 }

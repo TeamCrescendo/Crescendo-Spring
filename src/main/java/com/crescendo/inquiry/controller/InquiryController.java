@@ -57,6 +57,7 @@ public class InquiryController {
     // 문의 아이디로 문의 삭제하기
     /*
         문의 아이디를 줘야 삭제 할 수 있음.
+        + 본인확인하고 삭제하기
      */
     @DeleteMapping
     private ResponseEntity<?> deleteById(String inquiryId){

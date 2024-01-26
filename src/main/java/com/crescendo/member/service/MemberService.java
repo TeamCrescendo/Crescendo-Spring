@@ -180,4 +180,9 @@ public class MemberService {
         foundMember.setProfileImageUrl(upload);
         return true;
     }
+
+    public void googleLogin(String code, String registrationId) {
+        System.out.println("code = " + code);
+        System.out.println("registrationId = " + registrationId);
+    }
 }

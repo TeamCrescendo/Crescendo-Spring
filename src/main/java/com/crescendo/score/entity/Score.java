@@ -33,7 +33,7 @@ public class Score {
     @CreationTimestamp
     @Column(name = "score_upload_date_time")
     private LocalDateTime scoreUploadDateTime;
-
+    //클라이언트에서 입력
     @Column(name = "score_title", nullable = false)
     private String scoreTitle;
 

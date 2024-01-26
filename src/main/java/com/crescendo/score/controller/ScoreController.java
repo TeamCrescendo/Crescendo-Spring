@@ -1,15 +1,19 @@
 package com.crescendo.score.controller;
 
 import com.crescendo.member.exception.NoMatchAccountException;
+import com.crescendo.member.util.TokenUserInfo;
 import com.crescendo.score.dto.request.CreateScoreRequestDTO;
 import com.crescendo.score.dto.request.YoutubeLinkRequestDTO;
 import com.crescendo.score.dto.response.FindByAccountScoreResponseDTO;
+import com.crescendo.score.entity.Score;
 import com.crescendo.score.exception.InvalidGenreException;
 import com.crescendo.score.exception.NoArgumentException;
 import com.crescendo.score.service.ScoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -74,9 +78,15 @@ public class ScoreController {
         log.info("/api/score POST {}", dto.getUrl());
 
         // 서비스 한테 파이썬으로 값 보내야함 ..
-        String s = scoreService.postToPython(dto.getUrl());
+        byte[] score_pdf= scoreService.postToPython(dto.getUrl());
 
-
-        return ResponseEntity.ok().body(s);
+        HttpHeaders headers = new HttpHeaders();
+        //헤더 정보를 이용해서 pdf 라는 걸 다시한번 인지시켜주기
+        headers.add("content-type", "application/pdf");
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(score_pdf);
     }
+
+
 }

@@ -19,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -31,7 +32,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 public class AuthController {
     private final MemberService memberService;
 
-    // 회원가입(계정명, 비밀번호, 이메일, 이름)
+    // 일반회원가입(계정명, 비밀번호, 이메일, 이름)
     @PostMapping("/register")
     public ResponseEntity<?> signUp(@Validated SignUpRequestDTO dto, BindingResult result){
         if(result.hasErrors()){
@@ -52,6 +53,18 @@ public class AuthController {
         }
 
     }
+
+    //구글 회원가입(계정명, 비밀번호, 이메일 ,이름)
+    @GetMapping("/register/google")
+    public void googleSignUp(HttpServletResponse response){
+
+//        response.sendRedirect("https://accounts.google.com/o/oauth2/v2/auth");
+//        memberService.googleLogin(code,registrationId);
+        // 구글에 접속해서 회원가입 진행
+    }
+    
+
+
 
     // 로그인(계정명, 비밀번호, 자동로그인 여부)
     @PostMapping("/login")
@@ -75,19 +88,23 @@ public class AuthController {
 
     }
 
-    // 유저 찾기
-    @GetMapping("/find/{account}")
-    public ResponseEntity<?> findUser(@PathVariable String account){
-        if (account == null || account.isBlank()){
-            return ResponseEntity.badRequest().body("계정명을 정확히 적어주세요");
-        }
-        try{
-            Member foundUser = memberService.findUser(account);
-            return ResponseEntity.ok().body(new FindUserResponseDTO(foundUser));
-        }catch (NoMatchAccountException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+
+
+
+
+//    // 유저 찾기
+//    @GetMapping("/find/{account}")
+//    public ResponseEntity<?> findUser(@PathVariable String account){
+//        if (account == null || account.isBlank()){
+//            return ResponseEntity.badRequest().body("계정명을 정확히 적어주세요");
+//        }
+//        try{
+//            Member foundUser = memberService.findUser(account);
+//            return ResponseEntity.ok().body(new FindUserResponseDTO(foundUser));
+//        }catch (NoMatchAccountException e){
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
 
 
 
