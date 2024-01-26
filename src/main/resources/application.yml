@@ -2,6 +2,15 @@ server:
   port: 8484
 
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 890304175366-cg7t8bjavr2dt1ttf4ma2atl077n8i4r.apps.googleusercontent.com
+            client-secret: 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
+            scope: email, profile
+
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
     url: jdbc:mariadb://localhost:3307/crescendo

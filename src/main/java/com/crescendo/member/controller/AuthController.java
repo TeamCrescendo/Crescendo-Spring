@@ -31,7 +31,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 public class AuthController {
     private final MemberService memberService;
 
-    // 회원가입(계정명, 비밀번호, 이메일, 이름)
+    // 일반회원가입(계정명, 비밀번호, 이메일, 이름)
     @PostMapping("/register")
     public ResponseEntity<?> signUp(@Validated SignUpRequestDTO dto, BindingResult result){
         if(result.hasErrors()){
@@ -52,6 +52,16 @@ public class AuthController {
         }
 
     }
+
+    //구글 회원가입(계정명, 비밀번호, 이메일 ,이름)
+    @GetMapping("/register/google")
+    public void googleSignUp(@RequestParam String code, @PathVariable String registrationId){
+        memberService.googleLogin(code,registrationId);
+        // 구글에 접속해서 회원가입 진행
+    }
+    
+
+
 
     // 로그인(계정명, 비밀번호, 자동로그인 여부)
     @PostMapping("/login")
