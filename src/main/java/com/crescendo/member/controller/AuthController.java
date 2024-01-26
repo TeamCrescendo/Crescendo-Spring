@@ -19,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -55,8 +56,10 @@ public class AuthController {
 
     //구글 회원가입(계정명, 비밀번호, 이메일 ,이름)
     @GetMapping("/register/google")
-    public void googleSignUp(@RequestParam String code, @PathVariable String registrationId){
-        memberService.googleLogin(code,registrationId);
+    public void googleSignUp(HttpServletResponse response){
+
+//        response.sendRedirect("https://accounts.google.com/o/oauth2/v2/auth");
+//        memberService.googleLogin(code,registrationId);
         // 구글에 접속해서 회원가입 진행
     }
     
