@@ -75,19 +75,23 @@ public class AuthController {
 
     }
 
-    // 유저 찾기
-    @GetMapping("/find/{account}")
-    public ResponseEntity<?> findUser(@PathVariable String account){
-        if (account == null || account.isBlank()){
-            return ResponseEntity.badRequest().body("계정명을 정확히 적어주세요");
-        }
-        try{
-            Member foundUser = memberService.findUser(account);
-            return ResponseEntity.ok().body(new FindUserResponseDTO(foundUser));
-        }catch (NoMatchAccountException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+
+
+
+
+//    // 유저 찾기
+//    @GetMapping("/find/{account}")
+//    public ResponseEntity<?> findUser(@PathVariable String account){
+//        if (account == null || account.isBlank()){
+//            return ResponseEntity.badRequest().body("계정명을 정확히 적어주세요");
+//        }
+//        try{
+//            Member foundUser = memberService.findUser(account);
+//            return ResponseEntity.ok().body(new FindUserResponseDTO(foundUser));
+//        }catch (NoMatchAccountException e){
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
 
 
 

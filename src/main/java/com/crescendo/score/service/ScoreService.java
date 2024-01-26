@@ -1,5 +1,6 @@
 package com.crescendo.score.service;
 
+import com.crescendo.board.entity.Board;
 import com.crescendo.member.entity.Member;
 import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.member.repository.MemberRepository;
@@ -22,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 @RequiredArgsConstructor
 @Service
@@ -102,11 +104,19 @@ public class ScoreService {
     }
 
     // 유튜브 링크 받아서 파이썬 으로 보내기
-    public String postToPython(String url){
+    public Object postToPython(String url){
         System.out.println("url = " + url);
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+
+        /*
+        youtube 링그 포장된 json
+        이런 형식으로
+        {
+            "url":"youtube url"
+        }
+         */
 
         String jsonData = "{\"url\": \"" + url + "\"}";
 
@@ -116,9 +126,13 @@ public class ScoreService {
 
         String pythonUrl = "http://127.0.0.1:8181/youtube/youtube/";
 
-        String s = restTemplate.postForObject(pythonUrl, stringHttpEntity, String.class);
+        //pdf 파일을 받아서 반환해야함.
+       Object score_pdf=restTemplate.postForObject(pythonUrl, stringHttpEntity, String.class);
+       return  score_pdf;
 
 
-        return s;
+
     }
+
+
 }
