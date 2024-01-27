@@ -1,7 +1,11 @@
 package com.crescendo.score.controller;
 
+import com.crescendo.member.entity.Member;
 import com.crescendo.member.exception.NoMatchAccountException;
+import com.crescendo.member.service.MemberService;
 import com.crescendo.member.util.TokenUserInfo;
+import com.crescendo.post_message.dto.request.CreateNotationRequestDTO;
+import com.crescendo.post_message.dto.response.NotationResPonseDTO;
 import com.crescendo.score.dto.request.CreateScoreRequestDTO;
 import com.crescendo.score.dto.request.YoutubeLinkRequestDTO;
 import com.crescendo.score.dto.response.FindByAccountScoreResponseDTO;
@@ -27,6 +31,7 @@ import java.util.List;
 @CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
 public class ScoreController {
     private final ScoreService scoreService;
+    private final MemberService memberService;
 
     // 악보 추가 하기
     @PostMapping
@@ -70,19 +75,36 @@ public class ScoreController {
     }
     // 유튜브 링크 주소 받아주는 URL
     @PostMapping("/youtube")
-    private ResponseEntity<?> youtubeLink(@RequestBody YoutubeLinkRequestDTO dto){
+    private ResponseEntity<?> youtubeLink(@AuthenticationPrincipal TokenUserInfo tokenUser, @RequestBody YoutubeLinkRequestDTO dto){
         // 회원도 받아서 인증해야함.
+//        boolean ischeck= memberService.findUserAndCountCheck(tokenUser.getAccount());
         log.info("/api/score POST {}", dto.getUrl());
+        if(true) {
+            // url 을 통해 받아온 pdf 파일
+            // account, url을 api현대로 반환
+            CreateNotationRequestDTO requestDTO = CreateNotationRequestDTO.builder()
+                    .url(dto.getUrl())
+                    .account(tokenUser.getAccount())
+                    .build();
+            log.info("creationNoationDTO:{}",requestDTO);
 
-        // 서비스 한테 파이썬으로 값 보내야함 ..
-        byte[] score_pdf= scoreService.postToPython(dto.getUrl());
 
-        HttpHeaders headers = new HttpHeaders();
-        //헤더 정보를 이용해서 pdf 라는 걸 다시한번 인지시켜주기
-        headers.add("content-type", "application/pdf");
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(score_pdf);
+            NotationResPonseDTO notationResPonseDTO = scoreService.postToPython(requestDTO);
+
+            HttpHeaders headers = new HttpHeaders();
+            //헤더에 추가해야하는건 scoreid임
+            headers.add("score-id", String.valueOf(notationResPonseDTO.getScoreNo()));
+            //헤더 정보를 이용해서 pdf 라는 걸 다시한번 인지시켜주기
+            headers.add("content-type", "application/pdf");
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(notationResPonseDTO.getPdfNotation());
+        }
+        else{
+            return ResponseEntity.status(500).body("안되요..");
+
+        }
+
     }
 
 

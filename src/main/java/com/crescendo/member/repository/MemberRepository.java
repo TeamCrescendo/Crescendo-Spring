@@ -18,6 +18,12 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     int isDuplication(@Param("type") String type, @Param("keyword") String keyword);
 
     boolean existsByAccount(String account);
+
     boolean existsByEmail(String email);
+
     boolean existsByUserName(String userName);
+
+    // 개인멤버  서비스 이용횟수 반환
+    @Query("SELECT m.userDownloadChance FROM Member m WHERE m.account = ?1")
+    int downCountUserDownloadChanceByAccount(String account);
 }
