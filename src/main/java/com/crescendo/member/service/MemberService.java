@@ -160,6 +160,7 @@ public class MemberService {
         if (userDownloadChance == 0) {
             throw new NoDownloadChanceException("다운로드 기회가 없습니다");
         }
+        log.info("여기까지 왓나용");
         member.setUserDownloadChance(member.getUserDownloadChance() - 1);
         return member.getUserDownloadChance();
     }
@@ -189,21 +190,9 @@ public class MemberService {
 
 
     //유저를 검색하고 countCheck 를 진행하는 서비스
-    public boolean findUserAndCountCheck(String account) {
-        //1. 유저 검사&& 2. 카운트 검사
-        try{
-            int download = download(account);
-            Member member = Member.builder()
-                    .userDownloadChance(download)
-                    .build();
-            memberRepository.save(member);
-            return true;
-        }catch (Exception e){
-            return false;
-
-        }
-
-
+    public void findUserAndCountCheck(String account) {
+        //1. 유저 검사&& 카운트 검사
+        int download = download(account);
 
 
     }

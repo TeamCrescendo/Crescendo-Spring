@@ -77,33 +77,32 @@ public class ScoreController {
     @PostMapping("/youtube")
     private ResponseEntity<?> youtubeLink(@AuthenticationPrincipal TokenUserInfo tokenUser, @RequestBody YoutubeLinkRequestDTO dto){
         // 회원도 받아서 인증해야함.
-//        boolean ischeck= memberService.findUserAndCountCheck(tokenUser.getAccount());
+        memberService.findUserAndCountCheck(tokenUser.getAccount());
         log.info("/api/score POST {}", dto.getUrl());
-        if(true) {
-            // url 을 통해 받아온 pdf 파일
-            // account, url을 api현대로 반환
-            CreateNotationRequestDTO requestDTO = CreateNotationRequestDTO.builder()
-                    .url(dto.getUrl())
-                    .account(tokenUser.getAccount())
-                    .build();
-            log.info("creationNoationDTO:{}",requestDTO);
+
+        //python에 전달할 json 데이터 포장 url ,account
+        CreateNotationRequestDTO requestDTO = CreateNotationRequestDTO.builder()
+                .url(dto.getUrl())
+                .account(tokenUser.getAccount())
+                .build();
+        log.info("creationNoationDTO:{}",requestDTO);
 
 
-            NotationResPonseDTO notationResPonseDTO = scoreService.postToPython(requestDTO);
-
-            HttpHeaders headers = new HttpHeaders();
-            //헤더에 추가해야하는건 scoreid임
-            headers.add("score-id", String.valueOf(notationResPonseDTO.getScoreNo()));
-            //헤더 정보를 이용해서 pdf 라는 걸 다시한번 인지시켜주기
-            headers.add("content-type", "application/pdf");
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(notationResPonseDTO.getPdfNotation());
+        NotationResPonseDTO notationResPonseDTO = scoreService.postToPython(requestDTO);
+        if(notationResPonseDTO!=null){
+        HttpHeaders headers = new HttpHeaders();
+        //헤더에 추가해야하는건 scoreid임
+        headers.add("score-id", String.valueOf(notationResPonseDTO.getScoreNo()));
+        //헤더 정보를 이용해서 pdf 라는 걸 다시한번 인지시켜주기
+        headers.add("content-type", "application/pdf");
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(notationResPonseDTO.getPdfNotation());
         }
-        else{
-            return ResponseEntity.status(500).body("안되요..");
 
-        }
+        return ResponseEntity.status(500).body("안되요..");
+
+
 
     }
 
