@@ -1,9 +1,10 @@
 package com.crescendo.score.service;
 
-import com.crescendo.board.entity.Board;
 import com.crescendo.member.entity.Member;
 import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.member.repository.MemberRepository;
+import com.crescendo.post_message.dto.request.CreateNotationRequestDTO;
+import com.crescendo.post_message.dto.response.NotationResPonseDTO;
 import com.crescendo.score.dto.response.FindByAccountScoreResponseDTO;
 import com.crescendo.score.entity.Score;
 import com.crescendo.score.dto.request.CreateScoreRequestDTO;
@@ -12,17 +13,14 @@ import com.crescendo.score.exception.NoArgumentException;
 import com.crescendo.score.repository.ScoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.*;
-import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 @RequiredArgsConstructor
@@ -72,7 +70,7 @@ public class ScoreService {
         return true;
     }
 
-    public List<FindByAccountScoreResponseDTO> findAllByAccount(String account){
+    public List<FindByAccountScoreResponseDTO> findAllByAccount(String account) {
         boolean flag = memberRepository.existsByAccount(account);
         if (!flag) {
             throw new NoMatchAccountException("계정명이 존재 하지 않습니다");
@@ -94,9 +92,9 @@ public class ScoreService {
         return responseDTOList;
     }
 
-    public boolean delete(int scoreId){
+    public boolean delete(int scoreId) {
         boolean flag = scoreRepository.existsById(scoreId);
-        if(!flag){
+        if (!flag) {
             throw new NoArgumentException("해당 악보는 없습니다");
         }
         scoreRepository.deleteById(scoreId);
@@ -104,40 +102,47 @@ public class ScoreService {
     }
 
     // 유튜브 링크 받아서 파이썬 으로 보내기
-    public byte[] postToPython(String url){
-        System.out.println("url = " + url);
+    public NotationResPonseDTO postToPython(@RequestBody CreateNotationRequestDTO dto) {
+         /*
+        youtube 링그 포장된 json
+        이런 형식으로
+        {
+            "url":"youtube url",
+            "account":"계정명"
+          */
+
+        System.out.println("url = " + dto.getUrl());
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        /*
-        youtube 링그 포장된 json
-        이런 형식으로
-        {
-            "url":"youtube url"
-        }
-         */
 
-        String jsonData = "{\"url\": \"" + url + "\"}";
-
-        log.info("jsonData: " + jsonData);
-
-        HttpEntity<String> stringHttpEntity = new HttpEntity<>(jsonData, headers);
+        HttpEntity<CreateNotationRequestDTO> stringHttpEntity = new HttpEntity<>(dto, headers);
 
         String pythonUrl = "http://127.0.0.1:8181/youtube/youtube/";
-
-        //pdf 파일을 받아서 반환해야함.
-//        byte[] pdfBytes= Objects.requireNonNull(restTemplate.postForObject(pythonUrl, stringHttpEntity, String.class)).getBytes();
 
         ResponseEntity<byte[]> response = restTemplate.exchange(pythonUrl, HttpMethod.POST, stringHttpEntity, byte[].class);
 
         byte[] responseBody = response.getBody();
+        String path = response.getHeaders().get("pdf-path").get(0);
 
-        // ByteArrayResource를 사용하여 byte 배열을 Resource로 변환
-//        Resource pdfResource = new ByteArrayResource(responseBody);
-//       return  pdfResource;
+        CreateScoreRequestDTO createScoreRequestDTO = CreateScoreRequestDTO.builder()
+                .account(dto.getAccount())
+                .scoreTitle("일단제목")
+                .scoreImageUrl(path)
+                .scoreGenre(Score.GENRE.VALUE2.getStringValue())
+                .build();
 
-        return responseBody;
+        createScore(createScoreRequestDTO);
+        Score score = scoreRepository.findByScoreImageUrl(path);
+        int scoreNo = score.getScoreNo();
+
+        NotationResPonseDTO responseDTO = NotationResPonseDTO.builder()
+                .pdfNotation(responseBody)
+                .scoreNo(scoreNo)
+                .build();
+
+        return responseDTO;
 
 
     }

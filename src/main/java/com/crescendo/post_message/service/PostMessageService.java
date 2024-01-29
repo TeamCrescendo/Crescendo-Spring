@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -176,5 +175,19 @@ public class PostMessageService {
         });}
 
         return list;
+    }
+
+    public List<MessageListResponseDTO> delete(String account, String id) {
+        try {
+            //아이디로 삭제
+            postMessageRepository.deleteById(id);
+        }catch (Exception e){
+            log.error("id가 없어서 삭제에 실패했습니다! account{} mag{}",account,e.getMessage());
+            throw  new RuntimeException("삭제이 실패했습니다!");
+
+        }
+
+        //쪽지 목록 다시 불러오기
+        return messageAll(account);
     }
 }

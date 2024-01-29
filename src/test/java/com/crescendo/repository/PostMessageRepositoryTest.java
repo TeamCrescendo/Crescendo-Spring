@@ -17,8 +17,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Transactional
-@Rollback
+//@Transactional
+//@Rollback
 class PostMessageRepositoryTest {
     @Autowired
     PostMessageRepository postMessageRepository;
@@ -27,9 +27,9 @@ class PostMessageRepositoryTest {
     MemberRepository memberRepository;
     @BeforeEach
     void bulkInsert(){
-        Member one = memberRepository.getOne("member2");
+        Member one = memberRepository.getOne("member1");
 
-        PostMessage postMessage = PostMessage.builder().postMessageReceiver("member3").member(one).postMessageContent("ㅎㅇ").build();
+        PostMessage postMessage = PostMessage.builder().postMessageReceiver("member2").member(one).postMessageContent("ㅎㅇ").build();
         postMessageRepository.save(postMessage);
     }
     @Test
