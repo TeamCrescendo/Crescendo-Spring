@@ -39,8 +39,8 @@ public class BoardService {
 
 
     //board에 등록
-    public BoardListResponseDTO create(BoardRequestDTO dto) {
-        Member member = memberRepository.getOne(dto.getAccount());
+    public BoardListResponseDTO create(BoardRequestDTO dto, String account) {
+        Member member = memberRepository.getOne(account);
         if (member == null) {
             return null;
         }
@@ -51,7 +51,7 @@ public class BoardService {
         Board build = Board.builder().boardTitle(dto.getBoardTitle()).member(member).scoreNo(scoreNo).build();
         boardRepository.save(build);
         log.info("새로운 보드를 내 마음속에 저★장★ : {}", dto.getBoardTitle());
-        return retrieve();
+        return retrieve(account);
     }
 
     //board 불러오기

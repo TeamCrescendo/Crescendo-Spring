@@ -33,14 +33,15 @@ public class BoardController {
     public ResponseEntity<?> createBoard(
             @Validated
             @RequestBody BoardRequestDTO dto,
-            BindingResult result
+            BindingResult result,
+            @AuthenticationPrincipal TokenUserInfo tokenUserInfo
             ){
         if(result.hasErrors()){
             log.warn("DTO 검증 에러 입니다. : {}",result.getFieldError());
             return ResponseEntity.badRequest().body(result.getFieldError());
         }
         try{
-            BoardListResponseDTO dtoList = boardService.create(dto);
+            BoardListResponseDTO dtoList = boardService.create(dto,tokenUserInfo.getAccount());
             return ResponseEntity.ok().body(dtoList);
         }catch (Exception e){
             log.error(e.getMessage());
