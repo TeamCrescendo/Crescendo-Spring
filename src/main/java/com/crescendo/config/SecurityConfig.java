@@ -34,10 +34,10 @@ public class SecurityConfig {
                     .antMatchers("/api/score/**").permitAll()
                     .antMatchers("/local/**").permitAll()
                     .antMatchers("/api/board/**").permitAll()
+                .antMatchers("/api/member/**").permitAll()
                     //.antMatchers("/**").permitAll();
                 .anyRequest().authenticated()
         ;
-
         // 토큰 인증 필터 연결하기
         http.addFilterAfter(jwtAuthFilter, CorsFilter.class);
         return http.build();
