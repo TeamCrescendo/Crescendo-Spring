@@ -7,6 +7,7 @@ import com.crescendo.board.entity.Dislike;
 import com.crescendo.board.entity.Like;
 import com.crescendo.board.service.BoardService;
 import com.crescendo.likeAndDislike.dto.request.LikeAndDislikeRequestDTO;
+import com.crescendo.member.util.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +50,7 @@ public class BoardController {
 
     //Board 목록 조회 요청
     @GetMapping
-    public ResponseEntity<?> retrieveBoardList(){
+    public ResponseEntity<?> retrieveBoardList(@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
         log.info("/api/board GET!!");
 
         BoardListResponseDTO retrieve = boardService.retrieve();
@@ -90,7 +91,8 @@ public class BoardController {
         }
     }
 
-    //좋아요 싫어요 처리
+    //좋아요 싫어요 처리\
+
     @PostMapping("/likeAndDislike")
     public ResponseEntity<?> likeAndDisLike(@RequestBody LikeAndDislikeRequestDTO dto){
     boardService.LikeAndDislike(dto);
