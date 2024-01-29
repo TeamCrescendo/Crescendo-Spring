@@ -39,8 +39,9 @@ public class BoardService {
 
 
     //board에 등록
-    public BoardListResponseDTO create(BoardRequestDTO dto, String member) {
-        Member member1 = memberRepository.getOne(member);
+    public BoardListResponseDTO create(BoardRequestDTO dto, String account) {
+        Member member1 = memberRepository.findById(account).orElseThrow();
+        log.info("member1 토큰 저장 {}",member1);
         if (member1 == null) {
             return null;
         }
@@ -51,12 +52,12 @@ public class BoardService {
         Board build = Board.builder().boardTitle(dto.getBoardTitle()).member(member1).scoreNo(scoreNo).build();
         boardRepository.save(build);
         log.info("새로운 보드를 내 마음속에 저★장★ : {}", dto.getBoardTitle());
-        return retrieve(member);
+        return retrieve(account);
     }
 
     //board 불러오기
     public BoardListResponseDTO retrieve(String member) {
-        Optional<Board> board = boardRepository.findByMember(member);
+        List<Board> board = boardRepository.findByMember_Account(member);
 
         List<BoardResponseDTO> dtoList = board.stream()
                 .map(BoardResponseDTO::new)
@@ -82,7 +83,7 @@ public class BoardService {
     public BoardListResponseDTO delete(String member) {
 
         try {
-            boardRepository.findByMember(member);
+            boardRepository.findByMember_Account(member);
         } catch (Exception e) {
             log.error("board의 번호가 존재하지 않아서 삭제에 실패 했습니다. -{}, error : {}",
                     member, e.getMessage());

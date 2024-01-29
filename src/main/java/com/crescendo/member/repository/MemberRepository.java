@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 public interface MemberRepository extends JpaRepository<Member, String> {
     // 계정명 으로 회원 단일 조회
     @Query("SELECT m FROM Member m WHERE m.account = ?1")
-    Member getOne(String account);
+    Member getOne(Member account);
 
     // 게정명 이랑 이메일 중복검사
     @Query("SELECT COUNT(m) FROM Member m WHERE " +
