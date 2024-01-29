@@ -7,11 +7,12 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
 @Getter
-@ToString
+@ToString(exclude = "plId")
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,5 +38,8 @@ public class AllPlayList {
 
     @CreationTimestamp
     private LocalDateTime plCreateDateTime;
+
+    @OneToMany(mappedBy = "plId",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<PlayList> playLists=new ArrayList<>();
 
 }

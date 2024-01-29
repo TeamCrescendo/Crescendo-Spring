@@ -35,7 +35,7 @@ public class SignUpRequestDTO {
     @Size(min = 2, max = 30)
     private String email;
 
-//    private MultipartFile profileImage;
+    private MultipartFile profileImage;
 
 
     public Member toEntity(PasswordEncoder encoder){
