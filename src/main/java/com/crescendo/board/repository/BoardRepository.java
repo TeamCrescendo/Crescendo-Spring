@@ -21,10 +21,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
    //보드 찾기
     Board  findByBoardNo(Long boardNo);
 
+    //계정 찾기
+    Optional<Board> findByAccount(String account);
 
 
-
-
-
-
+    Optional<Board> deleteByAccount(String account);
 }

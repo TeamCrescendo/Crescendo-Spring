@@ -7,8 +7,6 @@ import com.crescendo.board.dto.request.BoardRequestDTO;
 import com.crescendo.board.dto.response.BoardListResponseDTO;
 import com.crescendo.board.dto.response.BoardResponseDTO;
 import com.crescendo.board.entity.Board;
-import com.crescendo.board.entity.Dislike;
-import com.crescendo.board.entity.Like;
 import com.crescendo.likeAndDislike.dto.request.LikeAndDislikeRequestDTO;
 import com.crescendo.likeAndDislike.entity.LikeAndDislike;
 import com.crescendo.likeAndDislike.repository.LikeAndDislikeRepository;
@@ -57,8 +55,8 @@ public class BoardService {
     }
 
     //board 불러오기
-    public BoardListResponseDTO retrieve() {
-        List<Board> board = boardRepository.findAll();
+    public BoardListResponseDTO retrieve(String account) {
+        Optional<Board> board= boardRepository.findByAccount(account);
 
         List<BoardResponseDTO> dtoList = board.stream()
                 .map(BoardResponseDTO::new)
@@ -81,16 +79,16 @@ public class BoardService {
     }
 
     //board 삭제 처리
-    public BoardListResponseDTO delete(Long boardNo) {
+    public BoardListResponseDTO delete(String account) {
 
         try {
-            boardRepository.deleteById(boardNo);
+            boardRepository.deleteByAccount(account);
         } catch (Exception e) {
             log.error("board의 번호가 존재하지 않아서 삭제에 실패 했습니다. -{}, error : {}",
-                    boardNo, e.getMessage());
+                    account, e.getMessage());
             throw new RuntimeException("삭제에 실패 하셨습니다.");
         }
-        return retrieve();
+        return retrieve(account);
     }
 
 

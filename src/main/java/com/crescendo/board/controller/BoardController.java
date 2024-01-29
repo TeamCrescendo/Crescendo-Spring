@@ -53,7 +53,7 @@ public class BoardController {
     public ResponseEntity<?> retrieveBoardList(@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
         log.info("/api/board GET!!");
 
-        BoardListResponseDTO retrieve = boardService.retrieve();
+        BoardListResponseDTO retrieve = boardService.retrieve(tokenUserInfo.getAccount());
         return ResponseEntity.ok().body(retrieve);
     }
 
@@ -71,7 +71,7 @@ public class BoardController {
 
     //Board 삭제 요청
     @DeleteMapping("/{boardNo}")
-    public ResponseEntity<?> deleteBoard(@PathVariable Long boardNo){
+    public ResponseEntity<?> deleteBoard(@PathVariable Long boardNo,@AuthenticationPrincipal TokenUserInfo userInfo){
 
         log.info("/api/board/{} DELETE!!",boardNo);
 
@@ -82,7 +82,7 @@ public class BoardController {
         }
 
         try{
-            BoardListResponseDTO dtoList = boardService.delete(boardNo);
+            BoardListResponseDTO dtoList = boardService.delete(userInfo.getAccount());
             return ResponseEntity.ok().body(dtoList);
         }catch (Exception e){
             return ResponseEntity
