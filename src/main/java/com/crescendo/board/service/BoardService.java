@@ -39,24 +39,24 @@ public class BoardService {
 
 
     //board에 등록
-    public BoardListResponseDTO create(BoardRequestDTO dto, String account) {
-        Member member = memberRepository.getOne(account);
-        if (member == null) {
+    public BoardListResponseDTO create(BoardRequestDTO dto, String member) {
+        Member member1 = memberRepository.getOne(member);
+        if (member1 == null) {
             return null;
         }
         Score scoreNo = scoreRepository.findByScoreNo(dto.getScoreNo());
         if(scoreNo == null){
             return null;
         }
-        Board build = Board.builder().boardTitle(dto.getBoardTitle()).member(member).scoreNo(scoreNo).build();
+        Board build = Board.builder().boardTitle(dto.getBoardTitle()).member(member1).scoreNo(scoreNo).build();
         boardRepository.save(build);
         log.info("새로운 보드를 내 마음속에 저★장★ : {}", dto.getBoardTitle());
-        return retrieve(account);
+        return retrieve(member);
     }
 
     //board 불러오기
-    public BoardListResponseDTO retrieve(String account) {
-        Optional<Board> board= boardRepository.findByAccount(account);
+    public BoardListResponseDTO retrieve(String member) {
+        Optional<Board> board = boardRepository.findByMember(member);
 
         List<BoardResponseDTO> dtoList = board.stream()
                 .map(BoardResponseDTO::new)
@@ -79,16 +79,16 @@ public class BoardService {
     }
 
     //board 삭제 처리
-    public BoardListResponseDTO delete(String account) {
+    public BoardListResponseDTO delete(String member) {
 
         try {
-            boardRepository.deleteByAccount(account);
+            boardRepository.findByMember(member);
         } catch (Exception e) {
             log.error("board의 번호가 존재하지 않아서 삭제에 실패 했습니다. -{}, error : {}",
-                    account, e.getMessage());
+                    member, e.getMessage());
             throw new RuntimeException("삭제에 실패 하셨습니다.");
         }
-        return retrieve(account);
+        return retrieve(member);
     }
 
 
