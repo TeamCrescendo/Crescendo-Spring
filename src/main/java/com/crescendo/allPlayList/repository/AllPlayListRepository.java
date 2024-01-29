@@ -2,6 +2,7 @@ package com.crescendo.allPlayList.repository;
 
 import com.crescendo.allPlayList.entity.AllPlayList;
 import com.crescendo.member.entity.Member;
+import com.crescendo.playList.entity.PlayList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -29,5 +30,7 @@ public interface AllPlayListRepository extends JpaRepository<AllPlayList, Long> 
 
     //플레이 리스트 내 계정으로 조회
     List<AllPlayList> findByAccount_Account (String account);
+
+    void save(PlayList playList);
 }
 

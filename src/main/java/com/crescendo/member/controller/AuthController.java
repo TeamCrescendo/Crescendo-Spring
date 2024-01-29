@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import java.io.IOException;
+
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @Slf4j
@@ -56,9 +58,19 @@ public class AuthController {
 
     //구글 회원가입(계정명, 비밀번호, 이메일 ,이름)
     @GetMapping("/register/google")
-    public void googleSignUp(HttpServletResponse response){
+    public void googleSignUp(HttpServletResponse response) throws IOException {
 
-//        response.sendRedirect("https://accounts.google.com/o/oauth2/v2/auth");
+        String googleBasicUrl = "https://accounts.google.com/o/oauth2/v2/auth";
+//        https://accounts.google.com/o/oauth2/v2/auth?
+//        scope=https%3A//www.googleapis.com/auth/drive.metadata.readonly&
+//                include_granted_scopes=true&
+//                response_type=token&
+//                state=state_parameter_passthrough_value&
+//                redirect_uri=https%3A//oauth2.example.com/code&
+//                client_id=client_id
+//        //
+//        response.sendRedirect(url);
+//
 //        memberService.googleLogin(code,registrationId);
         // 구글에 접속해서 회원가입 진행
     }

@@ -1,5 +1,7 @@
 package com.crescendo.repository;
 
+import com.crescendo.allPlayList.entity.AllPlayList;
+import com.crescendo.allPlayList.repository.AllPlayListRepository;
 import com.crescendo.member.entity.Member;
 import com.crescendo.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,18 +13,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Rollback(value = false)
+@Rollback(value = true)
 class MemberRepositoryTest {
     @Autowired
     MemberRepository memberRepository;
     @Autowired
     PasswordEncoder encoder;
+    @Autowired
+    AllPlayListRepository allPlayListRepository;
 
     @BeforeEach
     void insertBeforeTest() {
@@ -61,6 +66,30 @@ class MemberRepositoryTest {
         memberRepository.save(member3);
         memberRepository.save(member4);
         memberRepository.save(member5);
+    }
+
+
+    @Test
+    void  insertAllplayList(){
+        //멤버가 삭제되면 allplayList도 같이 삭제되야함
+        Member member1 = memberRepository.getOne("member1");
+//        for (int i = 0; i < 4; i++) {
+//            AllPlayList playList = AllPlayList.builder()
+//                    .account(member1)
+//                    .plShare(false)
+//                    .plName("ply" + i)
+//                    .plCreateDateTime(LocalDateTime.now())
+//                    .build();
+//            allPlayListRepository.save(playList);
+//
+//        }
+//        System.out.println("member1 = " + member1);
+        memberRepository.delete(member1);
+        List<AllPlayList> playLists = allPlayListRepository.findByAccount_Account("member1");
+
+        assertEquals(0,playLists.size());
+
+
     }
 
 
