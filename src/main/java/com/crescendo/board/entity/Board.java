@@ -27,7 +27,7 @@ public class Board {
     @Column(name = "board_title", nullable = false, length = 45)
     private String boardTitle;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
     @JoinColumn(name = "account", nullable = false)
     private Member member;
 

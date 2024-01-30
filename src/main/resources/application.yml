@@ -3,6 +3,7 @@ server:
 
 spring:
   security:
+
     oauth2:
       client:
         registration:
@@ -11,6 +12,9 @@ spring:
             client-secret: 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
             redirect-uri: http://localhost:8484/api/auth/register/google
 
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver

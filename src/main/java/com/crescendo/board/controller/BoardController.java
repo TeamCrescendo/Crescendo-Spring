@@ -36,6 +36,7 @@ public class BoardController {
             BindingResult result,
             @AuthenticationPrincipal TokenUserInfo tokenUserInfo
             ){
+        log.info("123312333123123123");
         if(result.hasErrors()){
             log.warn("DTO 검증 에러 입니다. : {}",result.getFieldError());
             return ResponseEntity.badRequest().body(result.getFieldError());
@@ -51,10 +52,10 @@ public class BoardController {
 
     //Board 목록 조회 요청
     @GetMapping
-    public ResponseEntity<?> retrieveBoardList(@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
+    public ResponseEntity<?> retrieveBoardList(){
         log.info("/api/board GET!!");
 
-        BoardListResponseDTO retrieve = boardService.retrieve(tokenUserInfo.getAccount());
+        BoardListResponseDTO retrieve = boardService.retrieve();
         return ResponseEntity.ok().body(retrieve);
     }
 

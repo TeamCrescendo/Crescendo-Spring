@@ -52,12 +52,12 @@ public class BoardService {
         Board build = Board.builder().boardTitle(dto.getBoardTitle()).member(member1).scoreNo(scoreNo).build();
         boardRepository.save(build);
         log.info("새로운 보드를 내 마음속에 저★장★ : {}", dto.getBoardTitle());
-        return retrieve(account);
+        return retrieve();
     }
 
     //board 불러오기
-    public BoardListResponseDTO retrieve(String member) {
-        List<Board> board = boardRepository.findByMember_Account(member);
+    public BoardListResponseDTO retrieve() {
+        List<Board> board = boardRepository.findAll();
 
         List<BoardResponseDTO> dtoList = board.stream()
                 .map(BoardResponseDTO::new)
@@ -89,7 +89,7 @@ public class BoardService {
                     member, e.getMessage());
             throw new RuntimeException("삭제에 실패 하셨습니다.");
         }
-        return retrieve(member);
+        return retrieve();
     }
 
 
@@ -167,4 +167,6 @@ public class BoardService {
             System.out.println("게시글을 찾는 도중 오류가 발생 했습니다.");
         }
     }
+
+
 }
