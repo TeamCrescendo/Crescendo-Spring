@@ -1,43 +1,21 @@
 package com.crescendo.member.controller;
 
 import com.crescendo.member.dto.request.DuplicateCheckDTO;
-import com.crescendo.member.dto.request.ModifyMemberRequestDTO;
 import com.crescendo.member.dto.request.SignInRequestDTO;
 import com.crescendo.member.dto.request.SignUpRequestDTO;
-import com.crescendo.member.dto.response.FindUserResponseDTO;
-import com.crescendo.member.dto.response.GoogleDTO;
-import com.crescendo.member.dto.response.LoginResultResponseDTO;
 import com.crescendo.member.dto.response.LoginUserResponseDTO;
-import com.crescendo.member.entity.Member;
 import com.crescendo.member.exception.*;
 import com.crescendo.member.service.MemberService;
-import com.crescendo.member.service.snsLoginService;
-import com.crescendo.member.util.TokenUserInfo;
+//import com.crescendo.member.service.snsLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import java.io.IOException;
-import java.net.http.HttpHeaders;
-import java.net.http.HttpResponse;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,16 +24,16 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
 public class AuthController {
     private final MemberService memberService;
-    private final snsLoginService snsLoginService;
-
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
-    private String clientId;
-    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
-    private String redirectUri;
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
-    private String clientSecret;
-    @Value("${spring.security.oauth2.client.registration.google.scope}")
-    private String scope;
+//    private final snsLoginService snsLoginService;
+//
+//    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+//    private String clientId;
+//    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
+//    private String redirectUri;
+//    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+//    private String clientSecret;
+//    @Value("${spring.security.oauth2.client.registration.google.scope}")
+//    private String scope;
 
     // 일반회원가입(계정명, 비밀번호, 이메일, 이름)
     @PostMapping("/register")
