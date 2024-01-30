@@ -121,16 +121,15 @@ public class ScoreController {
                 .build();
 
 
-        NotationResPonseDTO notationResPonseDTO = scoreService.postToPython(requestDTO);
-        if(notationResPonseDTO!=null){
+        byte[] aiMp3 = scoreService.postToPython(requestDTO);
+        if(aiMp3!=null){
             HttpHeaders headers = new HttpHeaders();
             //헤더에 추가해야하는건 scoreid임
-            headers.add("score-id", String.valueOf(notationResPonseDTO.getScoreNo()));
             //헤더 정보를 이용해서 pdf 라는 걸 다시한번 인지시켜주기
-            headers.add("content-type", "application/pdf");
+            headers.add("content-type", "audio/mp3");
             return ResponseEntity.ok()
                     .headers(headers)
-                    .body(notationResPonseDTO.getPdfNotation());
+                    .body(aiMp3);
         }
 
         return ResponseEntity.status(500).body("안되요..");

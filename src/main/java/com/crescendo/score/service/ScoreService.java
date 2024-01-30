@@ -148,7 +148,7 @@ public class ScoreService {
 
     }
 
-    public NotationResPonseDTO postToPython(@RequestBody CreateAiScoreRequestDTO dto) {
+    public byte[] postToPython(@RequestBody CreateAiScoreRequestDTO dto) {
          /*
         youtube 링그 포장된 json
         이런 형식으로
@@ -170,25 +170,25 @@ public class ScoreService {
         ResponseEntity<byte[]> response = restTemplate.exchange(pythonUrl, HttpMethod.POST, stringHttpEntity, byte[].class);
 
         byte[] responseBody = response.getBody();
-        String path = response.getHeaders().get("pdf-path").get(0);
+//        String path = response.getHeaders().get("pdf-path").get(0);
+//
+//        CreateScoreRequestDTO createScoreRequestDTO = CreateScoreRequestDTO.builder()
+//                .account(dto.getAccount())
+//                .scoreTitle("일단제목")
+//                .scoreImageUrl(path)
+//                .scoreGenre(Score.GENRE.VALUE2.getStringValue())
+//                .build();
+//
+//        createScore(createScoreRequestDTO);
+//        Score score = scoreRepository.findByScoreImageUrl(path);
+//        int scoreNo = score.getScoreNo();
+//
+//        NotationResPonseDTO responseDTO = NotationResPonseDTO.builder()
+//                .pdfNotation(responseBody)
+//                .scoreNo(scoreNo)
+//                .build();
 
-        CreateScoreRequestDTO createScoreRequestDTO = CreateScoreRequestDTO.builder()
-                .account(dto.getAccount())
-                .scoreTitle("일단제목")
-                .scoreImageUrl(path)
-                .scoreGenre(Score.GENRE.VALUE2.getStringValue())
-                .build();
-
-        createScore(createScoreRequestDTO);
-        Score score = scoreRepository.findByScoreImageUrl(path);
-        int scoreNo = score.getScoreNo();
-
-        NotationResPonseDTO responseDTO = NotationResPonseDTO.builder()
-                .pdfNotation(responseBody)
-                .scoreNo(scoreNo)
-                .build();
-
-        return responseDTO;
+        return responseBody;
 
 
     }
