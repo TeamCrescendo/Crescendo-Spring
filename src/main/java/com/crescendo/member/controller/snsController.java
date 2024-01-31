@@ -14,22 +14,22 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/auth")
+@RequestMapping("/api/auth/oauth2")
 @CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
 public class snsController {
     private final snsLoginService snsLoginService;
 
-    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    @Value("${spring.security.oauth2.google.client-id}")
     private String clientId;
-    @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
+    @Value("${spring.security.oauth2.google.redirect-uri}")
     private String redirectUri;
-    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+    @Value("${spring.security.oauth2.google.client-secret}")
     private String clientSecret;
-    @Value("${spring.security.oauth2.client.registration.google.scope}")
-    private String scope;
+//    @Value("${spring.security.oauth2.google.scope}")
+//    private String scope;
 
 
-    @GetMapping("/google/login")
+    @GetMapping("/google")
     public void googleSignUp(HttpServletResponse response) throws IOException {
         //1. 구글 접속해서 정보가져오기
         //2.email이 db에 없으면 회원가입진행
@@ -55,12 +55,10 @@ public class snsController {
         System.out.println("들어오나요?");
         String uri = "https://accounts.google.com/o/oauth2/v2/auth";
         uri += "?client_id=" + clientId;
-        uri += "&redirect_uri=" + "http://localhost:8484/api/auth/googleInfo";
+        uri += "&redirect_uri=" + "http://localhost:8484/api/auth/oauth2/googleInfo";
         uri += "&response_type=code";
-        uri += "&scope=https://www.googleapis.com/auth/userinfo.profile";
+        uri += "&scope=https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email";
         response.sendRedirect(uri);
-//        memberService.googleLogin(code,registrationId);
-        // 구글에 접속해서 회원가입 진행
     }
     //구글 인가코드 받기
     @GetMapping("/googleInfo")
@@ -73,7 +71,7 @@ public class snsController {
         params.put("client_secret",clientSecret);
         params.put("code",code);
         params.put("grant_type","authorization_code");
-        params.put("redirect_uri","http://localhost:8484/api/auth/googleInfo");
+        params.put("redirect_uri","http://localhost:8484/api/auth/oauth2/googleInfo/info");
 
         snsLoginService.googleLogin(params,session);
         return null;

@@ -1,5 +1,6 @@
 package com.crescendo.member.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -24,8 +25,16 @@ public class snsLoginService {
 
     public void googleLogin(Map<String, String> requestParam, HttpSession session) {
         // 인가 코드를 가지고 토큰을 발급받는 요청보내기
-        String kakaoAccessToken = getGoogleAccessToken(requestParam);
-        System.out.println("kakaoAccessToken = " + kakaoAccessToken);
+        String googleAccessToken = getGoogleAccessToken(requestParam);
+        System.out.println("kakaoAccessToken = " + googleAccessToken);
+        JsonNode userResource = getUserResource(googleAccessToken);
+        String id = userResource.get("id").asText();
+        String email = userResource.get("email").asText();
+        String nickname = userResource.get("name").asText();
+        System.out.println("id = " + id);
+        System.out.println("email = " + email);
+        System.out.println("nickname = " + nickname);
+
     }
 
     private String getGoogleAccessToken(Map<String, String> requestParam) {
@@ -42,7 +51,7 @@ public class snsLoginService {
         params.add("grant_type", "authorization_code");
         params.add("client_id", requestParam.get("client_id"));
         params.add("client_secret", requestParam.get("client_secret"));
-        params.add("redirect_uri", "http://localhost:8484/api/auth/googleInfo");
+        params.add("redirect_uri", "http://localhost:8484/api/auth/oauth2/googleInfo");
         params.add("code", requestParam.get("code"));
 
         //구글 인증서버로 post요청날리기
@@ -68,5 +77,15 @@ public class snsLoginService {
         return accessToken;
 
 
+    }
+
+    private JsonNode getUserResource(String accessToken) {
+
+        RestTemplate restTemplate = new RestTemplate();
+        String resourceUri="https://www.googleapis.com/oauth2/v2/userinfo";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + accessToken);
+        HttpEntity entity = new HttpEntity(headers);
+        return restTemplate.exchange(resourceUri, HttpMethod.GET, entity, JsonNode.class).getBody();
     }
 }
