@@ -1,9 +1,14 @@
 package com.crescendo.member.controller;
 
+import com.crescendo.member.dto.response.LoginUserResponseDTO;
+import com.crescendo.member.exception.IncorrectPasswordException;
+import com.crescendo.member.exception.NoLoginArgumentsException;
+import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.member.service.snsLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -62,7 +67,7 @@ public class snsController {
     }
     //구글 인가코드 받기
     @GetMapping("/googleInfo")
-    public String authGoogle(String code, HttpSession session) throws IOException {
+    public ResponseEntity<?> authGoogle(String code, HttpSession session) throws IOException {
         //인가 코드를 가지고 구글 인증서버에 토큰 발급 요청을 보냄
         System.out.println(code);
 
@@ -73,8 +78,18 @@ public class snsController {
         params.put("grant_type","authorization_code");
         params.put("redirect_uri","http://localhost:8484/api/auth/oauth2/googleInfo/info");
 
-        snsLoginService.googleLogin(params,session);
-        return null;
+
+
+        try {
+            LoginUserResponseDTO loginUserResponseDTO = snsLoginService.googleLogin(params, session);
+
+            session.setAttribute("login", loginUserResponseDTO);
+            session.setMaxInactiveInterval(60 * 60);
+
+            return ResponseEntity.ok().body(loginUserResponseDTO);
+        } catch (NoLoginArgumentsException | NoMatchAccountException | IncorrectPasswordException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
 
 
     }

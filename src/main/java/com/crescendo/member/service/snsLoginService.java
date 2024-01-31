@@ -1,13 +1,18 @@
 package com.crescendo.member.service;
 
+import com.crescendo.Util.FileDownloader;
+import com.crescendo.member.dto.request.GoogleSignInRequestDTO;
 import com.crescendo.member.dto.request.GoogleSignUpRequestDTO;
 import com.crescendo.member.dto.request.SignInRequestDTO;
 import com.crescendo.member.dto.request.SignUpRequestDTO;
+import com.crescendo.member.dto.response.LoginUserResponseDTO;
 import com.crescendo.member.entity.Member;
 import com.crescendo.member.repository.MemberRepository;
+import com.crescendo.member.util.FileUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,8 +35,11 @@ public class snsLoginService {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
 
+    @Value("${file.upload.root-path}")
+    String imgSavePath;
 
-    public void googleLogin(Map<String, String> requestParam, HttpSession session) throws IOException {
+
+    public LoginUserResponseDTO googleLogin(Map<String, String> requestParam, HttpSession session) throws IOException {
         // 인가 코드를 가지고 토큰을 발급받는 요청보내기
         String googleAccessToken = getGoogleAccessToken(requestParam);
 
@@ -49,14 +57,14 @@ public class snsLoginService {
         params.put("nickname",nickname);
         params.put("pictureUri",pictureUri);
 
-        saveOrUpdate(params);
+        return saveOrUpdate(params);
 
     }
 
     //새로운 회원이면 저장하고-> 로그인
     //기존 회원이면 그냥 로그인
 
-    private void saveOrUpdate(Map<String, String> params) throws IOException {
+    private LoginUserResponseDTO saveOrUpdate(Map<String, String> params) throws IOException {
         //email을 꺼내 기존 회원인지 조회
         String email = params.get("email");
         String account = params.get("id");
@@ -67,22 +75,15 @@ public class snsLoginService {
 
         if(isExist){ //계정이 존재하면
             //멤버를 꺼내오기
-            Member member = memberRepository.findMemberByEmail(email);
-
-            //
-            SignInRequestDTO loginDTO = SignInRequestDTO.builder()
-                    .account(member.getAccount())
-                    .password(member.getPassword())
-                    .autoLogin(true).build();
-
-            memberService.signIn(loginDTO);
+            return getLoginUserResponseDTO(email);
 
 
         }else{//계정이 존재하지 않으면
             log.info("계정이존재하지 않나요");
             //랜덤 패스워드 만들기
             String password= UUID.randomUUID().toString();
-            //이미지 uri를 멀티파트 파일로 변환
+            //이미지 소스에서 파일 다운 가져오기
+//            String downloadFilePath = FileUtil.downloadFile(imgUri, imgSavePath);
 
 
             GoogleSignUpRequestDTO dto = GoogleSignUpRequestDTO.builder()
@@ -90,13 +91,30 @@ public class snsLoginService {
                     .userName(nickname)
                     .email(email)
                     .password(password)
-                    .profileImagePath(imgUri).build();
+                    .profileImage(imgUri).build();
 
             //회원가입 진행
             memberService.signUp(dto);
+
+            //로그인 바로 되게 하기
+            return getLoginUserResponseDTO(email);
+
+
         }
 
 
+    }
+
+    private LoginUserResponseDTO getLoginUserResponseDTO(String email) {
+        Member member = memberRepository.findMemberByEmail(email);
+
+        //
+        GoogleSignInRequestDTO loginDTO = GoogleSignInRequestDTO.builder()
+                .account(member.getAccount())
+                .autoLogin(true).build();
+
+        LoginUserResponseDTO loginUserResponseDTO = memberService.signIn(loginDTO);
+        return loginUserResponseDTO;
     }
 
     private String getGoogleAccessToken(Map<String, String> requestParam) {

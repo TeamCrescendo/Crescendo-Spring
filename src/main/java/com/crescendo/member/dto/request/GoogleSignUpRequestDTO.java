@@ -35,7 +35,7 @@ public class GoogleSignUpRequestDTO {
     @Size(min = 2, max = 30)
     private String email;
 
-    private String profileImagePath;
+    private String profileImage;
 
 
     public Member toEntity(PasswordEncoder encoder){
@@ -44,7 +44,7 @@ public class GoogleSignUpRequestDTO {
                 .password(encoder.encode(password))
                 .userName(userName)
                 .email(email)
-                .profileImageUrl(profileImagePath)
+                .profileImageUrl(profileImage)
                 .build();
     }
 }

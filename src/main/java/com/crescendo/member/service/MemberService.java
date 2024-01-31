@@ -90,6 +90,7 @@ public class MemberService {
         }
 
 
+
         Member save = memberRepository.save(dto.toEntity(encoder));
 
         log.info("회원가입 성공!! saved user - {}", save);
@@ -121,6 +122,26 @@ public class MemberService {
         String token = tokenProvider.createToken(foundMember);
         return new LoginUserResponseDTO(foundMember, token);
     }
+
+
+    //구글 로그인 처리
+    public LoginUserResponseDTO signIn(GoogleSignInRequestDTO dto) {
+        if (dto == null) {
+            log.warn("로그인 정보가 없습니다.");
+            throw new NoLoginArgumentsException("로그인 정보가 없습니다");
+        }
+        Member foundMember = memberRepository.getOne(dto.getAccount());
+        if (foundMember == null) {
+            log.warn("일치하는 계정이 없습니다.");
+            throw new NoMatchAccountException("일치하는 계정이 없습니다");
+        }
+        String encodedPassword = foundMember.getPassword();
+        String token = tokenProvider.createToken(foundMember);
+        log.info("구글 로그인 성공");
+        return new LoginUserResponseDTO(foundMember, token);
+    }
+
+
 
     public Member findUser(String account) {
         Member foundMember = memberRepository.getOne(account);
