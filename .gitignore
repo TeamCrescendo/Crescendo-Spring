@@ -40,3 +40,6 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+#oauth 정보보호
+application-oauth.properties

@@ -2,6 +2,8 @@ server:
   port: 8484
 
 spring:
+  profiles:
+    include: oauth  #oauth 로그인 진행시 정보를 가져오기위해서
   security:
     oauth2:
       client:
