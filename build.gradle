@@ -43,6 +43,10 @@ dependencies {
     //java pdf 받는 라이브러리
     implementation 'com.itextpdf:itextpdf:5.5.13' // 최신 버전으로 업데이트 가능
 
+    //oauth2
+    implementation('org.springframework.boot:spring-boot-starter-oauth2-client')
+    implementation('org.springframework.security:spring-security-oauth2-jose')
+
 
 }
 

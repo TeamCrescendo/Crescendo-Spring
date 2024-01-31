@@ -1,5 +1,6 @@
 package com.crescendo.member.service;
 
+import com.crescendo.allPlayList.repository.AllPlayListRepository;
 import com.crescendo.member.dto.request.*;
 import com.crescendo.member.dto.response.LoginUserResponseDTO;
 import com.crescendo.member.entity.Member;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional // JPA 사용시 필수 (서비스에)
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final AllPlayListRepository allPlayListRepository;
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
     @Value("${file.upload.root-path}")
@@ -49,13 +51,13 @@ public class MemberService {
             throw new DuplicateUserNameException("중복된 계정명입니다!!");
         }
 
-//        if(dto.getProfileImage().getSize() != 0 && dto.getProfileImage() != null){
-//            String upload = FileUtil.upload(dto.getProfileImage(), rootPath);
-//            Member save = memberRepository.save(dto.toEntity(encoder));
-//            save.setProfileImageUrl(upload);
-//            log.info("회원가입 성공!! saved user - {}", save);
-//            return true;
-//        }
+        if(dto.getProfileImage().getSize() != 0 && dto.getProfileImage() != null){
+            String upload = FileUtil.upload(dto.getProfileImage(), rootPath);
+            Member save = memberRepository.save(dto.toEntity(encoder));
+            save.setProfileImageUrl(upload);
+            log.info("회원가입 성공!! saved user - {}", save);
+            return true;
+        }
 
 
         Member save = memberRepository.save(dto.toEntity(encoder));
@@ -197,4 +199,17 @@ public class MemberService {
 
     }
 
+    public Boolean deleteUser(String account) {
+        //유저찾기-> findUser에서 검사해줌
+        Member user = findUser(account);
+        //유저에 관련된 모든 플레이리스트 삭제하기
+        boolean isDelete = allPlayListRepository.deleteByAccount(user);
+        if(isDelete){
+            memberRepository.delete(user);
+            return true;
+        }
+        return false;
+        
+
+    }
 }

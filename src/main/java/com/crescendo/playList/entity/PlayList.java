@@ -36,5 +36,4 @@ public class PlayList {
     @Column(name = "pl_add_date_time")
     private LocalDateTime plAddDateTime;
 
-
 }

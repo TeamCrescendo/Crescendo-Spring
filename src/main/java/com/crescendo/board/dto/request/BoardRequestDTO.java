@@ -18,7 +18,7 @@ public class BoardRequestDTO {
     @Size(min = 2, max = 45)
     private String boardTitle;
 
-    private String account;
+//    private String account;
 
     private int scoreNo;
 

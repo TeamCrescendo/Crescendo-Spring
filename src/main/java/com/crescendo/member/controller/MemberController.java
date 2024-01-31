@@ -86,4 +86,14 @@ public class MemberController {
         LoginUserResponseDTO loginUserResponseDTO = new LoginUserResponseDTO(user);
         return ResponseEntity.ok().body(loginUserResponseDTO);
     }
+
+    //유저 정보삭제
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteUser(@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
+        Boolean isDelete=memberService.deleteUser(tokenUserInfo.getAccount());
+        if(isDelete)
+            return ResponseEntity.ok().body("계정정보가 성공적으로 삭제 되었습니다.");
+        return  ResponseEntity.badRequest().body("삭제에 실패했습니다! 다시시도해주세요!");
+
+    }
 }

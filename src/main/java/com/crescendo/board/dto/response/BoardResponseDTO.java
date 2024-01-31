@@ -1,11 +1,9 @@
 package com.crescendo.board.dto.response;
 
 import com.crescendo.board.entity.Board;
-import com.crescendo.board.entity.Dislike;
-import com.crescendo.board.entity.Like;
-import com.crescendo.member.entity.Member;
-import com.crescendo.score.entity.Score;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -20,25 +18,36 @@ public class BoardResponseDTO {
 
     private String boardTitle;
 
-    private Member member;
+    private String memberAccount;
 
-    private Like boardLike;
+    private Integer boardLikeCount;
 
-    private Dislike boardDislike;
+    private Integer boardDislikeCount;
 
     private Long boardViewCount;
 
     private Integer boardDownloadCount;
 
-    private Score scoreNo;
+    private Integer scoreNo;
+
+    private String scoreTitle;
+
+    private String scoreImageUrl;
+
+    private LocalDateTime scoreUploadDateTime;
 
     public BoardResponseDTO(Board board){
         this.boardNo = board.getBoardNo();
         this.boardTitle = board.getBoardTitle();
-        this.member = board.getMember();
+        this.memberAccount = board.getMember().getAccount();
+        this.boardLikeCount = board.getBoardLikeCount();
+        this.boardDislikeCount = board.getBoardDislikeCount();
         this.boardViewCount = board.getBoardViewCount();
         this.boardDownloadCount = board.getBoardDownloadCount();
-        this.scoreNo = board.getScoreNo();
+        this.scoreNo = board.getScoreNo().getScoreNo();
+        this.scoreTitle = board.getScoreNo().getScoreTitle();
+        this.scoreImageUrl = board.getScoreNo().getScoreImageUrl();
+        this.scoreUploadDateTime = board.getScoreNo().getScoreUploadDateTime();
     }
 }
 
