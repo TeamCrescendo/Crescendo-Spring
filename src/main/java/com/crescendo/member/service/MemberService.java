@@ -65,6 +65,41 @@ public class MemberService {
         return true;
     }
 
+
+    //구글 로그인 처리
+    public boolean signUp(GoogleSignUpRequestDTO dto) {
+        if (dto == null) {
+            log.warn("회원정보가 없습니다");
+            throw new NoRegisteredArgumentsException("회원가입 입력정보가 없습니다!");
+        }
+        System.out.println("dto = " + dto);
+        String account = dto.getAccount();
+        if (memberRepository.existsById(account)) {
+            log.warn("계정이 중복되었습니다!! -{}.", account);
+            throw new DuplicatedAccountException("중복된 계정입니다!!");
+        }
+        String email = dto.getEmail();
+        if (memberRepository.existsByEmail(email)) {
+            log.warn("이메일이 중복되었습니다!! -{}.", email);
+            throw new DuplicateEmailException("중복된 이메일입니다!!");
+        }
+        String userName = dto.getUserName();
+        if (memberRepository.existsByUserName(userName)) {
+            log.warn("계정명이 중복되었습니다!! -{}.", userName);
+            throw new DuplicateUserNameException("중복된 계정명입니다!!");
+        }
+
+
+        Member save = memberRepository.save(dto.toEntity(encoder));
+
+        log.info("회원가입 성공!! saved user - {}", save);
+        return true;
+
+    }
+
+
+
+
     // 로그인 처리
     public LoginUserResponseDTO signIn(SignInRequestDTO dto) {
         if (dto == null) {

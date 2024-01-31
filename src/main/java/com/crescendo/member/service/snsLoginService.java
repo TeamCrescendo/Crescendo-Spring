@@ -1,39 +1,101 @@
 package com.crescendo.member.service;
 
+import com.crescendo.member.dto.request.GoogleSignUpRequestDTO;
+import com.crescendo.member.dto.request.SignInRequestDTO;
+import com.crescendo.member.dto.request.SignUpRequestDTO;
+import com.crescendo.member.entity.Member;
+import com.crescendo.member.repository.MemberRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
+import java.io.*;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
 @Transactional // JPA 사용시 필수 (서비스에)
 public class snsLoginService {
+    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
 
-    public void googleLogin(Map<String, String> requestParam, HttpSession session) {
+    public void googleLogin(Map<String, String> requestParam, HttpSession session) throws IOException {
         // 인가 코드를 가지고 토큰을 발급받는 요청보내기
         String googleAccessToken = getGoogleAccessToken(requestParam);
-        System.out.println("kakaoAccessToken = " + googleAccessToken);
+
+        //토큰을 가지고 id, email,nickname 정보를 가져오는 요청 보내기
         JsonNode userResource = getUserResource(googleAccessToken);
+        log.info("유저정보{}",userResource);
         String id = userResource.get("id").asText();
         String email = userResource.get("email").asText();
         String nickname = userResource.get("name").asText();
-        System.out.println("id = " + id);
-        System.out.println("email = " + email);
-        System.out.println("nickname = " + nickname);
+        String pictureUri = userResource.get("picture").asText();
+        
+        Map<String, String> params = new HashMap<>();
+        params.put("id",id);
+        params.put("email",email);
+        params.put("nickname",nickname);
+        params.put("pictureUri",pictureUri);
+
+        saveOrUpdate(params);
+
+    }
+
+    //새로운 회원이면 저장하고-> 로그인
+    //기존 회원이면 그냥 로그인
+
+    private void saveOrUpdate(Map<String, String> params) throws IOException {
+        //email을 꺼내 기존 회원인지 조회
+        String email = params.get("email");
+        String account = params.get("id");
+        String nickname = params.get("nickname");
+        String imgUri=params.get("pictureUri");
+
+        boolean isExist = memberRepository.existsByEmail(email);
+
+        if(isExist){ //계정이 존재하면
+            //멤버를 꺼내오기
+            Member member = memberRepository.findMemberByEmail(email);
+
+            //
+            SignInRequestDTO loginDTO = SignInRequestDTO.builder()
+                    .account(member.getAccount())
+                    .password(member.getPassword())
+                    .autoLogin(true).build();
+
+            memberService.signIn(loginDTO);
+
+
+        }else{//계정이 존재하지 않으면
+            log.info("계정이존재하지 않나요");
+            //랜덤 패스워드 만들기
+            String password= UUID.randomUUID().toString();
+            //이미지 uri를 멀티파트 파일로 변환
+
+
+            GoogleSignUpRequestDTO dto = GoogleSignUpRequestDTO.builder()
+                    .account(account)
+                    .userName(nickname)
+                    .email(email)
+                    .password(password)
+                    .profileImagePath(imgUri).build();
+
+            //회원가입 진행
+            memberService.signUp(dto);
+        }
+
 
     }
 
@@ -88,4 +150,6 @@ public class snsLoginService {
         HttpEntity entity = new HttpEntity(headers);
         return restTemplate.exchange(resourceUri, HttpMethod.GET, entity, JsonNode.class).getBody();
     }
+
+
 }

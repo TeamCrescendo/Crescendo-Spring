@@ -1,6 +1,5 @@
 package com.crescendo.member.controller;
 
-import com.crescendo.googleT.LoginService;
 import com.crescendo.member.dto.request.DuplicateCheckDTO;
 import com.crescendo.member.dto.request.SignInRequestDTO;
 import com.crescendo.member.dto.request.SignUpRequestDTO;
@@ -10,7 +9,6 @@ import com.crescendo.member.service.MemberService;
 //import com.crescendo.member.service.snsLoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
