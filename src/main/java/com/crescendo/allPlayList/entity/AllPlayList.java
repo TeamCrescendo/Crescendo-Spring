@@ -4,6 +4,7 @@ import com.crescendo.member.entity.Member;
 import com.crescendo.playList.entity.PlayList;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -38,4 +39,6 @@ public class AllPlayList {
     @CreationTimestamp
     private LocalDateTime plCreateDateTime;
 
+    @Column(name ="score_count")
+    private Integer scoreCount;
 }

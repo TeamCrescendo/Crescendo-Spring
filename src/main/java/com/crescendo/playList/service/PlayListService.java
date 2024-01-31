@@ -1,5 +1,6 @@
 package com.crescendo.playList.service;
 
+import com.crescendo.allPlayList.dto.response.AllPlayResponseDTO;
 import com.crescendo.allPlayList.entity.AllPlayList;
 import com.crescendo.allPlayList.repository.AllPlayListRepository;
 import com.crescendo.member.entity.Member;
@@ -66,8 +67,10 @@ public class PlayListService {
                         .build();
                 //나의 새로운 playList를 만든다
                 playListRepository.save(build);
+                PlayListResponseDTO.builder().scoreCount(+1).build();
 
                 log.info("새로운 저장소와 악보를 추가했습니다. ");
+
 
             } else {
                 //만약 저장소가 있다면 ?
