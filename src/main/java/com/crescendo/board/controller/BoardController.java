@@ -3,6 +3,7 @@ package com.crescendo.board.controller;
 import com.crescendo.board.dto.request.BoardModifyRequestDTO;
 import com.crescendo.board.dto.request.BoardRequestDTO;
 import com.crescendo.board.dto.response.BoardListResponseDTO;
+import com.crescendo.board.entity.Board;
 import com.crescendo.board.entity.Dislike;
 import com.crescendo.board.entity.Like;
 import com.crescendo.board.service.BoardService;
@@ -10,11 +11,15 @@ import com.crescendo.likeAndDislike.dto.request.LikeAndDislikeRequestDTO;
 import com.crescendo.member.util.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URLEncoder;
 
 import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
@@ -27,6 +32,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 public class BoardController {
 
     private final BoardService boardService;
+
 
     //Board 등록 요청
     @PostMapping("/createBoard")
@@ -99,5 +105,17 @@ public class BoardController {
     public ResponseEntity<?> likeAndDisLike(@RequestBody LikeAndDislikeRequestDTO dto){
     boardService.LikeAndDislike(dto);
     return ResponseEntity.ok().body("성공적으로 좋아요와 싫어요 연결 성공");
+    }
+
+
+    //PDF파일을 byte로 바꾸는 처리
+    @GetMapping()
+    public  ResponseEntity<?>downloadPdf(@PathVariable Long boardId){
+        ResponseEntity<byte[]> boardPdf = boardService.getBoardPdf(boardId);
+        HttpHeaders headers=  boardPdf.getHeaders();
+
+        //클라이언트에게 HttpHeaders와 함께 PDF를 전송
+        return ResponseEntity.ok().headers(headers).body(boardPdf.getBody());
+
     }
 }
