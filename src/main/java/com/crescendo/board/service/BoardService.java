@@ -15,12 +15,18 @@ import com.crescendo.board.repository.BoardRepository;
 import com.crescendo.member.repository.MemberRepository;
 import com.crescendo.score.entity.Score;
 import com.crescendo.score.repository.ScoreRepository;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.pdf.PdfDocument;
+import com.itextpdf.text.pdf.PdfPage;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.pdf.codec.Base64;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.io.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -55,13 +61,9 @@ public class BoardService {
         return retrieve();
     }
 
-    //board 불러오기
+    // board 불러오기
     public BoardListResponseDTO retrieve() {
-        List<Board> board = boardRepository.findAll();
-
-        List<BoardResponseDTO> dtoList = board.stream()
-                .map(BoardResponseDTO::new)
-                .collect(Collectors.toList());
+        List<BoardResponseDTO> dtoList = boardRepository.findAllBoardResponseDTO();
         return BoardListResponseDTO.builder()
                 .boards(dtoList)
                 .build();
@@ -168,5 +170,16 @@ public class BoardService {
         }
     }
 
+//    //boardId를 가져와서 board엔터티를 통해 그것과 관련된 imageUrl의 정보를 pdf 파일로 변환 해야한다.
+//    //이 imageUrl은 score의 imageUrl을 가져오면 될 것같다.
+//   public byte[] savePDF(Long boardId) throws IOException{
+//        //Board엔터티에서 이미지 URL을 가져올 것임
+//       //먼저 boardID를 가져와야함
+//       Board board = boardRepository.findByBoardNo(boardId);
+//       //그 다음 boardId와 관련된 scoreImageURL을 가져와야 함
+//       String scoreImageUrl = board.getScoreNo().getScoreImageUrl();
+//
+//
+//   }
 
 }
