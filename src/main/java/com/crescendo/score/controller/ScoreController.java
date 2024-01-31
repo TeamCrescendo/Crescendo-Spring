@@ -6,6 +6,8 @@ import com.crescendo.member.service.MemberService;
 import com.crescendo.member.util.TokenUserInfo;
 import com.crescendo.post_message.dto.request.CreateNotationRequestDTO;
 import com.crescendo.post_message.dto.response.NotationResPonseDTO;
+import com.crescendo.score.dto.request.AiMusicRequestDTO;
+import com.crescendo.score.dto.request.CreateAiScoreRequestDTO;
 import com.crescendo.score.dto.request.CreateScoreRequestDTO;
 import com.crescendo.score.dto.request.YoutubeLinkRequestDTO;
 import com.crescendo.score.dto.response.FindByAccountScoreResponseDTO;
@@ -21,6 +23,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -90,7 +93,7 @@ public class ScoreController {
 
         NotationResPonseDTO notationResPonseDTO = scoreService.postToPython(requestDTO);
         if(notationResPonseDTO!=null){
-        HttpHeaders headers = new HttpHeaders();
+            HttpHeaders headers = new HttpHeaders();
         //헤더에 추가해야하는건 scoreid임
         headers.add("score-id", String.valueOf(notationResPonseDTO.getScoreNo()));
         //헤더 정보를 이용해서 pdf 라는 걸 다시한번 인지시켜주기
@@ -105,6 +108,36 @@ public class ScoreController {
 
 
     }
+    @PostMapping("/ai")
+    private ResponseEntity<?> youtubeLink(@AuthenticationPrincipal TokenUserInfo tokenUser, @RequestBody AiMusicRequestDTO dto){
+        // 회원도 받아서 인증해야함.
+        memberService.findUserAndCountCheck(tokenUser.getAccount());
+
+        //python에 전달할 json 데이터 포장 url ,account
+        CreateAiScoreRequestDTO requestDTO = CreateAiScoreRequestDTO.builder()
+                .prompt(dto.getPrompt())
+                .duration(dto.getDuration())
+                .account(tokenUser.getAccount())
+                .build();
+
+
+        byte[] aiMp3 = scoreService.postToPython(requestDTO);
+        if(aiMp3!=null){
+            HttpHeaders headers = new HttpHeaders();
+            //헤더에 추가해야하는건 scoreid임
+            //헤더 정보를 이용해서 pdf 라는 걸 다시한번 인지시켜주기
+            headers.add("content-type", "audio/mp3");
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(aiMp3);
+        }
+
+        return ResponseEntity.status(500).body("안되요..");
+
+
+
+    }
+
 
 
 }

@@ -5,6 +5,7 @@ import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.member.repository.MemberRepository;
 import com.crescendo.post_message.dto.request.CreateNotationRequestDTO;
 import com.crescendo.post_message.dto.response.NotationResPonseDTO;
+import com.crescendo.score.dto.request.CreateAiScoreRequestDTO;
 import com.crescendo.score.dto.response.FindByAccountScoreResponseDTO;
 import com.crescendo.score.entity.Score;
 import com.crescendo.score.dto.request.CreateScoreRequestDTO;
@@ -146,6 +147,52 @@ public class ScoreService {
 
 
     }
+
+    public byte[] postToPython(@RequestBody CreateAiScoreRequestDTO dto) {
+         /*
+        youtube 링그 포장된 json
+        이런 형식으로
+        {
+            "url":"youtube url",
+            "account":"계정명"
+          */
+
+
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+
+        HttpEntity<CreateAiScoreRequestDTO> stringHttpEntity = new HttpEntity<>(dto, headers);
+
+        String pythonUrl = "http://127.0.0.1:8181/ai/ai/";
+
+        ResponseEntity<byte[]> response = restTemplate.exchange(pythonUrl, HttpMethod.POST, stringHttpEntity, byte[].class);
+
+        byte[] responseBody = response.getBody();
+//        String path = response.getHeaders().get("pdf-path").get(0);
+//
+//        CreateScoreRequestDTO createScoreRequestDTO = CreateScoreRequestDTO.builder()
+//                .account(dto.getAccount())
+//                .scoreTitle("일단제목")
+//                .scoreImageUrl(path)
+//                .scoreGenre(Score.GENRE.VALUE2.getStringValue())
+//                .build();
+//
+//        createScore(createScoreRequestDTO);
+//        Score score = scoreRepository.findByScoreImageUrl(path);
+//        int scoreNo = score.getScoreNo();
+//
+//        NotationResPonseDTO responseDTO = NotationResPonseDTO.builder()
+//                .pdfNotation(responseBody)
+//                .scoreNo(scoreNo)
+//                .build();
+
+        return responseBody;
+
+
+    }
+
 
 
 }

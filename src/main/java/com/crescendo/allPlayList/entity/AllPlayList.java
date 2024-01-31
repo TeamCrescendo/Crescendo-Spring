@@ -8,11 +8,12 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Setter
 @Getter
-@ToString
+@ToString(exclude = "plId")
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
@@ -39,6 +40,12 @@ public class AllPlayList {
     @CreationTimestamp
     private LocalDateTime plCreateDateTime;
 
+<<<<<<< HEAD
     @Column(name ="score_count")
     private Integer scoreCount;
+=======
+    @OneToMany(mappedBy = "plId",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<PlayList> playLists=new ArrayList<>();
+
+>>>>>>> seon/01/30
 }
