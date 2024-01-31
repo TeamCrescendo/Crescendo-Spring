@@ -20,7 +20,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/auth/oauth2")
-@CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000"})
 public class snsController {
     private final snsLoginService snsLoginService;
 
@@ -34,6 +34,7 @@ public class snsController {
 //    private String scope;
 
 
+    @CrossOrigin(origins = {"http://localhost:3000","http://localhost:8484/api/auth/oauth2/googleInfo"})
     @GetMapping("/google")
     public void googleSignUp(HttpServletResponse response) throws IOException {
         //1. 구글 접속해서 정보가져오기
@@ -63,9 +64,12 @@ public class snsController {
         uri += "&redirect_uri=" + "http://localhost:8484/api/auth/oauth2/googleInfo";
         uri += "&response_type=code";
         uri += "&scope=https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email";
+
+        System.out.println("uri = " + uri);
         response.sendRedirect(uri);
     }
     //구글 인가코드 받기
+    @CrossOrigin(origins = {"http://localhost:8484/api/auth/oauth2/google"})
     @GetMapping("/googleInfo")
     public ResponseEntity<?> authGoogle(String code, HttpSession session) throws IOException {
         //인가 코드를 가지고 구글 인증서버에 토큰 발급 요청을 보냄
