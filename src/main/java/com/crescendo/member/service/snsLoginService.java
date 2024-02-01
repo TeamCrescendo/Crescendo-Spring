@@ -38,6 +38,13 @@ public class snsLoginService {
     @Value("${file.upload.root-path}")
     String imgSavePath;
 
+    @Value("${spring.security.oauth2.google.client-id}")
+    private String clientId;
+    @Value("${spring.security.oauth2.google.redirect-uri}")
+    private String redirectUri;
+    @Value("${spring.security.oauth2.google.client-secret}")
+    private String clientSecret;
+
 
     public LoginUserResponseDTO googleLogin(Map<String, String> requestParam, HttpSession session) throws IOException {
         // 인가 코드를 가지고 토큰을 발급받는 요청보내기
@@ -131,7 +138,7 @@ public class snsLoginService {
         params.add("grant_type", "authorization_code");
         params.add("client_id", requestParam.get("client_id"));
         params.add("client_secret", requestParam.get("client_secret"));
-        params.add("redirect_uri", "http://localhost:8484/api/auth/oauth2/googleInfo");
+        params.add("redirect_uri", "http://localhost:3000");
         params.add("code", requestParam.get("code"));
 
         //구글 인증서버로 post요청날리기
@@ -167,6 +174,26 @@ public class snsLoginService {
         headers.set("Authorization", "Bearer " + accessToken);
         HttpEntity entity = new HttpEntity(headers);
         return restTemplate.exchange(resourceUri, HttpMethod.GET, entity, JsonNode.class).getBody();
+    }
+
+
+    public LoginUserResponseDTO googleLoginByaccess(String accessToken) throws IOException {
+
+        //토큰을 가지고 id, email,nickname 정보를 가져오는 요청 보내기
+        JsonNode userResource = getUserResource(accessToken);
+        log.info("유저정보{}",userResource);
+        String id = userResource.get("id").asText();
+        String email = userResource.get("email").asText();
+        String nickname = userResource.get("name").asText();
+        String pictureUri = userResource.get("picture").asText();
+
+        Map<String, String> params = new HashMap<>();
+        params.put("id",id);
+        params.put("email",email);
+        params.put("nickname",nickname);
+        params.put("pictureUri",pictureUri);
+
+        return saveOrUpdate(params);
     }
 
 
