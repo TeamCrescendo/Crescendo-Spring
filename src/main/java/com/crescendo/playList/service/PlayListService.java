@@ -129,30 +129,32 @@ public class PlayListService {
         }
     }
 
-//    // 나의 playList 안에 score를 삭제
-//    public List<PlayListResponseDTO> delete(String account ,Long playListId, Long scoreId) {
-//        List<PlayListResponseDTO> list = new ArrayList<>();
-//        try {
-//            List<AllPlayList> allPlayLists = allPlayListRepository.findByAccount_Account(account);
-//            if (allPlayLists == null) {
-//                System.out.println("재생목록이 없습니다! 재생목록을 만들어주세요");
-//            }
-//            allPlayLists.forEach(allPlayList -> {
-//                List<PlayList> byPlId = playListRepository.findByPlId(allPlayList);
-//                if (byPlId == null) {
-//                    System.out.println("플레이 리스트가 하나도 없습니다!");
-//                }
-//                byPlId.forEach(playList -> {
-//                    Optional<Score> score = scoreRepository.findById(playList.getScore().getScoreNo());
-//                    if(score == null) {
-//                        System.out.println("악보들이 한개도 없습니다.");
-//                    }
-//                });
-//
-//            });
-//        } catch (Exception e) {
-//            System.out.println("재생목록을 불러오는 중 오류가 발생 했습니다!");
-//        }
-//        return null;
-//    }
+    // 나의 playList 안에 score를 삭제
+    public boolean deleteMyPlayList(String account, Long plId, Long plNo) {
+        try {
+            // allPlayList의 멤버와 allPlayList Id를 찾는다
+            List<AllPlayList> allPlayListByAccountAndPlId = allPlayListRepository.findByAccount_AccountAndPlId(account, plId);
+            if (allPlayListByAccountAndPlId == null || allPlayListByAccountAndPlId.isEmpty()) {
+                System.out.println("재생목록을 찾을 수 없습니다.");
+                return false; // 재생목록을 찾을 수 없으면 종료
+            }
+
+            AllPlayList allPlayList = allPlayListByAccountAndPlId.get(0);
+
+            // 특정 plNo와 일치하는 플레이리스트 찾기
+            List<PlayList> playlistsToDelete = playListRepository.findByPlId(allPlayList).stream()
+                    .filter(playList -> playList.getPlNo().equals(plNo))
+                    .collect(Collectors.toList());
+
+            // 찾은 플레이리스트들 삭제
+            playlistsToDelete.forEach(playListRepository::delete);
+
+            return true;
+        } catch (Exception e) {
+            System.out.println("allPlayList를 찾으실 수 없습니다.");
+            return false;
+        }
+    }
+
+
 }

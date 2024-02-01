@@ -41,6 +41,7 @@ public class AllPlayList {
     private LocalDateTime plCreateDateTime;
 
     @Column(name ="score_count")
-    private Integer scoreCount;
+    @Builder.Default
+    private Integer scoreCount = 0;
 
 }
