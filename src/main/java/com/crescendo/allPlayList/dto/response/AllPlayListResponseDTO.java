@@ -11,7 +11,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AllPlayListResponseDTO {
+public class
+
+AllPlayListResponseDTO {
 
     private Member member;
     private Long plId;

@@ -69,16 +69,20 @@ public class AllPlayListService {
     }
 
     //AllPlayList 삭제 !
-    public AllPlayResponseDTO delete(Long boardNo) {
+    public AllPlayResponseDTO delete(Long plId) {
         try {
-            AllPlayList allPlayList = allPlayListRepository.findById(boardNo).orElseThrow(() -> new RuntimeException("삭제에 실패 하셨습니다 찾으신 재생목록 id는 없습니다."));
+            AllPlayList allPlayList = allPlayListRepository.findById(plId).orElseThrow(() -> new RuntimeException("삭제에 실패 하셨습니다 찾으신 재생목록 id는 없습니다."));
 
             allPlayListRepository.delete(allPlayList);
+
+
+
+
             MinusScoreCount(allPlayList);
 
 
         } catch (Exception e) {
-            log.error("board의 번호가 존재 하지 않아요 !  - ID {}, error - {}", boardNo, e.getMessage());
+            log.error("board의 번호가 존재 하지 않아요 !  - ID {}, error - {}", plId, e.getMessage());
             throw new RuntimeException("삭제실패 했습니다.");
         }
         return retrieve();
