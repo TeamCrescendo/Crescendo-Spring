@@ -78,6 +78,7 @@ public class BoardController {
     }
 
     //Board 삭제 요청
+
     @DeleteMapping("/{boardNo}")
     public ResponseEntity<?> deleteBoard(@PathVariable Long boardNo,@AuthenticationPrincipal TokenUserInfo userInfo){
 
@@ -116,6 +117,5 @@ public class BoardController {
 
         //클라이언트에게 HttpHeaders와 함께 PDF를 전송
         return ResponseEntity.ok().headers(headers).body(boardPdf.getBody());
-
     }
 }
