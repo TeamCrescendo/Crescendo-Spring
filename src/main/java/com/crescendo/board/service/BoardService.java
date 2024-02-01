@@ -33,6 +33,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -70,8 +71,15 @@ public class BoardService {
     // board 불러오기
     public BoardListResponseDTO retrieve() {
         List<BoardResponseDTO> dtoList = boardRepository.findAllBoardResponseDTO();
+        List<byte[]> pdfList = new ArrayList<>();
+        dtoList.forEach(boardResponseDTO -> {
+            Long boardNo = boardResponseDTO.getBoardNo();
+            byte[] boardPdf = getBoardPdf(boardNo);
+            pdfList.add(boardPdf);
+        });
         return BoardListResponseDTO.builder()
                 .boards(dtoList)
+                .pdfFile(pdfList)
                 .build();
     }
 
@@ -177,8 +185,8 @@ public class BoardService {
     }
 
     //PDF를 가져와서 byte로 변환하여 클라이언트에 전송하는 메서드
-    public ResponseEntity<byte[]> getBoardPdf(Long boardId){
-        try{
+    public byte[] getBoardPdf(Long boardId) {
+        try {
             Board board = boardRepository.findByBoardNo(boardId);
             String score = board.getScoreNo().getScoreImageUrl();
 
@@ -190,10 +198,10 @@ public class BoardService {
             headers.setContentType(MediaType.APPLICATION_PDF);
             //PDF 파일 중에 특수문자가 있더라도 안전하게 처리함
             String FileName = URLEncoder.encode(board.getScoreNo().getScoreImageUrl(), "UTF-8");
-            headers.setContentDispositionFormData("attachment",FileName);
+            headers.setContentDispositionFormData("attachment", FileName);
 
             //ResponseEntity를 사용해서 클라이언트에 byte 배열 전송
-            return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+            return bytes;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -203,7 +211,7 @@ public class BoardService {
     private static byte[] readPdfFile(String pdfPath) throws IOException {
         try (InputStream inputStream = new FileInputStream(pdfPath);
              ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[2048];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
