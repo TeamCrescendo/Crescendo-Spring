@@ -44,4 +44,6 @@ public class AllPlayList {
     @Builder.Default
     private Integer scoreCount = 0;
 
+    @OneToMany(mappedBy = "plId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PlayList> playLists = new ArrayList<>();
 }

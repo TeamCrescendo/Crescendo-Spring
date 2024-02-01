@@ -34,9 +34,11 @@ public class SecurityConfig {
                     .antMatchers("/api/score/**").permitAll()
                     .antMatchers("/local/**").permitAll()
                     .antMatchers("/api/board/**").permitAll()
+                .antMatchers("/api/allPlayList/**").permitAll()
+//                .antMatchers("/api/playList/**").permitAll()
                 .antMatchers("/api/member/**").permitAll()
                     //.antMatchers("/**").permitAll();
-                .antMatchers("/api/allPlayList/**").permitAll()
+
                 .anyRequest().authenticated()
         ;
         // 토큰 인증 필터 연결하기
