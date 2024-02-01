@@ -109,7 +109,7 @@ public class BoardController {
 
 
     //PDF파일을 byte로 바꾸는 처리
-    @GetMapping()
+    @GetMapping("/{boardId}")
     public  ResponseEntity<?>downloadPdf(@PathVariable Long boardId){
         ResponseEntity<byte[]> boardPdf = boardService.getBoardPdf(boardId);
         HttpHeaders headers=  boardPdf.getHeaders();

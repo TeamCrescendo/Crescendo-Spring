@@ -40,12 +40,7 @@ public class AllPlayList {
     @CreationTimestamp
     private LocalDateTime plCreateDateTime;
 
-<<<<<<< HEAD
     @Column(name ="score_count")
     private Integer scoreCount;
-=======
-    @OneToMany(mappedBy = "plId",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-    private List<PlayList> playLists=new ArrayList<>();
 
->>>>>>> seon/01/30
 }
