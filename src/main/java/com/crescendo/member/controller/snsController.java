@@ -34,16 +34,6 @@ import java.util.Map;
 public class snsController {
     private final snsLoginService snsLoginService;
 
-    @Value("${spring.security.oauth2.google.client-id}")
-    private String clientId;
-    @Value("${spring.security.oauth2.google.redirect-uri}")
-    private String redirectUri;
-    @Value("${spring.security.oauth2.google.client-secret}")
-    private String clientSecret;
-//    @Value("${spring.security.oauth2.google.scope}")
-//    private String scope;
-
-
     @PostMapping("/google/info")
     public ResponseEntity<?> getAccessToken(@RequestBody String accessToken,HttpSession session) throws IOException {
         LoginUserResponseDTO loginUserResponseDTO = snsLoginService.googleLoginByaccess(accessToken);
