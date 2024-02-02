@@ -248,12 +248,21 @@ public class MemberService {
 
 
     //유저를 검색하고 countCheck 를 진행하는 서비스
-    public void findUserAndCountCheck(String account) {
-        //1. 유저 검사&& 카운트 검사
-        int download = download(account);
+    public void findUserAndCountCheck(Member member) {
+        //2.카운트 다운
+        coutDownDownload(member);
 
 
     }
+
+    //다운로드 2-> 악보생성시 사용함
+    public int coutDownDownload(Member member) {
+
+        Integer userDownloadChance = member.getUserDownloadChance();
+        return member.getUserDownloadChance();
+    }
+
+
 
     public Boolean deleteUser(String account) {
         //유저찾기-> findUser에서 검사해줌
