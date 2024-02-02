@@ -14,5 +14,5 @@ import java.util.List;
 public class BoardListResponseDTO {
     private String error;
     private List<BoardResponseDTO> boards;
-    private List<byte[]> pdfFile;
+//    private List<byte[]> pdfFile;
 }

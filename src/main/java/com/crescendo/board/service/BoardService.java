@@ -71,15 +71,15 @@ public class BoardService {
     // board 불러오기
     public BoardListResponseDTO retrieve() {
         List<BoardResponseDTO> dtoList = boardRepository.findAllBoardResponseDTO();
-        List<byte[]> pdfList = new ArrayList<>();
-        dtoList.forEach(boardResponseDTO -> {
-            Long boardNo = boardResponseDTO.getBoardNo();
-            byte[] boardPdf = getBoardPdf(boardNo);
-            pdfList.add(boardPdf);
-        });
+//        List<byte[]> pdfList = new ArrayList<>();
+//        dtoList.forEach(boardResponseDTO -> {
+//            Long boardNo = boardResponseDTO.getBoardNo();
+//            byte[] boardPdf = getBoardPdf(boardNo);
+//            pdfList.add(boardPdf);
+//        });
         return BoardListResponseDTO.builder()
                 .boards(dtoList)
-                .pdfFile(pdfList)
+//                .pdfFile(pdfList)
                 .build();
     }
 
@@ -185,26 +185,30 @@ public class BoardService {
     }
 
     //PDF를 가져와서 byte로 변환하여 클라이언트에 전송하는 메서드
-    public byte[] getBoardPdf(Long boardId) {
-        try {
-            Board board = boardRepository.findByBoardNo(boardId);
-            String score = board.getScoreNo().getScoreImageUrl();
+    public List<byte[]> getBoardPdf() {
 
-            //score로 부터 파일을 읽어서 byte로 변환
-            byte[] bytes = readPdfFile(score);
-
-            //클라이언트에 전송할 HttpHeaders 설정
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            //PDF 파일 중에 특수문자가 있더라도 안전하게 처리함
-            String FileName = URLEncoder.encode(board.getScoreNo().getScoreImageUrl(), "UTF-8");
-            headers.setContentDispositionFormData("attachment", FileName);
-
-            //ResponseEntity를 사용해서 클라이언트에 byte 배열 전송
-            return bytes;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            List<Board> all = boardRepository.findAll();
+            List<byte[]> pdfList = new ArrayList<>();
+            all.forEach(board -> {
+                try {
+                    byte[] bytes = readPdfFile(board.getScoreNo().getScoreImageUrl());
+                    pdfList.add(bytes);
+                }catch (IOException e){
+                    throw new RuntimeException(e);
+                }
+            });
+            return pdfList;
+//            String score = board.getScoreNo().getScoreImageUrl();
+//
+//            //score로 부터 파일을 읽어서 byte로 변환
+//            byte[] bytes = readPdfFile(score);
+//
+//            //클라이언트에 전송할 HttpHeaders 설정
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_PDF);
+//            //PDF 파일 중에 특수문자가 있더라도 안전하게 처리함
+//            String FileName = URLEncoder.encode(board.getScoreNo().getScoreImageUrl(), "UTF-8");
+//            headers.setContentDispositionFormData("attachment", FileName);
     }
 
     // pdf 파일을 읽어 byte 배열로 변환하는 메서드

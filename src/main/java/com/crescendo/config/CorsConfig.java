@@ -1,8 +1,12 @@
 package com.crescendo.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
@@ -18,5 +22,10 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowCredentials(true) // 쿠키 전달을 허용할 지 (토큰 도)
                 .maxAge(3600) // 허용시간에 대한 캐싱 설정 1시간 마다
         ;
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(new ByteArrayHttpMessageConverter());
     }
 }

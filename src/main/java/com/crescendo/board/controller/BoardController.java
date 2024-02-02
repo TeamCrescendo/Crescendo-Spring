@@ -15,11 +15,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.web.header.Header;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URLEncoder;
+import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
@@ -114,11 +116,18 @@ public class BoardController {
 
 
     //PDF파일을 byte로 바꾸는 처리
-    @GetMapping("/{boardId}")
-    public  ResponseEntity<?>downloadPdf(@PathVariable Long boardId){
-        byte[] boardPdf = boardService.getBoardPdf(boardId);
+    @GetMapping("/pdf")
+    public  ResponseEntity<?>downloadPdf(){
+        List<byte[]> boardPdf = boardService.getBoardPdf();
+
+
+        // 헤더
+        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "your_filename.pdf");
+
 
         //클라이언트에게 HttpHeaders와 함께 PDF를 전송
-        return ResponseEntity.ok().body(boardPdf);
+        return ResponseEntity.ok().headers(headers).body(boardPdf);
     }
 }
