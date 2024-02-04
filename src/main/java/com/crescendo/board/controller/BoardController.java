@@ -107,8 +107,8 @@ public class BoardController {
     //좋아요 싫어요 처리\
 
     @PostMapping("/likeAndDislike")
-    public ResponseEntity<?> likeAndDisLike(@RequestBody LikeAndDislikeRequestDTO dto){
-    boardService.LikeAndDislike(dto);
+    public ResponseEntity<?> likeAndDisLike(@RequestBody LikeAndDislikeRequestDTO dto,@AuthenticationPrincipal TokenUserInfo userInfo){
+    boardService.LikeAndDislike(dto, userInfo.getAccount());
     return ResponseEntity.ok().body("성공적으로 좋아요와 싫어요 연결 성공");
     }
 
@@ -116,7 +116,8 @@ public class BoardController {
     //PDF파일을 byte로 바꾸는 처리
     @PostMapping("/pdf")
     public  ResponseEntity<?>downloadPdf(Long id){
-        byte[] boardPdf = boardService.getBoardPdf(id);
+        List<byte[]> boardPdf = boardService.getBoardPdf(id);
+//        byte[] boardPdf = boardService.getBoardPdf(id);
 
 
         // 헤더

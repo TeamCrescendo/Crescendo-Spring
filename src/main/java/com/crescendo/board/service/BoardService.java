@@ -15,28 +15,16 @@ import com.crescendo.board.repository.BoardRepository;
 import com.crescendo.member.repository.MemberRepository;
 import com.crescendo.score.entity.Score;
 import com.crescendo.score.repository.ScoreRepository;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.pdf.PdfDocument;
-import com.itextpdf.text.pdf.PdfPage;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.codec.Base64;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.util.UrlUtils;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -110,7 +98,7 @@ public class BoardService {
 
 
     //좋아요와 싫어요 기능 처리
-    public void LikeAndDislike(LikeAndDislikeRequestDTO dto) {
+    public void LikeAndDislike(LikeAndDislikeRequestDTO dto, String account) {
 
         //게시글의 번호를 찾기
         Long boardNo = dto.getBoardNo();
@@ -123,7 +111,7 @@ public class BoardService {
                 //게시글 에서 작성자 찾기
                 try {
                     //게시글에서 작성자와 member테이블의 member와 비교해서 찾음
-                    Member member = memberRepository.getOne(dto.getAccount());
+                    Member member = memberRepository.getOne(account);
                     //나의 좋아요 수와 싫어요 수를 확인 하기 위해 ,
                     //내 계정과 내가 좋아요나 싫어요를 누른 boardNo를 가져옴
                     LikeAndDislike memberAccountAndBoardNo =
@@ -185,7 +173,7 @@ public class BoardService {
     }
 
     //PDF를 가져와서 byte로 변환하여 클라이언트에 전송하는 메서드
-    public List<byte[]> getBoardPdf() {
+    public List<byte[]> getBoardPdf(Long id) {
 
             List<Board> all = boardRepository.findAll();
             List<byte[]> pdfList = new ArrayList<>();
