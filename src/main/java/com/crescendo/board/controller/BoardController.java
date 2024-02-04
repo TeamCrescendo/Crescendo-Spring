@@ -63,9 +63,7 @@ public class BoardController {
     public ResponseEntity<?> retrieveBoardList(){
         log.info("/api/board GET!!");
         BoardListResponseDTO retrieve = boardService.retrieve();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        headers.set("Content-Disposition", "attachment; filename=boardData.json");
+
 
 
         return ResponseEntity.ok().body(retrieve);
@@ -116,18 +114,18 @@ public class BoardController {
 
 
     //PDF파일을 byte로 바꾸는 처리
-    @GetMapping("/pdf")
-    public  ResponseEntity<?>downloadPdf(){
-        List<byte[]> boardPdf = boardService.getBoardPdf();
+    @PostMapping("/pdf")
+    public  ResponseEntity<?>downloadPdf(Long id){
+        byte[] boardPdf = boardService.getBoardPdf(id);
 
 
         // 헤더
-        HttpHeaders headers = new HttpHeaders();
+//        HttpHeaders headers = new HttpHeaders();
 //        headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "your_filename.pdf");
+//        headers.setContentDispositionFormData("attachment", "your_filename.pdf");
 
 
         //클라이언트에게 HttpHeaders와 함께 PDF를 전송
-        return ResponseEntity.ok().headers(headers).body(boardPdf);
+        return ResponseEntity.ok().body(boardPdf);
     }
 }
