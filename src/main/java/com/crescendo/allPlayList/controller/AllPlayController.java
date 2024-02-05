@@ -49,10 +49,10 @@ public class AllPlayController {
 
     //AllPlayList 조회 요청
     @GetMapping
-    public ResponseEntity<?>  retrievePlayList(){
+    public ResponseEntity<?>  retrievePlayList(@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
         log.info("/api/PlayList GET!!!!!");
 
-        AllPlayResponseDTO retrieve = allPlayListService.retrieve();
+        AllPlayResponseDTO retrieve = allPlayListService.retrieve(tokenUserInfo.getAccount());
         return ResponseEntity.ok().body(retrieve);
     }
 

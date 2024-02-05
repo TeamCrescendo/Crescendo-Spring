@@ -142,6 +142,12 @@ public class BoardService {
                         } else {
                             //만약에 좋아요를 누르지 않은 상태라면 ? 싫어요 +1 추가
                             board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
+                            if(board.getBoardDislikeCount() >= 5){
+                                BlackList.builder()
+                                        .member(member)
+                                        .board(board)
+                                        .build();
+                            }
                         }
                         //아니면
                     } else {
@@ -156,16 +162,6 @@ public class BoardService {
                             if (memberAccountAndBoardNo.isBoardLike()) {
                                 board.setBoardLikeCount(board.getBoardLikeCount() - 1);
                                 board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
-                            } else {
-                                //board의 dislikecount가 5이상이면 blacklist 테이블에 추가하기
-                                if (board.getBoardDislikeCount() >= 5) {
-                                    System.out.println("싫어요 5개 달성");
-                                    BlackList build = BlackList.builder()
-                                            .board(board)
-                                            .member(member)
-                                            .build();
-                                    blackListRepository.save(build);
-                                }
                             }
                         }
                     }
@@ -217,6 +213,7 @@ public class BoardService {
     }
 }
 
-//
+
+
 
 

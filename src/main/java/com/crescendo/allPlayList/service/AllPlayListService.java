@@ -38,14 +38,14 @@ public class AllPlayListService {
         if(allPlayList >= maxAllPlayListCounts){
             log.warn("더 이상 재생목록을 만드실 수 없습니다.");
             return null;
-        }
 
+        }
         AllPlayList build = AllPlayList.builder().plName(dto.getPlName()).account(member).plShare(dto.isPlShare()).build();
         allPlayListRepository.save(build);
         log.info("새로운 PlayList를 내 마음속에 저★장★ : {}", dto.getPlName());
 
 //        PlusScoreCount(build);
-        return retrieve();
+        return retrieve(account);
     }
 
     //allPlayList안에 playList가 증가하면 scoreCount가 +1 추가 되는 로직
@@ -56,12 +56,11 @@ public class AllPlayListService {
     }
 
     //AllPlayList 불러오기 !
-    public AllPlayResponseDTO retrieve() {
-        List<AllPlayList> findAll = allPlayListRepository.findAll();
-        List<AllPlayListResponseDTO> collect = findAll.stream()
+    public AllPlayResponseDTO retrieve(String account){
+        List<AllPlayList> allPlayList= allPlayListRepository.findByAccount_Account(account);
+        List<AllPlayListResponseDTO> collect = allPlayList.stream()
                 .map(AllPlayListResponseDTO::new)
                 .collect(Collectors.toList());
-
         return AllPlayResponseDTO.builder().allPlayLists(collect).build();
     }
 
@@ -91,7 +90,7 @@ public class AllPlayListService {
             log.error("재생목록의 번호가 존재 하지 않아요 !  - ID {}, error - {}", plid, e.getMessage());
             throw new RuntimeException("삭제실패 했습니다.");
         }
-        return retrieve();
+        return retrieve(account);
     }
 
     private void MinusScoreCount(AllPlayList allPlayList){
