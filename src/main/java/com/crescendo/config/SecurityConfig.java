@@ -42,6 +42,7 @@ public class SecurityConfig {
                     .antMatchers("/", "/api/auth/**").permitAll()
                     .antMatchers("/api/score/**").permitAll()
                     .antMatchers("/local/**").permitAll()
+                    .antMatchers("POST","/api/board/likeAndDislike").authenticated()
                     .antMatchers("/api/board/**").permitAll()
                 .antMatchers("/api/allPlayList/**").permitAll()
 //                .antMatchers("/api/playList/**").permitAll()

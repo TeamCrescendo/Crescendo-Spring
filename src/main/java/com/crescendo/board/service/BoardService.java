@@ -120,7 +120,7 @@ public class BoardService {
                     //내 계정과 내가 좋아요나 싫어요를 누른 boardNo를 가져옴
                     LikeAndDislike memberAccountAndBoardNo =
                             likeAndDislikeRepository.findByMemberAccountAndBoard_BoardNo(
-                                    dto.getAccount(), dto.getBoardNo());
+                                    account, dto.getBoardNo());
 
                     //만약에 좋아요나 싫어요를 누르지 않은 상태라면,
                     //좋아요를 생성함
