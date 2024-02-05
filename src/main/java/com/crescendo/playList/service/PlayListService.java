@@ -73,6 +73,9 @@ public class PlayListService {
                         .plId(newPlayList)
                         .score(score.get())
                         .build();
+
+
+
                 //나의 새로운 playList를 만든다
                 playListRepository.save(build);
                 PlayListResponseDTO.builder().scoreCount(+1).build();
@@ -83,6 +86,14 @@ public class PlayListService {
             } else {
                 //만약 저장소가 있다면 ?
                 AllPlayList selectedPlayList = myPlayLists.get(0);
+
+                //이미 나의 playList안에 score가 있는경우 더 이상 추가 하지 못하도록 막는다.
+                PlayList playListByPlIdAndScore = playListRepository.findByPlIdAndScore(dto.getPlId(), dto.getScoreNo());
+                if(playListByPlIdAndScore != null){
+                    // 이미 해당 악보가 플레이리스트에 있는 경우
+                    log.info("이미 해당 악보가 재생목록에 존재합니다.");
+                    return false;
+                }
 
                 // 선택한 재생목록에 악보를 추가한다.
                 PlayList build = PlayList.builder()
@@ -146,9 +157,7 @@ public class PlayListService {
                 System.out.println("재생목록을 찾을 수 없습니다.");
                 return false; // 재생목록을 찾을 수 없으면 종료
             }
-
             AllPlayList allPlayList = allPlayListByAccountAndPlId.get(0);
-
             // 특정 plNo와 일치하는 플레이리스트 찾기
             List<PlayList> playlistsToDelete = playListRepository.findByPlId(allPlayList).stream()
                     .filter(playList -> playList.getPlNo().equals(plNo))
@@ -164,5 +173,27 @@ public class PlayListService {
         }
     }
 
+//    //나의 플레이 리스트에 나의 악보가 있는지 없는지 확인
+//    public boolean checkMyPlayList(String account, Long plId, int scoreNo){
+//
+//        try {
+//            //나의 계정부터 찾기
+//            Member member = memberRepository.getOne(account);
+//            if(member == null){
+//                log.warn("member가 없습니다 : {}",member);
+//                return false;
+//            }
+//            //나의 플레이 리스트에 plId와 scoreNo을 찾기
+//            PlayList playListByPlIdAndScoreNo = playListRepository.findByPlIdAndScore(plId, scoreNo);
+//            if(playListByPlIdAndScoreNo == null){
+//                log.warn("본인의 재생목록 또는 악보가 없습니다.:{},{}",plId,scoreNo);
+//                return false;
+//            }
+//        }catch (Exception e){
+//            log.error("악보를 찾는 중 오류가 발생 했습니다. ");
+//            return false;
+//        }
+//        return true;
+//    }
 
 }

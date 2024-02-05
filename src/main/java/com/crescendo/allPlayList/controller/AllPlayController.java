@@ -44,7 +44,6 @@ public class AllPlayController {
             log.error(e.getMessage());
             return ResponseEntity.internalServerError().body(AllPlayListResponseDTO.builder());
         }
-
     }
 
     //AllPlayList 조회 요청
@@ -69,15 +68,15 @@ public class AllPlayController {
 
     //AllPlayList 삭제 요청
     @DeleteMapping("/{plId}")
-    public ResponseEntity<?> deletePlayList(@PathVariable Long plid,@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
+    public ResponseEntity<?> deletePlayList(@PathVariable Long plId,@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
 
         log.info("/api/PlayList DELETE !!!");
 
-        if (plid == null || plid.equals("")){
+        if (plId == null || plId.equals("")){
             return ResponseEntity.badRequest().body(AllPlayListResponseDTO.builder().build());
         }
         try{
-            AllPlayResponseDTO delete = allPlayListService.delete(plid, tokenUserInfo.getAccount());
+            AllPlayResponseDTO delete = allPlayListService.delete(plId, tokenUserInfo.getAccount());
             return ResponseEntity.ok().body(delete);
         }catch (Exception e){
             return ResponseEntity

@@ -10,4 +10,6 @@ public interface PlayListRepository extends JpaRepository<PlayList, Long > {
 
 
    List<PlayList> findByPlId(AllPlayList allPlayList);
+
+   PlayList findByPlIdAndScore(Long plId, int score);
 }

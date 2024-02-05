@@ -89,4 +89,6 @@ public class AllPlayListService {
         allPlayListRepository.save(allPlayList);
         log.info("재생목록 '{}'의 scoreCount가 1 감소 하였습니다.", allPlayList.getPlName());
     }
+
+
 }
