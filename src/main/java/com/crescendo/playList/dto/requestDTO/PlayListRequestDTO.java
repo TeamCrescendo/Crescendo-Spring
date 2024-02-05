@@ -14,6 +14,5 @@ import lombok.*;
 public class PlayListRequestDTO {
     private Long plId;
     private int scoreNo;
-    private String account;
-
+//    private String account;
 }

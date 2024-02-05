@@ -29,9 +29,12 @@ public interface AllPlayListRepository extends JpaRepository<AllPlayList, Long> 
 
     //플레이 리스트 내 계정으로 조회
     List<AllPlayList> findByAccount_Account (String account);
+    @Query("SELECT count (allPlayList) from AllPlayList  allplaylist where allplaylist.account.account = :account ")
+    int countByAccount(String account);
 
     //allplayList와 그에 속해있는 모든 각각의 플리 삭제
     boolean deleteByAccount(Member member);
+
 
 }
 
