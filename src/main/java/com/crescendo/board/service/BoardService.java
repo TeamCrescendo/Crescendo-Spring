@@ -102,7 +102,7 @@ public class BoardService {
 
 
     //좋아요와 싫어요 기능 처리
-    public void LikeAndDislike(LikeAndDislikeRequestDTO dto) {
+    public void LikeAndDislike(LikeAndDislikeRequestDTO dto,String account) {
 
         //게시글의 번호를 찾기
         Long boardNo = dto.getBoardNo();
@@ -115,7 +115,7 @@ public class BoardService {
                 //게시글 에서 작성자 찾기
                 try {
                     //게시글에서 작성자와 member테이블의 member와 비교해서 찾음
-                    Member member = memberRepository.getOne(dto.getAccount());
+                    Member member = memberRepository.getOne(account);
                     //나의 좋아요 수와 싫어요 수를 확인 하기 위해 ,
                     //내 계정과 내가 좋아요나 싫어요를 누른 boardNo를 가져옴
                     LikeAndDislike memberAccountAndBoardNo =

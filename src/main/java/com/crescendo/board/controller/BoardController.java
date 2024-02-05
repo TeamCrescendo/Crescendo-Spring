@@ -103,8 +103,8 @@ public class BoardController {
     //좋아요 싫어요 처리\
 
     @PostMapping("/likeAndDislike")
-    public ResponseEntity<?> likeAndDisLike(@RequestBody LikeAndDislikeRequestDTO dto){
-    boardService.LikeAndDislike(dto);
+    public ResponseEntity<?> likeAndDisLike(@RequestBody LikeAndDislikeRequestDTO dto,@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
+    boardService.LikeAndDislike(dto,tokenUserInfo.getAccount());
     return ResponseEntity.ok().body("성공적으로 좋아요와 싫어요 연결 성공");
     }
 
