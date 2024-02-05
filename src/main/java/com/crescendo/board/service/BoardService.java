@@ -22,11 +22,17 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.codec.Base64;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.util.UrlUtils;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.io.*;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -96,7 +102,7 @@ public class BoardService {
 
 
     //좋아요와 싫어요 기능 처리
-    public void LikeAndDislike(LikeAndDislikeRequestDTO dto) {
+    public void LikeAndDislike(LikeAndDislikeRequestDTO dto,String account) {
 
         //게시글의 번호를 찾기
         Long boardNo = dto.getBoardNo();
@@ -109,7 +115,7 @@ public class BoardService {
                 //게시글 에서 작성자 찾기
                 try {
                     //게시글에서 작성자와 member테이블의 member와 비교해서 찾음
-                    Member member = memberRepository.getOne(dto.getAccount());
+                    Member member = memberRepository.getOne(account);
                     //나의 좋아요 수와 싫어요 수를 확인 하기 위해 ,
                     //내 계정과 내가 좋아요나 싫어요를 누른 boardNo를 가져옴
                     LikeAndDislike memberAccountAndBoardNo =
@@ -170,23 +176,41 @@ public class BoardService {
         }
     }
 
-//    //boardId를 가져와서 board엔터티를 통해 그것과 관련된 imageUrl의 정보를 pdf 파일로 변환 해야한다.
-//    //이 imageUrl은 score의 imageUrl을 가져오면 될 것같다.
-//    public byte[] savePDF(Long boardId) throws IOException {
-//        //Board엔터티에서 이미지 URL을 가져올 것임
-//        //먼저 boardID를 가져와야함
-//        Board board = boardRepository.findByBoardNo(boardId);
-//        //그 다음 boardId와 관련된 scoreImageURL을 가져와야 함
-//        String scoreImageUrl = board.getScoreNo().getScoreImageUrl();
-//
-//        // PDF 파일을 생성하자
-//        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//             OutputStream os = new BufferedOutputStream(outputStream);
-//             Document document = new Document();
-//             PdfWriter writer = PdfWriter.getInstance(document, os)) {
-//
-//        }
-//    }
+    //PDF를 가져와서 byte로 변환하여 클라이언트에 전송하는 메서드
+    public ResponseEntity<byte[]> getBoardPdf(Long boardId){
+        try{
+            Board board = boardRepository.findByBoardNo(boardId);
+            String score = board.getScoreNo().getScoreImageUrl();
+
+            //score로 부터 파일을 읽어서 byte로 변환
+            byte[] bytes = readPdfFile(score);
+
+            //클라이언트에 전송할 HttpHeaders 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            //PDF 파일 중에 특수문자가 있더라도 안전하게 처리함
+            String FileName = URLEncoder.encode(board.getScoreNo().getScoreImageUrl(), "UTF-8");
+            headers.setContentDispositionFormData("attachment",FileName);
+
+            //ResponseEntity를 사용해서 클라이언트에 byte 배열 전송
+            return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // pdf 파일을 읽어 byte 배열로 변환하는 메서드
+    private static byte[] readPdfFile(String pdfPath) throws IOException {
+        try (InputStream inputStream = new FileInputStream(pdfPath);
+             ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            return outputStream.toByteArray();
+        }
+    }
 }
 
 
