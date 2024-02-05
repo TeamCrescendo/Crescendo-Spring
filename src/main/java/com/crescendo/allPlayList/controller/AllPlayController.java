@@ -58,9 +58,9 @@ public class AllPlayController {
 
     //AllPlayList 수정 요청
     @RequestMapping(method = {PUT, PATCH}, path = "/modify")
-    public ResponseEntity<?> AllPlayListUpdate(@RequestBody AllPlayListRequestDTO dto){
+    public ResponseEntity<?> AllPlayListUpdate(@RequestBody AllPlayListRequestDTO dto, @AuthenticationPrincipal TokenUserInfo tokenUserInfo){
         try{
-            boolean update = allPlayListService.modifyAllPlayList(dto);
+            boolean update = allPlayListService.modifyAllPlayList(dto, tokenUserInfo.getAccount());
             return ResponseEntity.ok().body(update);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -69,15 +69,15 @@ public class AllPlayController {
 
     //AllPlayList 삭제 요청
     @DeleteMapping("/{plId}")
-    public ResponseEntity<?> deletePlayList(@PathVariable Long plId){
+    public ResponseEntity<?> deletePlayList(@PathVariable Long plid,@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
 
         log.info("/api/PlayList DELETE !!!");
 
-        if (plId == null || plId.equals("")){
+        if (plid == null || plid.equals("")){
             return ResponseEntity.badRequest().body(AllPlayListResponseDTO.builder().build());
         }
         try{
-            AllPlayResponseDTO delete = allPlayListService.delete(plId);
+            AllPlayResponseDTO delete = allPlayListService.delete(plid, tokenUserInfo.getAccount());
             return ResponseEntity.ok().body(delete);
         }catch (Exception e){
             return ResponseEntity

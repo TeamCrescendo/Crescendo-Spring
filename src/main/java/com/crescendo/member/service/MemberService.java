@@ -246,7 +246,6 @@ public class MemberService {
     }
 
 
-
     //유저를 검색하고 countCheck 를 진행하는 서비스
     public void findUserAndCountCheck(Member member) {
         //2.카운트 다운

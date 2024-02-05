@@ -15,17 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = {"http://localhost:3000"})
 public class KakaoController {
 
-    @Value("${sns.kakao.app-key}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String kakaoAppKey;
 
-    @Value("${sns.kakao.redirect-uri}")
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String kakaoRedirectUri;
 
     //카카오 인가코드 발급 요청 ~
     @GetMapping("/kakao/login")
     public String KakaoLogin(){
         String uri = "";
-        
-        return "";
+
+        return "redirect:" + uri;
     }
 }

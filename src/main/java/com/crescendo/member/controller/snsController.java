@@ -32,6 +32,7 @@ import java.util.Map;
 @RequestMapping("/api/auth/oauth2")
 @CrossOrigin(origins = {"http://localhost:3000"})
 public class snsController {
+
     private final snsLoginService snsLoginService;
 
     @PostMapping("/google/info")
