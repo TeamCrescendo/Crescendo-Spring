@@ -96,6 +96,15 @@ public class BoardService {
                 log.warn("삭제할 보드를 찾을 수 없습니다. 계정: {}, 보드 번호: {}", account, boardNo);
                 return null;
             }
+            //해당 게시글을 삭제 하기 전에 게시글의 좋아요와 싫어요 수를 0으로 복구
+            Board boards= board.get(0);
+            boards.setBoardLikeCount(0);
+            boards.setBoardDislikeCount(0);
+
+            //board삭제 전에 좋아요 싫어요 데이터를 삭제
+            likeAndDislikeRepository.deleteByBoard(boards);
+
+            // 그 다음 board를 삭제
             boardRepository.deleteById(boardNo);
             log.info("보드 삭제 성공. 계정: {}, 보드 번호: {}", account, boardNo);
         }catch (Exception e){
@@ -151,7 +160,7 @@ public class BoardService {
                         }
                         //아니면
                     } else {
-                        //내가 좋아요를 눌렀을 때, 좋아요가 눌러져 있지 상태라면?
+                        //내가 좋아요를 눌렀을 때, 좋아요가 눌러져 있지 않는 상태라면?
                         if (dto.isLike()) {
                             if (!memberAccountAndBoardNo.isBoardLike()) {
                                 board.setBoardLikeCount(board.getBoardLikeCount() + 1);

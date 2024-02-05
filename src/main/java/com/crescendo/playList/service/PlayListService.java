@@ -84,16 +84,13 @@ public class PlayListService {
 
 
             } else {
-                //만약 저장소가 있다면 ?
-                AllPlayList selectedPlayList = myPlayLists.get(0);
-
-                //이미 나의 playList안에 score가 있는경우 더 이상 추가 하지 못하도록 막는다.
-                PlayList playListByPlIdAndScore = playListRepository.findByPlIdAndScore(dto.getPlId(), dto.getScoreNo());
-                if(playListByPlIdAndScore != null){
-                    // 이미 해당 악보가 플레이리스트에 있는 경우
-                    log.info("이미 해당 악보가 재생목록에 존재합니다.");
+                PlayList playListByPlIdAndScoreNo = playListRepository.findByPlIdAndScore(dto.getPlId(), dto.getScoreNo());
+                if(playListByPlIdAndScoreNo != null){
+                    log.info("해당 악보는 본인 재생목록에 존재합니다.");
                     return false;
                 }
+                //만약 저장소가 있다면 ?
+                AllPlayList selectedPlayList = myPlayLists.get(0);
 
                 // 선택한 재생목록에 악보를 추가한다.
                 PlayList build = PlayList.builder()
@@ -101,6 +98,7 @@ public class PlayListService {
                         .score(score.get())
                         .build();
                 playListRepository.save(build);
+
             }
 
         } catch (Exception e) {

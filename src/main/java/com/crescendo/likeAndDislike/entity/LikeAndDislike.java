@@ -27,7 +27,7 @@ public class LikeAndDislike {
     private Long likeAndDislikeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_no", nullable = false)
+    @JoinColumn(name = "board_no", nullable = true)
     private Board board;
 
     @ManyToOne(fetch = FetchType.LAZY)
