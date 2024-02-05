@@ -1,8 +1,13 @@
 package com.crescendo.member.util;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
@@ -31,6 +36,8 @@ public class FileUtil {
         return fullPath.substring(rootPath.length());
     }
 
+    
+
     private static String makeDateFormatDirectory(String rootPath) {
         // 오늘 날짜 정보 추출
         LocalDateTime now = LocalDateTime.now();
@@ -52,4 +59,30 @@ public class FileUtil {
     private static String len2(int n){
         return new DecimalFormat("00").format(n);
     }
+
+
+    public static String downloadFile(String fileUrl, String saveFilePath) throws IOException {
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<byte[]> response = restTemplate.getForEntity(fileUrl, byte[].class);
+
+        String uploadPath = null;
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            HttpHeaders headers = response.getHeaders();
+            byte[] fileBytes = response.getBody();
+            //디렉터리 파일 없으면 만들기
+            makeDateFormatDirectory(saveFilePath);
+            //fileByte 기반 멀티파트 파일 만들기
+            MultipartFile multipartFile = MultipartFileUtil.convertBytesToMultipartFile(fileBytes,"temp");
+            // 이걸 기반으로 uuid있는 파일 만들기
+
+            uploadPath = upload(multipartFile, saveFilePath);
+
+
+        } else {
+            // Handle error
+        }
+        return uploadPath;
+    }
+
 }

@@ -80,7 +80,7 @@ public class ScoreController {
     @PostMapping("/youtube")
     private ResponseEntity<?> youtubeLink(@AuthenticationPrincipal TokenUserInfo tokenUser, @RequestBody YoutubeLinkRequestDTO dto){
         // 회원도 받아서 인증해야함.
-        memberService.findUserAndCountCheck(tokenUser.getAccount());
+        Member user = memberService.findUser(tokenUser.getAccount());
         log.info("/api/score POST {}", dto.getUrl());
 
         //python에 전달할 json 데이터 포장 url ,account
@@ -98,6 +98,7 @@ public class ScoreController {
         headers.add("score-id", String.valueOf(notationResPonseDTO.getScoreNo()));
         //헤더 정보를 이용해서 pdf 라는 걸 다시한번 인지시켜주기
         headers.add("content-type", "application/pdf");
+        memberService.findUserAndCountCheck(user);
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(notationResPonseDTO.getPdfNotation());
@@ -111,7 +112,7 @@ public class ScoreController {
     @PostMapping("/ai")
     private ResponseEntity<?> youtubeLink(@AuthenticationPrincipal TokenUserInfo tokenUser, @RequestBody AiMusicRequestDTO dto){
         // 회원도 받아서 인증해야함.
-        memberService.findUserAndCountCheck(tokenUser.getAccount());
+        Member user = memberService.findUser(tokenUser.getAccount());
 
         //python에 전달할 json 데이터 포장 url ,account
         CreateAiScoreRequestDTO requestDTO = CreateAiScoreRequestDTO.builder()
@@ -124,9 +125,8 @@ public class ScoreController {
         byte[] aiMp3 = scoreService.postToPython(requestDTO);
         if(aiMp3!=null){
             HttpHeaders headers = new HttpHeaders();
-            //헤더에 추가해야하는건 scoreid임
-            //헤더 정보를 이용해서 pdf 라는 걸 다시한번 인지시켜주기
             headers.add("content-type", "audio/mp3");
+            memberService.findUserAndCountCheck(user);
             return ResponseEntity.ok()
                     .headers(headers)
                     .body(aiMp3);

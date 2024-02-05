@@ -26,4 +26,6 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     // 개인멤버  서비스 이용횟수 반환
     @Query("SELECT m.userDownloadChance FROM Member m WHERE m.account = ?1")
     int downCountUserDownloadChanceByAccount(String account);
+
+    Member findMemberByEmail(String email);
 }

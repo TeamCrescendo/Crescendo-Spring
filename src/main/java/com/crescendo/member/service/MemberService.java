@@ -65,6 +65,42 @@ public class MemberService {
         return true;
     }
 
+
+    //구글 로그인 처리
+    public boolean signUp(GoogleSignUpRequestDTO dto) {
+        if (dto == null) {
+            log.warn("회원정보가 없습니다");
+            throw new NoRegisteredArgumentsException("회원가입 입력정보가 없습니다!");
+        }
+        System.out.println("dto = " + dto);
+        String account = dto.getAccount();
+        if (memberRepository.existsById(account)) {
+            log.warn("계정이 중복되었습니다!! -{}.", account);
+            throw new DuplicatedAccountException("중복된 계정입니다!!");
+        }
+        String email = dto.getEmail();
+        if (memberRepository.existsByEmail(email)) {
+            log.warn("이메일이 중복되었습니다!! -{}.", email);
+            throw new DuplicateEmailException("중복된 이메일입니다!!");
+        }
+        String userName = dto.getUserName();
+        if (memberRepository.existsByUserName(userName)) {
+            log.warn("계정명이 중복되었습니다!! -{}.", userName);
+            throw new DuplicateUserNameException("중복된 계정명입니다!!");
+        }
+
+
+
+        Member save = memberRepository.save(dto.toEntity(encoder));
+
+        log.info("회원가입 성공!! saved user - {}", save);
+        return true;
+
+    }
+
+
+
+
     // 로그인 처리
     public LoginUserResponseDTO signIn(SignInRequestDTO dto) {
         if (dto == null) {
@@ -86,6 +122,26 @@ public class MemberService {
         String token = tokenProvider.createToken(foundMember);
         return new LoginUserResponseDTO(foundMember, token);
     }
+
+
+    //구글 로그인 처리
+    public LoginUserResponseDTO signIn(GoogleSignInRequestDTO dto) {
+        if (dto == null) {
+            log.warn("로그인 정보가 없습니다.");
+            throw new NoLoginArgumentsException("로그인 정보가 없습니다");
+        }
+        Member foundMember = memberRepository.getOne(dto.getAccount());
+        if (foundMember == null) {
+            log.warn("일치하는 계정이 없습니다.");
+            throw new NoMatchAccountException("일치하는 계정이 없습니다");
+        }
+        String encodedPassword = foundMember.getPassword();
+        String token = tokenProvider.createToken(foundMember);
+        log.info("구글 로그인 성공");
+        return new LoginUserResponseDTO(foundMember, token);
+    }
+
+
 
     public Member findUser(String account) {
         Member foundMember = memberRepository.getOne(account);
@@ -192,12 +248,21 @@ public class MemberService {
 
 
     //유저를 검색하고 countCheck 를 진행하는 서비스
-    public void findUserAndCountCheck(String account) {
-        //1. 유저 검사&& 카운트 검사
-        int download = download(account);
+    public void findUserAndCountCheck(Member member) {
+        //2.카운트 다운
+        coutDownDownload(member);
 
 
     }
+
+    //다운로드 2-> 악보생성시 사용함
+    public int coutDownDownload(Member member) {
+
+        Integer userDownloadChance = member.getUserDownloadChance();
+        return member.getUserDownloadChance();
+    }
+
+
 
     public Boolean deleteUser(String account) {
         //유저찾기-> findUser에서 검사해줌

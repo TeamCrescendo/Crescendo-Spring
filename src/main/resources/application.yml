@@ -2,16 +2,17 @@ server:
   port: 8484
 
 spring:
+  profiles:
+    include: oauth  #oauth 로그인 진행시 정보를 가져오기위해서
   security:
 
     oauth2:
-      client:
-        registration:
-          google:
-            client-id: 890304175366-cg7t8bjavr2dt1ttf4ma2atl077n8i4r.apps.googleusercontent.com
-            client-secret: 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
-            redirect-uri: http://localhost:8484/api/auth
-            scope:
+        google:
+          client-id: 890304175366-cg7t8bjavr2dt1ttf4ma2atl077n8i4r.apps.googleusercontent.com
+          client-secret: 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
+          redirect-uri: http://localhost:3000
+          token-uri: https://oauth2.googleapis.com/token
+          resource-uri: https://www.googleapis.com/oauth2/v2/userinfo
 
 
   jackson:
@@ -45,3 +46,6 @@ jwt:
 file:
   upload:
     root-path: C:/crescendo/upload/
+jackson:
+  serialization:
+    fail-on-empty-beans: false

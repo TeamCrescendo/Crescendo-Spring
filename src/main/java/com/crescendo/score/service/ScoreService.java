@@ -170,23 +170,7 @@ public class ScoreService {
         ResponseEntity<byte[]> response = restTemplate.exchange(pythonUrl, HttpMethod.POST, stringHttpEntity, byte[].class);
 
         byte[] responseBody = response.getBody();
-//        String path = response.getHeaders().get("pdf-path").get(0);
-//
-//        CreateScoreRequestDTO createScoreRequestDTO = CreateScoreRequestDTO.builder()
-//                .account(dto.getAccount())
-//                .scoreTitle("일단제목")
-//                .scoreImageUrl(path)
-//                .scoreGenre(Score.GENRE.VALUE2.getStringValue())
-//                .build();
-//
-//        createScore(createScoreRequestDTO);
-//        Score score = scoreRepository.findByScoreImageUrl(path);
-//        int scoreNo = score.getScoreNo();
-//
-//        NotationResPonseDTO responseDTO = NotationResPonseDTO.builder()
-//                .pdfNotation(responseBody)
-//                .scoreNo(scoreNo)
-//                .build();
+
 
         return responseBody;
 
