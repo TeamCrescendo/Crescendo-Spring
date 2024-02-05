@@ -26,6 +26,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.web.util.UrlUtils;
 import org.springframework.stereotype.Service;
 
@@ -88,14 +89,17 @@ public class BoardService {
     }
 
     //board 삭제 처리
-    public BoardListResponseDTO delete(String member) {
-
-        try {
-            boardRepository.findByMember_Account(member);
-        } catch (Exception e) {
-            log.error("board의 번호가 존재하지 않아서 삭제에 실패 했습니다. -{}, error : {}",
-                    member, e.getMessage());
-            throw new RuntimeException("삭제에 실패 하셨습니다.");
+    public BoardListResponseDTO delete(String account,Long boardNo) {
+        try{
+            List<Board> board= boardRepository.findByMember_AccountAndAndBoardNo(account, boardNo);
+            if(board == null || board.isEmpty()){
+                log.warn("삭제할 보드를 찾을 수 없습니다. 계정: {}, 보드 번호: {}", account, boardNo);
+                return null;
+            }
+            boardRepository.deleteById(boardNo);
+            log.info("보드 삭제 성공. 계정: {}, 보드 번호: {}", account, boardNo);
+        }catch (Exception e){
+            log.error("보드 삭제 중 오류 발생. 계정: {}, 보드 번호: {}", account, boardNo, e);
         }
         return retrieve();
     }

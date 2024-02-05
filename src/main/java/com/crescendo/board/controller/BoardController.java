@@ -91,7 +91,7 @@ public class BoardController {
         }
 
         try{
-            BoardListResponseDTO dtoList = boardService.delete(userInfo.getAccount());
+            BoardListResponseDTO dtoList = boardService.delete(userInfo.getAccount(), boardNo);
             return ResponseEntity.ok().body(dtoList);
         }catch (Exception e){
             return ResponseEntity
