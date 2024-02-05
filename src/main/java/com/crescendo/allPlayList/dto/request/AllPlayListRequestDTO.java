@@ -16,6 +16,7 @@ public class AllPlayListRequestDTO {
     private boolean plShare;
     private Long plId;
 
+
 //    public AllPlayList toEntity(){
 //        return AllPlayList.builder()
 //                .plName(plName)

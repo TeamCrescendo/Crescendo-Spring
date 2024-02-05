@@ -37,7 +37,7 @@ public class PlayListService {
     private final ScoreRepository scoreRepository;
 
     //playList에 나의 악보들을 등록
-    public boolean myPlayList(final PlayListRequestDTO dto) {
+    public boolean myPlayList(final PlayListRequestDTO dto,String account) {
         try {
             //일단 마음에 드는 score를 가져와야 한다.
 
@@ -51,7 +51,7 @@ public class PlayListService {
             //만약 나의 재생목록이 없다면 재생목록을 만든다.
             if (myPlayLists.isEmpty()) {
                 //나의 새로운 재생 목록을 생성한다.
-                Member member = memberRepository.getOne(dto.getAccount());
+                Member member = memberRepository.getOne(account);
                 AllPlayList newPlayList = AllPlayList.builder()
                         .plName("New PlayList Title")
                         .account(member)

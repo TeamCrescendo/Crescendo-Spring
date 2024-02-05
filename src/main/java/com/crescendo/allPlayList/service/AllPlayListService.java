@@ -25,8 +25,8 @@ public class AllPlayListService {
     private final MemberRepository memberRepository;
 
     // AllPlayList에 나의 playList 등록 !
-    public AllPlayResponseDTO create(AllPlayListRequestDTO dto) {
-        Member member = memberRepository.getOne(dto.getAccount());
+    public AllPlayResponseDTO create(AllPlayListRequestDTO dto,String account ) {
+        Member member = memberRepository.getOne(account);
         if (member == null) {
             return null;
         }
@@ -73,7 +73,7 @@ public class AllPlayListService {
         try {
             AllPlayList allPlayList = allPlayListRepository.findById(plId).orElseThrow(() -> new RuntimeException("삭제에 실패 하셨습니다 찾으신 재생목록 id는 없습니다."));
             allPlayListRepository.delete(allPlayList);
-//            MinusScoreCount(allPlayList);
+            MinusScoreCount(allPlayList);
         } catch (Exception e) {
             log.error("재생목록의 번호가 존재 하지 않아요 !  - ID {}, error - {}", plId, e.getMessage());
             throw new RuntimeException("삭제실패 했습니다.");

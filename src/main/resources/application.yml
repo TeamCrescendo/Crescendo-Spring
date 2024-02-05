@@ -15,6 +15,14 @@ spring:
           resource-uri: https://www.googleapis.com/oauth2/v2/userinfo
 
 
+
+##kakao yml
+#sns:
+#  kakao:
+#    app-key: 9745ed27734727993c6e32423cb9e24c
+#    redirect-uri: http://localhost:3000
+
+
   jackson:
     serialization:
       fail-on-empty-beans: false
@@ -24,6 +32,7 @@ spring:
     url: jdbc:mariadb://localhost:3307/crescendo
     username: root
     password: mariadb
+    driverClassName: org.mariadb.jdbc.Driver
   jpa:
     # SQL??? ?? ? ?? DBMS? ???? ??
     database-platform: org.hibernate.dialect.MariaDB106Dialect

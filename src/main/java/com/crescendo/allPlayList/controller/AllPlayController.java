@@ -4,9 +4,11 @@ import com.crescendo.allPlayList.dto.request.AllPlayListRequestDTO;
 import com.crescendo.allPlayList.dto.response.AllPlayListResponseDTO;
 import com.crescendo.allPlayList.dto.response.AllPlayResponseDTO;
 import com.crescendo.allPlayList.service.AllPlayListService;
+import com.crescendo.member.util.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,14 +30,15 @@ public class AllPlayController {
     public ResponseEntity<?> createPlayList(
             @Validated
             @RequestBody AllPlayListRequestDTO dto,
-            BindingResult result)
+            BindingResult result,
+            @AuthenticationPrincipal TokenUserInfo tokenUserInfo)
     {
         if (result.hasErrors()) {
             log.warn("DTO 검증 에러 입니다. : {}", result.getFieldError());
             return ResponseEntity.badRequest().body(result.getFieldError());
         }
         try {
-            AllPlayResponseDTO allPlayResponseDTO = allPlayListService.create(dto);
+            AllPlayResponseDTO allPlayResponseDTO = allPlayListService.create(dto, tokenUserInfo.getAccount());
             return ResponseEntity.ok().body(allPlayResponseDTO);
         } catch (Exception e) {
             log.error(e.getMessage());
