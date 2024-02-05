@@ -36,6 +36,11 @@ public class KakaoController {
     @GetMapping("/auth/kakao")
     public String snsKakao(String code){
         log.info("카카오 로그인 인가 코드 : {}",code);
+
+        // 인가코드를 가지고 카카오 인증서버에 토큰 발급 요청을 보내야 함
+        // server to server 통신
+
+
         return "redirect:/api/auth/login";
     }
 }

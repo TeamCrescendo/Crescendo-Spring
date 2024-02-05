@@ -39,22 +39,30 @@ public class PlayListService {
     //playList에 나의 악보들을 등록
     public boolean myPlayList(final PlayListRequestDTO dto,String account) {
         try {
+            //내 계정을 찾아야 한다 .
+            Member member = memberRepository.getOne(account);
+            if(member == null){
+                System.out.println("계정이 없습니다.");
+            }
             //일단 마음에 드는 score를 가져와야 한다.
-
             Optional<Score> score = scoreRepository.findById(dto.getScoreNo());
             //그리고 나의 (AllPlayList)재생목록들을 가져와야 한다.
             List<AllPlayList> myPlayLists = allPlayListRepository
                     .findByAccount_AccountAndPlId(
-                            dto.getAccount(),
+                            account,
                             dto.getPlId());
+            if((!account.equals(member.getAccount()))){
+                System.out.println("본인의 재생목록이 아닙니다.");
+                return false;
+            }
 
             //만약 나의 재생목록이 없다면 재생목록을 만든다.
             if (myPlayLists.isEmpty()) {
                 //나의 새로운 재생 목록을 생성한다.
-                Member member = memberRepository.getOne(account);
+                Member member1 = memberRepository.getOne(account);
                 AllPlayList newPlayList = AllPlayList.builder()
                         .plName("New PlayList Title")
-                        .account(member)
+                        .account(member1)
                         .plShare(false) //새로운 재생 목록은 기본적으로 공유하지 않도록 설정을 해둔다.
                         .build();
 
