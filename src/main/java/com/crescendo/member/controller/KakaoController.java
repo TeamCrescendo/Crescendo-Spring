@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/auth/kauth")
+@RequestMapping("/api/auth/oauth2")
 @CrossOrigin(origins = {"http://localhost:3000"})
 public class KakaoController {
 
@@ -24,8 +24,18 @@ public class KakaoController {
     //카카오 인가코드 발급 요청 ~
     @GetMapping("/kakao/login")
     public String KakaoLogin(){
-        String uri = "";
+        String uri = "https://kauth.kakao.com/oauth/authorize";
+        uri += "?client_id=" + kakaoAppKey;
+        uri += "&redirect_uri=" + kakaoRedirectUri;
+        uri += "&response_type=code";
 
         return "redirect:" + uri;
+    }
+
+    //인가 코드 받기
+    @GetMapping("/auth/kakao")
+    public String snsKakao(String code){
+        log.info("카카오 로그인 인가 코드 : {}",code);
+        return "redirect:/api/auth/login";
     }
 }
