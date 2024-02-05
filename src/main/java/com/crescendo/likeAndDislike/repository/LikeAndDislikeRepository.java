@@ -11,5 +11,5 @@ import javax.persistence.PersistenceContext;
 public interface LikeAndDislikeRepository extends JpaRepository<LikeAndDislike, Long> {
         LikeAndDislike findByMemberAccountAndBoard_BoardNo(String account, Long boardNo);
 
-        LikeAndDislike deleteByBoard(Board boards);
+        void deleteByBoard(Board board);
 }
