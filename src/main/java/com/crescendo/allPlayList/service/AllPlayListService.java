@@ -30,16 +30,7 @@ public class AllPlayListService {
         if (member == null) {
             return null;
         }
-        //재생목록(AllPlayList)가 3개 이상이면 더 이상 못만들도록 처리
-        int allPlayList= allPlayListRepository.countByAccount(account);
 
-        int maxAllPlayListCounts = 3;
-
-        if(allPlayList >= maxAllPlayListCounts){
-            log.warn("더 이상 재생목록을 만드실 수 없습니다.");
-            return null;
-
-        }
         AllPlayList build = AllPlayList.builder().plName(dto.getPlName()).account(member).plShare(dto.isPlShare()).build();
         allPlayListRepository.save(build);
         log.info("새로운 PlayList를 내 마음속에 저★장★ : {}", dto.getPlName());
