@@ -37,7 +37,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     //boardNo, boardTitle, boardLikeCount, boardDislikeCount. boardViewCount, boardDownloadCount만 가져오기
     @Query("SELECT new com.crescendo.board.dto.response.MyBoardListResponseDTO(" +
-            "b.boardNo, b.boardTitle,  b.member.account, b.boardLikeCount, b.boardDislikeCount, " +
+            "b.boardNo, b.boardTitle, b.boardLikeCount, b.boardDislikeCount, " +
             "b.boardViewCount, b.boardDownloadCount) " +
             "FROM Board b")
     List<MyBoardListResponseDTO> findMyBoardResponseDTO(String account);

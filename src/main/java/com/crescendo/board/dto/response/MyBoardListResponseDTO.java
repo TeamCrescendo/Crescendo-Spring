@@ -16,7 +16,6 @@ public class MyBoardListResponseDTO {
 
     private String boardTitle;
 
-    private String memberAccount;
 
     private Integer boardLikeCount;
 
@@ -29,7 +28,6 @@ public class MyBoardListResponseDTO {
     public MyBoardListResponseDTO(Board board){
         this.boardNo = board.getBoardNo();
         this.boardTitle = board.getBoardTitle();
-        this.memberAccount =board.getMember().getAccount();
         this.boardLikeCount = board.getBoardLikeCount();
         this.boardDislikeCount = board.getBoardDislikeCount();
         this.boardViewCount = board.getBoardViewCount();
