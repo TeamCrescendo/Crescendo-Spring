@@ -35,8 +35,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.net.URLEncoder;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -217,7 +216,19 @@ public class BoardService {
         }
 
     }
+    // board 좋아요 싫어요 했는지 여부 체크,
+    public HashMap<String, Boolean> getClickLikeAndDisLike(String account , Long boardNo){
+        boolean flag = likeAndDislikeRepository.existsByBoard_BoardNoAndMemberAccount(boardNo, account);
+        HashMap<String, Boolean> map = new HashMap<>();
+        if(flag){
+            LikeAndDislike byMemberAccountAndBoardBoardNo = likeAndDislikeRepository.findByMemberAccountAndBoard_BoardNo(account, boardNo);
+            boolean boardLike = byMemberAccountAndBoardBoardNo.isBoardLike();
+            map.put("like", boardLike);
+        }
+        map.put("isClick", flag);
 
+        return map;
+    }
 
 
 

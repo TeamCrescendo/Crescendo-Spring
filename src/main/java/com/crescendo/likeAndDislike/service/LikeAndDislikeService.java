@@ -12,5 +12,7 @@ import javax.transaction.Transactional;
 @Transactional // !! JPA 사용시 필수!!
 public class LikeAndDislikeService {
 
-    
+
+
+
 }

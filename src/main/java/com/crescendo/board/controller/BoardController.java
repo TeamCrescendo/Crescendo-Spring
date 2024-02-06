@@ -23,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URLEncoder;
+import java.util.HashMap;
 
 import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
@@ -116,6 +117,14 @@ public class BoardController {
         }else{
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("좋아요와 싫어요 수 조회 중 오류 발생");
         }
+
+    }
+    // 좋아요 싫어요 여부
+    @PostMapping("ChecklikeAndDislike")
+    public ResponseEntity<?> isLikeAndDisLike(@AuthenticationPrincipal TokenUserInfo tokenUserInfo, Long boardNo){
+        log.info("{}", boardNo);
+        HashMap<String, Boolean> clickLikeAndDisLike = boardService.getClickLikeAndDisLike(tokenUserInfo.getAccount(), boardNo);
+        return ResponseEntity.ok().body(clickLikeAndDisLike);
 
     }
 

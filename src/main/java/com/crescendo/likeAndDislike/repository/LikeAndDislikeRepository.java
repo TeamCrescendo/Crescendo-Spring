@@ -12,4 +12,6 @@ public interface LikeAndDislikeRepository extends JpaRepository<LikeAndDislike, 
         LikeAndDislike findByMemberAccountAndBoard_BoardNo(String account, Long boardNo);
 
         void deleteByBoard(Board board);
+
+        boolean existsByBoard_BoardNoAndMemberAccount(Long boardNo, String account);
 }
