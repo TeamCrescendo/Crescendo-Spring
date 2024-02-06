@@ -2,7 +2,9 @@ package com.crescendo.board.controller;
 
 import com.crescendo.board.dto.request.BoardModifyRequestDTO;
 import com.crescendo.board.dto.request.BoardRequestDTO;
+import com.crescendo.board.dto.response.BoardLikeAndDisLikeResponseDTO;
 import com.crescendo.board.dto.response.BoardListResponseDTO;
+import com.crescendo.board.dto.response.BoardResponseDTO;
 import com.crescendo.board.entity.Board;
 import com.crescendo.board.entity.Dislike;
 import com.crescendo.board.entity.Like;
@@ -12,6 +14,7 @@ import com.crescendo.member.util.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -105,9 +108,16 @@ public class BoardController {
     @PostMapping("/likeAndDislike")
     public ResponseEntity<?> likeAndDisLike(@RequestBody LikeAndDislikeRequestDTO dto,@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
     boardService.LikeAndDislike(dto,tokenUserInfo.getAccount());
-    return ResponseEntity.ok().body("성공적으로 좋아요와 싫어요 연결 성공");
-    }
 
+        Long boardNo = dto.getBoardNo();
+        BoardLikeAndDisLikeResponseDTO likeAndDislikeCount = boardService.retrieveBoardLikeAndDislikeCount(boardNo);
+        if (likeAndDislikeCount != null) {
+            return ResponseEntity.ok().body(likeAndDislikeCount);
+        }else{
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("좋아요와 싫어요 수 조회 중 오류 발생");
+        }
+
+    }
 
     //PDF파일을 byte로 바꾸는 처리
     @GetMapping("/{boardId}")

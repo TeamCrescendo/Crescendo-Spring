@@ -4,6 +4,7 @@ import com.crescendo.board.dto.response.BoardResponseDTO;
 import com.crescendo.board.entity.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -33,4 +34,11 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "FROM Board b " +
             "JOIN b.scoreNo s")
     List<BoardResponseDTO> findAllBoardResponseDTO();
+
+//    @Query("SELECT new com.crescendo.board.dto.response.BoardResponseDTO(" +
+//            "b.boardLikeCount, b.boardDislikeCount) " +
+//            "FROM Board b WHERE b.boardNo = :boardNo")
+//    BoardResponseDTO findLikeDislikeCountByBoardNo(@Param("boardNo") Long boardNo);
+
 }
+

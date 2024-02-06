@@ -4,6 +4,7 @@ import com.crescendo.blackList.entity.BlackList;
 import com.crescendo.blackList.repository.BlackListRepository;
 import com.crescendo.board.dto.request.BoardModifyRequestDTO;
 import com.crescendo.board.dto.request.BoardRequestDTO;
+import com.crescendo.board.dto.response.BoardLikeAndDisLikeResponseDTO;
 import com.crescendo.board.dto.response.BoardListResponseDTO;
 import com.crescendo.board.dto.response.BoardResponseDTO;
 import com.crescendo.board.entity.Board;
@@ -193,6 +194,29 @@ public class BoardService {
         }
     }
 
+
+    //board의 좋아요 수와 싫어요 수 조회
+    public BoardLikeAndDisLikeResponseDTO retrieveBoardLikeAndDislikeCount(Long boardNo){
+        try{
+            Board byBoardNo = boardRepository.findByBoardNo(boardNo);
+
+            if(byBoardNo == null){
+                log.warn("찾으시는 board는 없는 board 입니다.");
+            }
+            int likeCount = byBoardNo.getBoardLikeCount();
+            int dislikeCount = byBoardNo.getBoardDislikeCount();
+
+            return BoardLikeAndDisLikeResponseDTO.builder()
+                    .boardDislikeCount(dislikeCount)
+                    .boardLikeCount(likeCount)
+                    .build();
+
+        }catch (Exception e){
+            log.error("보드 조회 중 오류 발생. 보드 번호: {}", boardNo, e);
+            return null;
+        }
+
+    }
 
 
 
