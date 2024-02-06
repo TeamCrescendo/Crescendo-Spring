@@ -217,22 +217,7 @@ public class BoardService {
         }
     }
 
-    //board의 조회수를 조회 하기
-    public BoardViewCountResponseDTO boardViewCount(Long boardNo, Long boardViewCount) {
-        try {
-            Board boardByBoardNoAndBoardViewCount = boardRepository.findBoardByBoardNoAndBoardViewCount(boardNo, boardViewCount);
-            if(boardByBoardNoAndBoardViewCount == null){
-                log.warn("찾으시는 board 또는 boardViewCount가 없습니다.");
-            }
-            return BoardViewCountResponseDTO.builder()
-                    .boardNo(boardNo)
-                    .boardViewCount(boardViewCount)
-                    .build();
-        }catch (Exception e) {
-            log.error("board와 계정을 찾는 중 오류 발생: {}, {}",boardNo);
-            return null;
-        }
-    }
+    //board
 
 
 
@@ -248,7 +233,6 @@ public class BoardService {
             map.put("like", boardLike);
         }
         map.put("isClick", flag);
-
         return map;
     }
 
@@ -261,8 +245,29 @@ public class BoardService {
         byBoardNo.setBoardViewCount(byBoardNo.getBoardViewCount()+1);
     }
 
+    //board에 누군가가 다운로드를 하면 다운로드 수가 증가 하는 메서드
+    public void increaseDownLoadCount(Long boardNo, String account){
 
-
+        try{
+            //게시글을 조회 해야 함
+            Board board = boardRepository.findByBoardNo(boardNo);
+            //게시글이 없는 경우엔?
+            if(board == null){
+                //내보내기
+                throw new RuntimeException("유효하지 않는 게시판 입니다.");
+            }
+            //다운로드 수 증가 조건
+            //board의 작성자와 board의 작성자가 일치 한지 검사를 한다(일치 한다면 다운로드 할 수 있게 해줌).
+            //board의 작성자와 board의 작성자가 일치 하지 않는지 검사 한다(일치 하지 않는다면 다운로드 할 수 있게 해줌).
+            if(!board.getMember().getAccount().equals(account) || board.getMember().getAccount().equals(account)){
+                board.setBoardDownloadCount(board.getBoardDownloadCount() +1);
+                boardRepository.save(board);
+                log.info("다운로드 수가 증가했습니다. boardNo: {}, 다운로드 수: {}", boardNo, board.getBoardDownloadCount());
+            }
+        }catch (Exception e){
+            log.error("board 다운로드에 실패 했습니다. ");
+        }
+    }
 
     //PDF를 가져와서 byte로 변환하여 클라이언트에 전송하는 메서드
     public ResponseEntity<byte[]> getBoardPdf(Long boardId){

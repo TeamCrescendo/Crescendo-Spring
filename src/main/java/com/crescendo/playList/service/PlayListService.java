@@ -81,8 +81,6 @@ public class PlayListService {
                 PlayListResponseDTO.builder().scoreCount(+1).build();
 
                 log.info("새로운 저장소와 악보를 추가했습니다. ");
-
-
             } else {
                 PlayList playListByPlIdAndScoreNo = playListRepository.findByPlIdAndScore(dto.getPlId(), dto.getScoreNo());
                 if(playListByPlIdAndScoreNo != null){

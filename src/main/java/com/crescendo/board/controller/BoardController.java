@@ -127,23 +127,34 @@ public class BoardController {
 
     }
 
-    //조회수 조회
-    @GetMapping("/{boardNo}/boardViewCount")
-    public ResponseEntity<?> findboardViewCount(@PathVariable Long boardNo, @PathVariable Long boardViewCount){
-        try{
-            boardService.boardViewCount(boardNo, boardViewCount);
-            log.info("board의 조회수 조회 성공");
-            return ResponseEntity.ok().build();
-        }catch (Exception e){
-            log.error("조회수 조회 중 오류 발생", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("조회수 조회 중 오류 발생");
-        }
-    }
+//    //조회수 조회
+//    @GetMapping("/{boardNo}/boardViewCount")
+//    public ResponseEntity<?> findboardViewCount(@PathVariable Long boardNo, @PathVariable Long boardViewCount){
+//        try{
+//            boardService.boardViewCount(boardNo, boardViewCount);
+//            log.info("board의 조회수 조회 성공");
+//            return ResponseEntity.ok().build();
+//        }catch (Exception e){
+//            log.error("조회수 조회 중 오류 발생", e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("조회수 조회 중 오류 발생");
+//        }
+//    }
 
     // 조회수 증가
     @GetMapping("increaseViewCount")
     public void increaseViewCount(Long boardNo){
         boardService.increaseViewCount(boardNo);
+    }
+
+    //다운로드 증가
+    @PostMapping("/{boardNo}/boardDownLoad")
+    public ResponseEntity<?>boardDownLoadCount(@AuthenticationPrincipal TokenUserInfo tokenUserInfo,@PathVariable Long boardNo){
+        try{
+            boardService.increaseDownLoadCount(boardNo, tokenUserInfo.getAccount());
+            return ResponseEntity.ok().body("다운로드 수 증가 했습니다");
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("다운로드 수 증가 중 오류 발생");
+        }
     }
 
 

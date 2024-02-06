@@ -51,7 +51,7 @@ public class Board {
 
     @Column(name = "board_download_count")
     @Builder.Default
-    private Integer boardDownloadCount = 5;
+    private Integer boardDownloadCount = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "score_no", nullable = false)
