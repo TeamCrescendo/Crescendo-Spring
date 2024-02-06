@@ -18,7 +18,7 @@ public class DownCountResetScheduler {
     @Scheduled(cron = "0 0 0 * * *") // 매일 자정에 실행
     public void resetDownCount() {
         Auth userAuth = Auth.USER;
-        List<Member> userMembers = memberRepository.findMemberByAuth(userAuth.toString());
+        List<Member> userMembers = memberRepository.findMemberByAuth(Auth.valueOf(userAuth.toString()));
         userMembers.forEach(user-> user.setUserDownloadChance(5));
 
     }

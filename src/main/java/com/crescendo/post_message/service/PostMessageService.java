@@ -119,7 +119,7 @@ public class PostMessageService {
 
     // 쪽지 전체 조회
     public List<MessageListResponseDTO> messageAll(String account){
-        Member member = memberRepository.getOnebyAccount(account);
+        Member member = memberRepository.getMemberByAccount(account);
         boolean b = memberRepository.existsByAccount(account);
         if(!b){
             throw new NoMatchAccountException("정확한 계정명을 보내주세요!");
@@ -132,9 +132,9 @@ public class PostMessageService {
         if (allPostMegList!=null){
             allPostMegList.forEach(postMessage -> {
                 String account1 = postMessage.getMember().getAccount();//보낸 사람 아이디
-                String nickname1 = memberRepository.getOnebyAccount(account1).getUserName(); // 보낸 사람 닉네임
+                String nickname1 = memberRepository.getMemberByAccount(account1).getUserName(); // 보낸 사람 닉네임
                 String account2 = postMessage.getPostMessageReceiver();// 받는 사람 아이디
-                String nickname2 = memberRepository.getOnebyAccount(account2).getUserName(); // 받는 사람 닉네임
+                String nickname2 = memberRepository.getMemberByAccount(account2).getUserName(); // 받는 사람 닉네임
                 LocalDateTime writtenMessageDate = postMessage.getWrittenMessageDate();// 작성 시간
                 String postMessageContent = postMessage.getPostMessageContent();// 내용
                 String postMessageId = postMessage.getPostMessageId();
