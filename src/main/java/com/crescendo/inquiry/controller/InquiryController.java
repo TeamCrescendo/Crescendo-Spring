@@ -72,4 +72,15 @@ public class InquiryController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/all")
+    private ResponseEntity<?> findAllInqury(){
+        try{
+            List<FoundInquiryListResponseDTO> allByAccount = inquiryService.findAllInqury();
+            return ResponseEntity.ok().body(allByAccount);
+        }catch (NoMatchAccountException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
 }

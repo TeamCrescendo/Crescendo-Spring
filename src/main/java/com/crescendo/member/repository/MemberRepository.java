@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface MemberRepository extends JpaRepository<Member, String> {
     // 계정명 으로 회원 단일 조회
     @Query("SELECT m FROM Member m WHERE m.account = ?1")
@@ -28,4 +30,8 @@ public interface MemberRepository extends JpaRepository<Member, String> {
     int downCountUserDownloadChanceByAccount(String account);
 
     Member findMemberByEmail(String email);
+
+    List<Member> findMemberByAuth(Member.Auth auth);
+
+    Member getMemberByAccount(String account);
 }

@@ -96,6 +96,8 @@ public class PostMessageController {
     }
 
 
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePostMessage(@AuthenticationPrincipal TokenUserInfo userInfo, @PathVariable String id) {
         /*

@@ -56,4 +56,17 @@ public class InquiryService {
         inquiryRepository.deleteById(inquiryId);
         return true;
     }
+
+    //전체 문의 조회 하기 -> 관리자 이용 전용
+    public List<FoundInquiryListResponseDTO> findAllInqury(){
+
+        List<Inquiry> foundList = inquiryRepository.findAll();
+        List<FoundInquiryListResponseDTO> foundListPackage = new ArrayList<>();
+        foundList.forEach(inquiry -> {
+            foundListPackage.add(new FoundInquiryListResponseDTO(inquiry));
+        });
+        return foundListPackage;
+    }
+
+
 }
