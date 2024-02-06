@@ -1,13 +1,11 @@
 package com.crescendo.playList.service;
 
-import com.crescendo.allPlayList.dto.response.AllPlayResponseDTO;
 import com.crescendo.allPlayList.entity.AllPlayList;
 import com.crescendo.allPlayList.repository.AllPlayListRepository;
 import com.crescendo.member.entity.Member;
 import com.crescendo.member.repository.MemberRepository;
 import com.crescendo.playList.dto.requestDTO.PlayListRequestDTO;
 import com.crescendo.playList.dto.responseDTO.PlayListResponseDTO;
-import com.crescendo.playList.dto.responseDTO.PlayListofListResponseDTO;
 import com.crescendo.playList.entity.PlayList;
 import com.crescendo.playList.repository.PlayListRepository;
 import com.crescendo.score.entity.Score;
@@ -17,13 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.image.PackedColorModel;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 @Service
@@ -74,7 +68,7 @@ public class PlayListService {
                         .build();
                 //나의 새로운 playList를 만든다
                 playListRepository.save(build);
-                PlayListResponseDTO.builder().scoreCount(+1).build();
+                PlayListResponseDTO.builder().build();
 
                 log.info("새로운 저장소와 악보를 추가했습니다. ");
             } else {
@@ -93,67 +87,19 @@ public class PlayListService {
         return true;
     }
 
-    // 나의 playList 의 리스트들 만들기
-    public List<PlayListResponseDTO> getMyPlayLists(String account, Long plId) {
-        List<PlayListResponseDTO> list = new ArrayList<>();
-        try {
-            // 현재 사용자와 특정 플레이리스트 ID에 해당하는 AllPlayList 가져오기
-            List<AllPlayList> byAccountAccount = allPlayListRepository.findByAccount_Account(account);
-            //만약 재생목록을 사용하는 사용자가 없으면 내보내기
-            if(byAccountAccount == null){
-                throw new RuntimeException("이 계정의 재생목록PlayList가 없습니다!");
-            }
-            //재생목록 사용자가 있으면 for문을 통해 allPlayList에서 PlayList들을 찾기
-            byAccountAccount.forEach(allPlayList -> {
-                List<PlayList> byPlId = playListRepository.findByPlId(allPlayList);
-                if(byPlId == null){
-                    System.out.println("플레이 리스트가 없습니다!");
-                }
-                //score악보들을 담을 새로운 리스트를 생성
-                List<Score> scores = new ArrayList<>();
-                //playList에서 나의 악보들을 List에 담기
-                byPlId.forEach(playList -> {
-                    Optional<Score> score = scoreRepository.findById(playList.getScore().getScoreNo());
-                    if(score == null){
-                        System.out.println("악보들을 찾으실 수 없습니다.");
-                    }
-                    scores.add(score.get());
-                });
-                //이제 내가 찾은 악보들을 리스트에 저장해서 반환처리 한다.
-                PlayListResponseDTO build = PlayListResponseDTO.builder()
-                        .scoreNo(scores)
-                        .plId(plId)
-                        .build();
-                list.add(build);
-            });
-            return list;
-        }catch (Exception e){
-            return null;
-        }
+    // 나의 playList조회
+    public List<PlayListResponseDTO> findMyPlayList(String account){
+        return playListRepository.findByPlNoAndAndPlAddDateTimeAndPlIdAAndScore(account);
     }
 
-    // 나의 playList 안에 score를 삭제
-    public boolean deleteMyPlayList(String account, Long plId, Long plNo) {
-        try {
-            // allPlayList의 멤버와 allPlayList Id를 찾는다
-            List<AllPlayList> allPlayListByAccountAndPlId = allPlayListRepository.findByAccount_AccountAndPlId(account, plId);
-            if (allPlayListByAccountAndPlId == null || allPlayListByAccountAndPlId.isEmpty()) {
-                System.out.println("재생목록을 찾을 수 없습니다.");
-                return false; // 재생목록을 찾을 수 없으면 종료
-            }
-            AllPlayList allPlayList = allPlayListByAccountAndPlId.get(0);
-            // 특정 plNo와 일치하는 플레이리스트 찾기
-            List<PlayList> playlistsToDelete = playListRepository.findByPlId(allPlayList).stream()
-                    .filter(playList -> playList.getPlNo().equals(plNo))
-                    .collect(Collectors.toList());
 
-            // 찾은 플레이리스트들 삭제
-            playlistsToDelete.forEach(playListRepository::delete);
 
-            return true;
-        } catch (Exception e) {
-            System.out.println("allPlayList를 찾으실 수 없습니다.");
-            return false;
-        }
+//    // 나의 playList 안에 score를 삭제하고 나의 playList 조회 결과를 반환
+//
+//    public List<PlayListResponseDTO> deleteMyPlayListAndRetrieve(String account, Long plNo) {
+//
+//
+//
+//
+//    }
     }
-}
