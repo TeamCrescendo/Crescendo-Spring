@@ -2,13 +2,11 @@ package com.crescendo.board.repository;
 
 import com.crescendo.board.dto.response.BoardResponseDTO;
 import com.crescendo.board.entity.Board;
-import com.crescendo.member.entity.Member;
-import org.hibernate.sql.Select;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
@@ -18,7 +16,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     List<Board> findByMember_Account(String member);
 
     //멤버와 게시글 같이 찾기
-   List<Board> findByMemberAndBoardNo(Member member , Long boardNo);
+   List<Board> findByMember_AccountAndAndBoardNo(String member , Long boardNo);
 
    //보드 찾기
     Board  findByBoardNo(Long boardNo);
@@ -36,4 +34,14 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "FROM Board b " +
             "JOIN b.scoreNo s")
     List<BoardResponseDTO> findAllBoardResponseDTO();
+
+
+
+    //board의 조회수 찾기
+    Board findBoardByBoardNoAndBoardViewCount(Long boardNo, Long boardViewCount );
+
+
+
+
 }
+

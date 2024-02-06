@@ -4,8 +4,10 @@ import com.crescendo.blackList.entity.BlackList;
 import com.crescendo.blackList.repository.BlackListRepository;
 import com.crescendo.board.dto.request.BoardModifyRequestDTO;
 import com.crescendo.board.dto.request.BoardRequestDTO;
+import com.crescendo.board.dto.response.BoardLikeAndDisLikeResponseDTO;
 import com.crescendo.board.dto.response.BoardListResponseDTO;
 import com.crescendo.board.dto.response.BoardResponseDTO;
+import com.crescendo.board.dto.response.BoardViewCountResponseDTO;
 import com.crescendo.board.entity.Board;
 import com.crescendo.likeAndDislike.dto.request.LikeAndDislikeRequestDTO;
 import com.crescendo.likeAndDislike.entity.LikeAndDislike;
@@ -26,6 +28,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.web.util.UrlUtils;
 import org.springframework.stereotype.Service;
 
@@ -33,8 +36,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.io.*;
 import java.net.URLEncoder;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,14 +90,26 @@ public class BoardService {
     }
 
     //board 삭제 처리
-    public BoardListResponseDTO delete(String member) {
+    public BoardListResponseDTO delete(String account,Long boardNo) {
+        try{
+            List<Board> board= boardRepository.findByMember_AccountAndAndBoardNo(account, boardNo);
+            if(board == null || board.isEmpty()){
+                log.warn("삭제할 보드를 찾을 수 없습니다. 계정: {}, 보드 번호: {}", account, boardNo);
+                return null;
+            }
+            //해당 게시글을 삭제 하기 전에 게시글의 좋아요와 싫어요 수를 0으로 복구
+            Board boards= board.get(0);
+            boards.setBoardLikeCount(0);
+            boards.setBoardDislikeCount(0);
 
-        try {
-            boardRepository.findByMember_Account(member);
-        } catch (Exception e) {
-            log.error("board의 번호가 존재하지 않아서 삭제에 실패 했습니다. -{}, error : {}",
-                    member, e.getMessage());
-            throw new RuntimeException("삭제에 실패 하셨습니다.");
+            //board삭제 전에 좋아요 싫어요 데이터를 삭제
+            likeAndDislikeRepository.deleteByBoard(boards);
+
+            // 그 다음 board를 삭제
+            boardRepository.deleteById(boardNo);
+            log.info("보드 삭제 성공. 계정: {}, 보드 번호: {}", account, boardNo);
+        }catch (Exception e){
+            log.error("보드 삭제 중 오류 발생. 계정: {}, 보드 번호: {}", account, boardNo, e);
         }
         return retrieve();
     }
@@ -120,7 +134,7 @@ public class BoardService {
                     //내 계정과 내가 좋아요나 싫어요를 누른 boardNo를 가져옴
                     LikeAndDislike memberAccountAndBoardNo =
                             likeAndDislikeRepository.findByMemberAccountAndBoard_BoardNo(
-                                    dto.getAccount(), dto.getBoardNo());
+                                    account, dto.getBoardNo());
 
                     //만약에 좋아요나 싫어요를 누르지 않은 상태라면,
                     //좋아요를 생성함
@@ -135,33 +149,37 @@ public class BoardService {
                         if (dto.isLike()) {
                             //그 게시물에 좋아요 + 1 추가
                             board.setBoardLikeCount(board.getBoardLikeCount() + 1);
-                        } else {
-                            //만약에 좋아요를 누르지 않은 상태라면 ? 싫어요 +1 추가
-                            board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
+                        }
+                        else {
+                            if(!dto.isLike()) {
+                                //만약에 좋아요를 누르지 않은 상태라면 ? 싫어요 +1 추가
+                                board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
+                            }
+                            memberAccountAndBoardNo.setBoardLike(false); // 좋아요 상태를 false로 설정
+//                            if(board.getBoardDislikeCount() >= 5){
+//                                BlackList.builder()
+//                                        .member(member)
+//                                        .board(board)
+//                                        .build();
+//                            }
                         }
                         //아니면
                     } else {
-                        //내가 좋아요를 눌렀을 때, 좋아요가 눌러져 있지 상태라면?
+                        //내가 좋아요를 눌렀을 때, 좋아요가 눌러져 있지 않는 상태라면?
                         if (dto.isLike()) {
                             if (!memberAccountAndBoardNo.isBoardLike()) {
                                 board.setBoardLikeCount(board.getBoardLikeCount() + 1);
                                 board.setBoardDislikeCount(board.getBoardDislikeCount() - 1);
                             }
+                            memberAccountAndBoardNo.setBoardLike(true);
                             //아니면 내가 싫어요를 눌렀을때, 좋아요를 눌러져 있는 상태라면?
                         } else {
-                            if (memberAccountAndBoardNo.isBoardLike()) {
-                                board.setBoardLikeCount(board.getBoardLikeCount() - 1);
-                                board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
-                            } else {
-                                //board의 dislikecount가 5이상이면 blacklist 테이블에 추가하기
-                                if (board.getBoardDislikeCount() >= 5) {
-                                    System.out.println("싫어요 5개 달성");
-                                    BlackList build = BlackList.builder()
-                                            .board(board)
-                                            .member(member)
-                                            .build();
-                                    blackListRepository.save(build);
+                            if(!dto.isLike()) {
+                                if (memberAccountAndBoardNo.isBoardLike()) {
+                                    board.setBoardLikeCount(board.getBoardLikeCount() - 1);
+                                    board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
                                 }
+                                memberAccountAndBoardNo.setBoardLike(false); // 좋아요 상태를 false로 설정
                             }
                         }
                     }
@@ -175,6 +193,66 @@ public class BoardService {
             System.out.println("게시글을 찾는 도중 오류가 발생 했습니다.");
         }
     }
+
+
+    //board의 좋아요 수와 싫어요 수 조회
+    public BoardLikeAndDisLikeResponseDTO retrieveBoardLikeAndDislikeCount(Long boardNo){
+        try{
+            Board byBoardNo = boardRepository.findByBoardNo(boardNo);
+
+            if(byBoardNo == null){
+                log.warn("찾으시는 board는 없는 board 입니다.");
+            }
+            int likeCount = byBoardNo.getBoardLikeCount();
+            int dislikeCount = byBoardNo.getBoardDislikeCount();
+
+            return BoardLikeAndDisLikeResponseDTO.builder()
+                    .boardDislikeCount(dislikeCount)
+                    .boardLikeCount(likeCount)
+                    .build();
+
+        }catch (Exception e){
+            log.error("보드 조회 중 오류 발생. 보드 번호: {}", boardNo, e);
+            return null;
+        }
+    }
+
+    //board의 조회수를 조회 하기
+    public BoardViewCountResponseDTO boardViewCount(Long boardNo, Long boardViewCount) {
+        try {
+            Board boardByBoardNoAndBoardViewCount = boardRepository.findBoardByBoardNoAndBoardViewCount(boardNo, boardViewCount);
+            if(boardByBoardNoAndBoardViewCount == null){
+                log.warn("찾으시는 board 또는 boardViewCount가 없습니다.");
+            }
+            return BoardViewCountResponseDTO.builder()
+                    .boardNo(boardNo)
+                    .boardViewCount(boardViewCount)
+                    .build();
+        }catch (Exception e) {
+            log.error("board와 계정을 찾는 중 오류 발생: {}, {}",boardNo);
+            return null;
+        }
+    }
+
+
+
+
+
+    // board 좋아요 싫어요 했는지 여부 체크,
+    public HashMap<String, Boolean> getClickLikeAndDisLike(String account , Long boardNo){
+        boolean flag = likeAndDislikeRepository.existsByBoard_BoardNoAndMemberAccount(boardNo, account);
+        HashMap<String, Boolean> map = new HashMap<>();
+        if(flag){
+            LikeAndDislike byMemberAccountAndBoardBoardNo = likeAndDislikeRepository.findByMemberAccountAndBoard_BoardNo(account, boardNo);
+            boolean boardLike = byMemberAccountAndBoardBoardNo.isBoardLike();
+            map.put("like", boardLike);
+        }
+        map.put("isClick", flag);
+
+        return map;
+    }
+
+
 
     //PDF를 가져와서 byte로 변환하여 클라이언트에 전송하는 메서드
     public ResponseEntity<byte[]> getBoardPdf(Long boardId){
@@ -212,6 +290,7 @@ public class BoardService {
         }
     }
 }
+
 
 
 

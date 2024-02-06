@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 public class LikeAndDislikeRequestDTO {
 
-    private String account;
+//    private String account;
     private Long boardNo;
     private boolean like;
 }

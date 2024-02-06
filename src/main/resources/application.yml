@@ -5,14 +5,31 @@ spring:
   profiles:
     include: oauth  #oauth 로그인 진행시 정보를 가져오기위해서
   security:
-
     oauth2:
-        google:
+      google:
           client-id: 890304175366-cg7t8bjavr2dt1ttf4ma2atl077n8i4r.apps.googleusercontent.com
           client-secret: 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
           redirect-uri: http://localhost:3000
           token-uri: https://oauth2.googleapis.com/token
           resource-uri: https://www.googleapis.com/oauth2/v2/userinfo
+      client:
+        registration:
+          kakao:
+            client-id: 9745ed27734727993c6e32423cb9e24c
+            redirect-uri: http://localhost:8484/auth/kakao
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, profile_image
+            client-name: Kakao
+        provider:
+          kakao:
+            authorization-uri: http://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+
+
 
 
   jackson:
@@ -24,6 +41,7 @@ spring:
     url: jdbc:mariadb://localhost:3307/crescendo
     username: root
     password: mariadb
+#    driverClassName: org.mariadb.jdbc.Driver
   jpa:
     # SQL??? ?? ? ?? DBMS? ???? ??
     database-platform: org.hibernate.dialect.MariaDB106Dialect

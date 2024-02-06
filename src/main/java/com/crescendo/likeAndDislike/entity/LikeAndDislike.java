@@ -27,7 +27,7 @@ public class LikeAndDislike {
     private Long likeAndDislikeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_no", nullable = false)
+    @JoinColumn(name = "board_no", nullable = true)
     private Board board;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,4 +38,12 @@ public class LikeAndDislike {
     @Column(name = "board_like")
     @Builder.Default
     private boolean boardLike = false;
+
+    public void setBoardLike(boolean boardLike) {
+        this.boardLike = boardLike;
+    }
+
+    public boolean isBoardLike() {
+        return boardLike;
+    }
 }

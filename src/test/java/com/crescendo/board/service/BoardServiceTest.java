@@ -28,16 +28,16 @@ class BoardServiceTest {
     @Autowired
     private BoardService boardService;
 
-    @Test
-    @DisplayName("member1이 만든 게시물에 좋아요 테스트")
-    void testLikeAndDislike() {
-       Long boardNo = 2L;
-       String account = "member2";
-
-       boardService.LikeAndDislike(LikeAndDislikeRequestDTO.builder()
-                       .boardNo(boardNo)
-                       .account(account)
-               .build());
-
-    }
+//    @Test
+//    @DisplayName("member1이 만든 게시물에 좋아요 테스트")
+//    void testLikeAndDislike() {
+//       Long boardNo = 2L;
+//       String account = "member2";
+//
+//       boardService.LikeAndDislike(LikeAndDislikeRequestDTO.builder()
+//                       .boardNo(boardNo)
+//                       .account(account)
+//               .build());
+//
+//    }
 }

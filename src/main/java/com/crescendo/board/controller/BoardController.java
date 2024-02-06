@@ -2,7 +2,9 @@ package com.crescendo.board.controller;
 
 import com.crescendo.board.dto.request.BoardModifyRequestDTO;
 import com.crescendo.board.dto.request.BoardRequestDTO;
+import com.crescendo.board.dto.response.BoardLikeAndDisLikeResponseDTO;
 import com.crescendo.board.dto.response.BoardListResponseDTO;
+import com.crescendo.board.dto.response.BoardResponseDTO;
 import com.crescendo.board.entity.Board;
 import com.crescendo.board.entity.Dislike;
 import com.crescendo.board.entity.Like;
@@ -12,6 +14,7 @@ import com.crescendo.member.util.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URLEncoder;
+import java.util.HashMap;
 
 import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
@@ -68,7 +72,6 @@ public class BoardController {
     //Board 수정
     @RequestMapping(method = {PUT, PATCH}, path = "/modify")
     public ResponseEntity<?> UpdateBoard(@RequestBody BoardModifyRequestDTO dto){
-
         try{
             boolean update = boardService.modifyBoard(dto);
             return ResponseEntity.ok().body(update);
@@ -91,7 +94,7 @@ public class BoardController {
         }
 
         try{
-            BoardListResponseDTO dtoList = boardService.delete(userInfo.getAccount());
+            BoardListResponseDTO dtoList = boardService.delete(userInfo.getAccount(), boardNo);
             return ResponseEntity.ok().body(dtoList);
         }catch (Exception e){
             return ResponseEntity
@@ -105,7 +108,36 @@ public class BoardController {
     @PostMapping("/likeAndDislike")
     public ResponseEntity<?> likeAndDisLike(@RequestBody LikeAndDislikeRequestDTO dto,@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
     boardService.LikeAndDislike(dto,tokenUserInfo.getAccount());
-    return ResponseEntity.ok().body("성공적으로 좋아요와 싫어요 연결 성공");
+
+        Long boardNo = dto.getBoardNo();
+        BoardLikeAndDisLikeResponseDTO likeAndDislikeCount = boardService.retrieveBoardLikeAndDislikeCount(boardNo);
+        if (likeAndDislikeCount != null) {
+            return ResponseEntity.ok().body(likeAndDislikeCount);
+        }else{
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("좋아요와 싫어요 수 조회 중 오류 발생");
+        }
+
+    }
+    // 좋아요 싫어요 여부
+    @PostMapping("ChecklikeAndDislike")
+    public ResponseEntity<?> isLikeAndDisLike(@AuthenticationPrincipal TokenUserInfo tokenUserInfo, Long boardNo){
+        log.info("{}", boardNo);
+        HashMap<String, Boolean> clickLikeAndDisLike = boardService.getClickLikeAndDisLike(tokenUserInfo.getAccount(), boardNo);
+        return ResponseEntity.ok().body(clickLikeAndDisLike);
+
+    }
+
+    //조회수 조회
+    @GetMapping("/{boardNo}/boardViewCount")
+    public ResponseEntity<?> findboardViewCount(@PathVariable Long boardNo, @PathVariable Long boardViewCount){
+        try{
+            boardService.boardViewCount(boardNo, boardViewCount);
+            log.info("board의 조회수 조회 성공");
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            log.error("조회수 조회 중 오류 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("조회수 조회 중 오류 발생");
+        }
     }
 
 

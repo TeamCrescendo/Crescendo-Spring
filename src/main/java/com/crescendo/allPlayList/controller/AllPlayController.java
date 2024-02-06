@@ -4,9 +4,11 @@ import com.crescendo.allPlayList.dto.request.AllPlayListRequestDTO;
 import com.crescendo.allPlayList.dto.response.AllPlayListResponseDTO;
 import com.crescendo.allPlayList.dto.response.AllPlayResponseDTO;
 import com.crescendo.allPlayList.service.AllPlayListService;
+import com.crescendo.member.util.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,36 +30,36 @@ public class AllPlayController {
     public ResponseEntity<?> createPlayList(
             @Validated
             @RequestBody AllPlayListRequestDTO dto,
-            BindingResult result)
+            BindingResult result,
+            @AuthenticationPrincipal TokenUserInfo tokenUserInfo)
     {
         if (result.hasErrors()) {
             log.warn("DTO 검증 에러 입니다. : {}", result.getFieldError());
             return ResponseEntity.badRequest().body(result.getFieldError());
         }
         try {
-            AllPlayResponseDTO allPlayResponseDTO = allPlayListService.create(dto);
+            AllPlayResponseDTO allPlayResponseDTO = allPlayListService.create(dto, tokenUserInfo.getAccount());
             return ResponseEntity.ok().body(allPlayResponseDTO);
         } catch (Exception e) {
             log.error(e.getMessage());
             return ResponseEntity.internalServerError().body(AllPlayListResponseDTO.builder());
         }
-
     }
 
     //AllPlayList 조회 요청
     @GetMapping
-    public ResponseEntity<?>  retrievePlayList(){
+    public ResponseEntity<?>  retrievePlayList(@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
         log.info("/api/PlayList GET!!!!!");
 
-        AllPlayResponseDTO retrieve = allPlayListService.retrieve();
+        AllPlayResponseDTO retrieve = allPlayListService.retrieve(tokenUserInfo.getAccount());
         return ResponseEntity.ok().body(retrieve);
     }
 
     //AllPlayList 수정 요청
     @RequestMapping(method = {PUT, PATCH}, path = "/modify")
-    public ResponseEntity<?> AllPlayListUpdate(@RequestBody AllPlayListRequestDTO dto){
+    public ResponseEntity<?> AllPlayListUpdate(@RequestBody AllPlayListRequestDTO dto, @AuthenticationPrincipal TokenUserInfo tokenUserInfo){
         try{
-            boolean update = allPlayListService.modifyAllPlayList(dto);
+            boolean update = allPlayListService.modifyAllPlayList(dto, tokenUserInfo.getAccount());
             return ResponseEntity.ok().body(update);
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -66,7 +68,7 @@ public class AllPlayController {
 
     //AllPlayList 삭제 요청
     @DeleteMapping("/{plId}")
-    public ResponseEntity<?> deletePlayList(@PathVariable Long plId){
+    public ResponseEntity<?> deletePlayList(@PathVariable Long plId,@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
 
         log.info("/api/PlayList DELETE !!!");
 
@@ -74,7 +76,7 @@ public class AllPlayController {
             return ResponseEntity.badRequest().body(AllPlayListResponseDTO.builder().build());
         }
         try{
-            AllPlayResponseDTO delete = allPlayListService.delete(plId);
+            AllPlayResponseDTO delete = allPlayListService.delete(plId, tokenUserInfo.getAccount());
             return ResponseEntity.ok().body(delete);
         }catch (Exception e){
             return ResponseEntity
