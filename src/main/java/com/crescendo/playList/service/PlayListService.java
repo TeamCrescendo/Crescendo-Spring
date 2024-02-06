@@ -74,31 +74,21 @@ public class PlayListService {
                         .score(score.get())
                         .build();
 
-
-
                 //나의 새로운 playList를 만든다
                 playListRepository.save(build);
                 PlayListResponseDTO.builder().scoreCount(+1).build();
 
                 log.info("새로운 저장소와 악보를 추가했습니다. ");
-            } else {
-                PlayList playListByPlIdAndScoreNo = playListRepository.findByPlIdAndScore(dto.getPlId(), dto.getScoreNo());
-                if(playListByPlIdAndScoreNo != null){
-                    log.info("해당 악보는 본인 재생목록에 존재합니다.");
-                    return false;
-                }
+            } else{
                 //만약 저장소가 있다면 ?
                 AllPlayList selectedPlayList = myPlayLists.get(0);
-
                 // 선택한 재생목록에 악보를 추가한다.
                 PlayList build = PlayList.builder()
                         .plId(selectedPlayList)
                         .score(score.get())
                         .build();
                 playListRepository.save(build);
-
             }
-
         } catch (Exception e) {
             System.out.println("선택하신 악보는 없는 악보 입니다..");
         }
@@ -168,7 +158,4 @@ public class PlayListService {
             return false;
         }
     }
-
-
-
 }

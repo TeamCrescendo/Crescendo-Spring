@@ -76,7 +76,6 @@ public class BoardService {
                 myBoardResponseDTO.add(dto);
             }
         }
-
         return MyBoardResponseDTO.builder().boards(myBoardResponseDTO).build();
     }
 
