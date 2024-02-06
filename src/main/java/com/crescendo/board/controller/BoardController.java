@@ -72,7 +72,6 @@ public class BoardController {
     //Board 수정
     @RequestMapping(method = {PUT, PATCH}, path = "/modify")
     public ResponseEntity<?> UpdateBoard(@RequestBody BoardModifyRequestDTO dto){
-
         try{
             boolean update = boardService.modifyBoard(dto);
             return ResponseEntity.ok().body(update);
@@ -127,6 +126,20 @@ public class BoardController {
         return ResponseEntity.ok().body(clickLikeAndDisLike);
 
     }
+
+    //조회수 조회
+    @GetMapping("/{boardNo}/boardViewCount")
+    public ResponseEntity<?> findboardViewCount(@PathVariable Long boardNo, @PathVariable Long boardViewCount){
+        try{
+            boardService.boardViewCount(boardNo, boardViewCount);
+            log.info("board의 조회수 조회 성공");
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            log.error("조회수 조회 중 오류 발생", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("조회수 조회 중 오류 발생");
+        }
+    }
+
 
     //PDF파일을 byte로 바꾸는 처리
     @GetMapping("/{boardId}")

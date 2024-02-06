@@ -35,10 +35,13 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "JOIN b.scoreNo s")
     List<BoardResponseDTO> findAllBoardResponseDTO();
 
-//    @Query("SELECT new com.crescendo.board.dto.response.BoardResponseDTO(" +
-//            "b.boardLikeCount, b.boardDislikeCount) " +
-//            "FROM Board b WHERE b.boardNo = :boardNo")
-//    BoardResponseDTO findLikeDislikeCountByBoardNo(@Param("boardNo") Long boardNo);
+
+
+    //board의 조회수 찾기
+    Board findBoardByBoardNoAndBoardViewCount(Long boardNo, Long boardViewCount );
+
+
+
 
 }
 

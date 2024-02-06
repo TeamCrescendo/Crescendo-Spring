@@ -171,27 +171,6 @@ public class PlayListService {
         }
     }
 
-//    //나의 플레이 리스트에 나의 악보가 있는지 없는지 확인
-//    public boolean checkMyPlayList(String account, Long plId, int scoreNo){
-//
-//        try {
-//            //나의 계정부터 찾기
-//            Member member = memberRepository.getOne(account);
-//            if(member == null){
-//                log.warn("member가 없습니다 : {}",member);
-//                return false;
-//            }
-//            //나의 플레이 리스트에 plId와 scoreNo을 찾기
-//            PlayList playListByPlIdAndScoreNo = playListRepository.findByPlIdAndScore(plId, scoreNo);
-//            if(playListByPlIdAndScoreNo == null){
-//                log.warn("본인의 재생목록 또는 악보가 없습니다.:{},{}",plId,scoreNo);
-//                return false;
-//            }
-//        }catch (Exception e){
-//            log.error("악보를 찾는 중 오류가 발생 했습니다. ");
-//            return false;
-//        }
-//        return true;
-//    }
+
 
 }

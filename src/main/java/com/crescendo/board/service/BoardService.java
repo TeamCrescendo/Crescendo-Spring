@@ -7,6 +7,7 @@ import com.crescendo.board.dto.request.BoardRequestDTO;
 import com.crescendo.board.dto.response.BoardLikeAndDisLikeResponseDTO;
 import com.crescendo.board.dto.response.BoardListResponseDTO;
 import com.crescendo.board.dto.response.BoardResponseDTO;
+import com.crescendo.board.dto.response.BoardViewCountResponseDTO;
 import com.crescendo.board.entity.Board;
 import com.crescendo.likeAndDislike.dto.request.LikeAndDislikeRequestDTO;
 import com.crescendo.likeAndDislike.entity.LikeAndDislike;
@@ -214,8 +215,29 @@ public class BoardService {
             log.error("보드 조회 중 오류 발생. 보드 번호: {}", boardNo, e);
             return null;
         }
-
     }
+
+    //board의 조회수를 조회 하기
+    public BoardViewCountResponseDTO boardViewCount(Long boardNo, Long boardViewCount) {
+        try {
+            Board boardByBoardNoAndBoardViewCount = boardRepository.findBoardByBoardNoAndBoardViewCount(boardNo, boardViewCount);
+            if(boardByBoardNoAndBoardViewCount == null){
+                log.warn("찾으시는 board 또는 boardViewCount가 없습니다.");
+            }
+            return BoardViewCountResponseDTO.builder()
+                    .boardNo(boardNo)
+                    .boardViewCount(boardViewCount)
+                    .build();
+        }catch (Exception e) {
+            log.error("board와 계정을 찾는 중 오류 발생: {}, {}",boardNo);
+            return null;
+        }
+    }
+
+
+
+
+
     // board 좋아요 싫어요 했는지 여부 체크,
     public HashMap<String, Boolean> getClickLikeAndDisLike(String account , Long boardNo){
         boolean flag = likeAndDislikeRepository.existsByBoard_BoardNoAndMemberAccount(boardNo, account);
