@@ -1,10 +1,10 @@
 package com.crescendo.board.repository;
 
 import com.crescendo.board.dto.response.BoardResponseDTO;
+import com.crescendo.board.dto.response.MyBoardListResponseDTO;
 import com.crescendo.board.entity.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -34,6 +34,13 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "FROM Board b " +
             "JOIN b.scoreNo s")
     List<BoardResponseDTO> findAllBoardResponseDTO();
+
+    //boardNo, boardTitle, boardLikeCount, boardDislikeCount. boardViewCount, boardDownloadCount만 가져오기
+    @Query("SELECT new com.crescendo.board.dto.response.MyBoardListResponseDTO(" +
+            "b.boardNo, b.boardTitle,  b.member.account, b.boardLikeCount, b.boardDislikeCount, " +
+            "b.boardViewCount, b.boardDownloadCount) " +
+            "FROM Board b")
+    List<MyBoardListResponseDTO> findMyBoardResponseDTO(String account);
 
 
 

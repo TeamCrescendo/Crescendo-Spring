@@ -5,6 +5,7 @@ import com.crescendo.board.dto.request.BoardRequestDTO;
 import com.crescendo.board.dto.response.BoardLikeAndDisLikeResponseDTO;
 import com.crescendo.board.dto.response.BoardListResponseDTO;
 import com.crescendo.board.dto.response.BoardResponseDTO;
+import com.crescendo.board.dto.response.MyBoardResponseDTO;
 import com.crescendo.board.entity.Board;
 import com.crescendo.board.entity.Dislike;
 import com.crescendo.board.entity.Like;
@@ -67,6 +68,15 @@ public class BoardController {
 
         BoardListResponseDTO retrieve = boardService.retrieve();
         return ResponseEntity.ok().body(retrieve);
+    }
+
+    //나의 Board만 가져 오기
+    @GetMapping("/myBoardList")
+    public ResponseEntity<?> retrieveMyBoardList(@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
+        log.info("/api/board GET!!");
+
+        MyBoardResponseDTO myBoardResponseDTO = boardService.myBoardRetrieve(tokenUserInfo.getAccount());
+        return ResponseEntity.ok().body(myBoardResponseDTO);
     }
 
     //Board 수정

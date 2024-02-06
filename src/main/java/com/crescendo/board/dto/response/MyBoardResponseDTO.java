@@ -11,9 +11,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BoardListResponseDTO {
+public class MyBoardResponseDTO {
 
     private String error;
-    private List<BoardResponseDTO> boards;
-
+    private List<MyBoardListResponseDTO> boards;
 }

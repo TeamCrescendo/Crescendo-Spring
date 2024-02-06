@@ -1,13 +1,9 @@
 package com.crescendo.board.service;
 
-import com.crescendo.blackList.entity.BlackList;
 import com.crescendo.blackList.repository.BlackListRepository;
 import com.crescendo.board.dto.request.BoardModifyRequestDTO;
 import com.crescendo.board.dto.request.BoardRequestDTO;
-import com.crescendo.board.dto.response.BoardLikeAndDisLikeResponseDTO;
-import com.crescendo.board.dto.response.BoardListResponseDTO;
-import com.crescendo.board.dto.response.BoardResponseDTO;
-import com.crescendo.board.dto.response.BoardViewCountResponseDTO;
+import com.crescendo.board.dto.response.*;
 import com.crescendo.board.entity.Board;
 import com.crescendo.likeAndDislike.dto.request.LikeAndDislikeRequestDTO;
 import com.crescendo.likeAndDislike.entity.LikeAndDislike;
@@ -17,19 +13,12 @@ import com.crescendo.board.repository.BoardRepository;
 import com.crescendo.member.repository.MemberRepository;
 import com.crescendo.score.entity.Score;
 import com.crescendo.score.repository.ScoreRepository;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.pdf.PdfDocument;
-import com.itextpdf.text.pdf.PdfPage;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.codec.Base64;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
-import org.springframework.security.web.util.UrlUtils;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -37,7 +26,6 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.net.URLEncoder;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -75,6 +63,21 @@ public class BoardService {
         return BoardListResponseDTO.builder()
                 .boards(dtoList)
                 .build();
+    }
+
+    //나의 board 불러오기
+    public MyBoardResponseDTO myBoardRetrieve(String account){
+        List<Board> byMemberAccount = boardRepository.findByMember_Account(account);
+        List<MyBoardListResponseDTO> myBoardResponseDTO = new ArrayList<>();
+
+        for (Board board : byMemberAccount) {
+            if (board.getMember().getAccount().equals(account)) { // 현재 로그인한 사용자의 계정과 게시글의 작성자의 계정이 일치하는 경우
+                MyBoardListResponseDTO dto = new MyBoardListResponseDTO(board);
+                myBoardResponseDTO.add(dto);
+            }
+        }
+
+        return MyBoardResponseDTO.builder().boards(myBoardResponseDTO).build();
     }
 
     //board 수정
@@ -216,12 +219,6 @@ public class BoardService {
             return null;
         }
     }
-
-    //board
-
-
-
-
 
     // board 좋아요 싫어요 했는지 여부 체크
     public HashMap<String, Boolean> getClickLikeAndDisLike(String account , Long boardNo){
