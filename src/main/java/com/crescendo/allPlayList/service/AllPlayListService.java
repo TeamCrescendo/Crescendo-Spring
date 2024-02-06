@@ -69,16 +69,15 @@ public class AllPlayListService {
     }
 
     //AllPlayList 삭제 !
-    public AllPlayResponseDTO delete(Long plid, String account) {
+    public AllPlayResponseDTO delete(Long plId, String account) {
         try {
-            List<AllPlayList> allPlayList = allPlayListRepository.findByAccount_AccountAndPlId(account, plid);
+            List<AllPlayList> allPlayList = allPlayListRepository.findByAccount_AccountAndPlId(account, plId);
             if(allPlayList == null || allPlayList.isEmpty()){
                 System.out.println("계정 또는 재생목록이 없습니다.");
             }
-            allPlayListRepository.deleteById(plid);
-            MinusScoreCount((AllPlayList) allPlayList);
+            allPlayListRepository.deleteById(plId);
         } catch (Exception e) {
-            log.error("재생목록의 번호가 존재 하지 않아요 !  - ID {}, error - {}", plid, e.getMessage());
+            log.error("재생목록의 번호가 존재 하지 않아요 !  - ID {}, error - {}", plId, e.getMessage());
             throw new RuntimeException("삭제실패 했습니다.");
         }
         return retrieve(account);

@@ -55,7 +55,6 @@ public class PlayListService {
                 System.out.println("본인의 재생목록이 아닙니다.");
                 return false;
             }
-
             //만약 나의 재생목록이 없다면 재생목록을 만든다.
             if (myPlayLists.isEmpty()) {
                 //나의 새로운 재생 목록을 생성한다.
@@ -73,13 +72,12 @@ public class PlayListService {
                         .plId(newPlayList)
                         .score(score.get())
                         .build();
-
                 //나의 새로운 playList를 만든다
                 playListRepository.save(build);
                 PlayListResponseDTO.builder().scoreCount(+1).build();
 
                 log.info("새로운 저장소와 악보를 추가했습니다. ");
-            } else{
+            } else {
                 //만약 저장소가 있다면 ?
                 AllPlayList selectedPlayList = myPlayLists.get(0);
                 // 선택한 재생목록에 악보를 추가한다.

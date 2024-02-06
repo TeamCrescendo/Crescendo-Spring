@@ -41,7 +41,6 @@ public class Score {
     @Column(name = "score_genre")
     private GENRE scoreGenre;
 
-
     public enum GENRE{
         VALUE1("JAZZ"),
         VALUE2("HIPHOP"),
