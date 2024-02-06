@@ -148,15 +148,19 @@ public class BoardService {
                         if (dto.isLike()) {
                             //그 게시물에 좋아요 + 1 추가
                             board.setBoardLikeCount(board.getBoardLikeCount() + 1);
-                        } else {
-                            //만약에 좋아요를 누르지 않은 상태라면 ? 싫어요 +1 추가
-                            board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
-                            if(board.getBoardDislikeCount() >= 5){
-                                BlackList.builder()
-                                        .member(member)
-                                        .board(board)
-                                        .build();
+                        }
+                        else {
+                            if(!dto.isLike()) {
+                                //만약에 좋아요를 누르지 않은 상태라면 ? 싫어요 +1 추가
+                                board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
                             }
+                            memberAccountAndBoardNo.setBoardLike(false); // 좋아요 상태를 false로 설정
+//                            if(board.getBoardDislikeCount() >= 5){
+//                                BlackList.builder()
+//                                        .member(member)
+//                                        .board(board)
+//                                        .build();
+//                            }
                         }
                         //아니면
                     } else {
@@ -166,11 +170,15 @@ public class BoardService {
                                 board.setBoardLikeCount(board.getBoardLikeCount() + 1);
                                 board.setBoardDislikeCount(board.getBoardDislikeCount() - 1);
                             }
+                            memberAccountAndBoardNo.setBoardLike(true);
                             //아니면 내가 싫어요를 눌렀을때, 좋아요를 눌러져 있는 상태라면?
                         } else {
-                            if (memberAccountAndBoardNo.isBoardLike()) {
-                                board.setBoardLikeCount(board.getBoardLikeCount() - 1);
-                                board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
+                            if(!dto.isLike()) {
+                                if (memberAccountAndBoardNo.isBoardLike()) {
+                                    board.setBoardLikeCount(board.getBoardLikeCount() - 1);
+                                    board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
+                                }
+                                memberAccountAndBoardNo.setBoardLike(false); // 좋아요 상태를 false로 설정
                             }
                         }
                     }
@@ -184,6 +192,10 @@ public class BoardService {
             System.out.println("게시글을 찾는 도중 오류가 발생 했습니다.");
         }
     }
+
+
+
+
 
     //PDF를 가져와서 byte로 변환하여 클라이언트에 전송하는 메서드
     public ResponseEntity<byte[]> getBoardPdf(Long boardId){

@@ -84,11 +84,11 @@ public class PlayListService {
 
 
             } else {
-//                PlayList playListByPlIdAndScoreNo = playListRepository.findByPlIdAndScore(dto.getPlId(), dto.getScoreNo());
-//                if(playListByPlIdAndScoreNo != null){
-//                    log.info("해당 악보는 본인 재생목록에 존재합니다.");
-//                    return false;
-//                }
+                PlayList playListByPlIdAndScoreNo = playListRepository.findByPlIdAndScore(dto.getPlId(), dto.getScoreNo());
+                if(playListByPlIdAndScoreNo != null){
+                    log.info("해당 악보는 본인 재생목록에 존재합니다.");
+                    return false;
+                }
                 //만약 저장소가 있다면 ?
                 AllPlayList selectedPlayList = myPlayLists.get(0);
 

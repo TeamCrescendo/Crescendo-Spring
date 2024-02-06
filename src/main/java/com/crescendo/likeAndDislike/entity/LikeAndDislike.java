@@ -38,4 +38,12 @@ public class LikeAndDislike {
     @Column(name = "board_like")
     @Builder.Default
     private boolean boardLike = false;
+
+    public void setBoardLike(boolean boardLike) {
+        this.boardLike = boardLike;
+    }
+
+    public boolean isBoardLike() {
+        return boardLike;
+    }
 }
