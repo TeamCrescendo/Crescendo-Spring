@@ -140,6 +140,12 @@ public class BoardController {
         }
     }
 
+    // 조회수 증가
+    @GetMapping("increaseViewCount")
+    public void increaseViewCount(Long boardNo){
+        boardService.increaseViewCount(boardNo);
+    }
+
 
     //PDF파일을 byte로 바꾸는 처리
     @GetMapping("/{boardId}")

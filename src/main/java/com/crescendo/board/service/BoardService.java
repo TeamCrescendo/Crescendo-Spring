@@ -238,7 +238,7 @@ public class BoardService {
 
 
 
-    // board 좋아요 싫어요 했는지 여부 체크,
+    // board 좋아요 싫어요 했는지 여부 체크
     public HashMap<String, Boolean> getClickLikeAndDisLike(String account , Long boardNo){
         boolean flag = likeAndDislikeRepository.existsByBoard_BoardNoAndMemberAccount(boardNo, account);
         HashMap<String, Boolean> map = new HashMap<>();
@@ -251,6 +251,16 @@ public class BoardService {
 
         return map;
     }
+
+    // Board에 조회수 증가 하는 메서드
+    public void increaseViewCount(Long boardNo){
+        Board byBoardNo = boardRepository.findByBoardNo(boardNo);
+        if(byBoardNo==null){
+            throw new RuntimeException("유효하지 않은 게시판에 접근했습니다");
+        }
+        byBoardNo.setBoardViewCount(byBoardNo.getBoardViewCount()+1);
+    }
+
 
 
 
