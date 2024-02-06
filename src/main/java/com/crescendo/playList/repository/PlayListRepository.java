@@ -5,8 +5,10 @@ import com.crescendo.board.dto.response.MyBoardListResponseDTO;
 import com.crescendo.playList.dto.responseDTO.PlayListResponseDTO;
 import com.crescendo.playList.entity.PlayList;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,6 +30,9 @@ public interface PlayListRepository extends JpaRepository<PlayList, Long > {
            "FROM PlayList p WHERE p.plId.account.account = :account")
    List<PlayListResponseDTO> findByPlNoAndAndPlAddDateTimeAndPlIdAAndScore (@Param("account") String account);
 
+   @Transactional
+   @Modifying
    @Query("DELETE FROM PlayList p WHERE p.plId.account.account = :account AND p.plNo = :plNo")
-   int deleteByAccountAndPlNo(String account, Long plNo);
+   void deleteByAccountAndPlNo(@Param("account") String account, @Param("plNo") Long plNo);
+
 }

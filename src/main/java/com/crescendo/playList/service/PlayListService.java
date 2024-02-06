@@ -94,12 +94,10 @@ public class PlayListService {
 
 
 
-//    // 나의 playList 안에 score를 삭제하고 나의 playList 조회 결과를 반환
-//
-//    public List<PlayListResponseDTO> deleteMyPlayListAndRetrieve(String account, Long plNo) {
-//
-//
-//
-//
-//    }
+    // 나의 playList 안에 score를 삭제하고 나의 playList 조회 결과를 반환
+
+    public List<PlayListResponseDTO> deleteMyPlayListAndRetrieve(String account, Long plNo) {
+        playListRepository.deleteByAccountAndPlNo(account, plNo);
+        return findMyPlayList(account);
     }
+}

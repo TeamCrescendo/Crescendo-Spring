@@ -50,11 +50,11 @@ public class PlayListController {
     }
 
 
-//    //playList삭제 요청
-//    @DeleteMapping("{plNo}")
-//    public ResponseEntity<?> deletePlayList(@AuthenticationPrincipal TokenUserInfo tokenUserInfo,@PathVariable Long plNo){
-//        List<PlayListResponseDTO> playListResponseDTOS = playListService.deleteMyPlayListAndRetrieve(tokenUserInfo.getAccount(), plNo);
-//        return ResponseEntity.ok().body(playListResponseDTOS);
-//    }
+    //playList삭제 요청
+    @DeleteMapping("{plNo}")
+    public ResponseEntity<?> deletePlayList(@AuthenticationPrincipal TokenUserInfo tokenUserInfo,@PathVariable Long plNo){
+        List<PlayListResponseDTO> playListResponseDTOS = playListService.deleteMyPlayListAndRetrieve(tokenUserInfo.getAccount(), plNo);
+        return ResponseEntity.ok().body(playListResponseDTOS);
+    }
 
 }
