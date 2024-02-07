@@ -43,3 +43,4 @@ bin/
 
 #oauth 정보보호
 application-oauth.properties
+src/main/resources/application.yml
