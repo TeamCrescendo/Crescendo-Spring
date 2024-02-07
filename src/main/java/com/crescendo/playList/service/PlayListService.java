@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -30,62 +31,84 @@ public class PlayListService {
     private final PlayListRepository playListRepository;
     private final ScoreRepository scoreRepository;
 
-    //playList에 나의 악보들을 등록
-    public boolean myPlayList(final PlayListRequestDTO dto,String account) {
+    public boolean myPlayList(PlayListRequestDTO dto, String account) {
         try {
-            //내 계정을 찾아야 한다 .
+            // 내 계정을 찾아야 합니다.
             Member member = memberRepository.getOne(account);
-            if(member == null){
-                System.out.println("계정이 없습니다.");
+            if (member == null) {
+                log.warn("본인의 계정이 아닙니다.");
+                return false; // 계정을 찾지 못한 경우 false를 반환합니다.
             }
-            //일단 마음에 드는 score를 가져와야 한다.
-            Optional<Score> score = scoreRepository.findById(dto.getScoreNo());
-            //그리고 나의 (AllPlayList)재생목록들을 가져와야 한다.
-            List<AllPlayList> myPlayLists = allPlayListRepository
-                    .findByAccount_AccountAndPlId(
-                            account,
-                            dto.getPlId());
-            if((!account.equals(member.getAccount()))){
-                System.out.println("본인의 재생목록이 아닙니다.");
+
+            // 일단 마음에 드는 score를 가져와야 합니다.
+            Score score = scoreRepository.findByScoreNo(dto.getScoreNo());
+            log.info("악보를 가져옴 : {}", score);
+
+            // 악보가 없을 경우
+            if (score == null) {
+                log.warn("선택하신 악보는 없는 악보입니다. {}", dto.getScoreNo());
                 return false;
             }
-            //만약 나의 재생목록이 없다면 재생목록을 만든다.
+
+            // 나의 (AllPlayList)재생목록들을 가져와야 합니다.
+            List<AllPlayList> myPlayLists = allPlayListRepository.findByAccount_AccountAndPlId(account, dto.getPlId());
+            if (!account.equals(member.getAccount())) {
+                log.warn("본인의 재생목록이 아닙니다.");
+                return false;
+            }
+
             if (myPlayLists.isEmpty()) {
-                //나의 새로운 재생 목록을 생성한다.
-                Member member1 = memberRepository.getOne(account);
-                AllPlayList newPlayList = AllPlayList.builder()
-                        .plName("New PlayList Title")
-                        .account(member1)
-                        .plShare(false) //새로운 재생 목록은 기본적으로 공유하지 않도록 설정을 해둔다.
+                AllPlayList newMyPlayList = AllPlayList.builder()
+                        .plShare(false)
+                        .account(member)
+                        .plName("New My PlayList Title")
                         .build();
 
-                //나의 새로운 저장목록을 만든다.
-                allPlayListRepository.save(newPlayList);
-                //재생목록이 생겼으면 나의 playlist의 새로운 score(악보)들을 담는다.
-                PlayList build = PlayList.builder()
-                        .plId(newPlayList)
-                        .score(score.get())
+                // 그리고 새로운 AllPlayList에 악보를 넣습니다.
+                PlayList playList = PlayList.builder()
+                        .plId(newMyPlayList)
+                        .score(score)
                         .build();
-                //나의 새로운 playList를 만든다
-                playListRepository.save(build);
-                PlayListResponseDTO.builder().build();
+                playListRepository.save(playList);
 
-                log.info("새로운 저장소와 악보를 추가했습니다. ");
+                // AllPlayList의 scoreCount를 1 증가시킵니다.
+                newMyPlayList.setScoreCount(newMyPlayList.getScoreCount() + 1);
+                allPlayListRepository.save(newMyPlayList);
+
+                return true;
             } else {
-                //만약 저장소가 있다면 ?
-                AllPlayList selectedPlayList = myPlayLists.get(0);
-                // 선택한 재생목록에 악보를 추가한다.
-                PlayList build = PlayList.builder()
-                        .plId(selectedPlayList)
-                        .score(score.get())
+                // 기존 재생목록에 악보를 추가하기 전에 중복 체크를 합니다.
+                AllPlayList selectPlayList = myPlayLists.get(0);
+                List<PlayList> scoreList = playListRepository.findByPlIdAndScore(dto.getPlId(), dto.getScoreNo());
+                if (scoreList == null) {
+                    log.warn("당신의 플레이 리스트에 선택하신 악보는 이미 있습니다.");
+                    return false;
+                }
+
+                // 중복 체크에서 악보가 없으면 해당 재생목록에 악보를 추가합니다.
+                PlayList intoScore = PlayList.builder()
+                        .plId(selectPlayList)
+                        .score(score)
                         .build();
-                playListRepository.save(build);
+                playListRepository.save(intoScore);
+
+                // AllPlayList의 scoreCount를 1 증가시킵니다.
+                selectPlayList.setScoreCount(selectPlayList.getScoreCount() + 1);
+                allPlayListRepository.save(selectPlayList);
+
+                return true;
             }
         } catch (Exception e) {
-            System.out.println("선택하신 악보는 없는 악보 입니다..");
+            log.error("본인의 플레이 리스트에 악보를 추가하는 도중 오류가 발생했습니다. {}, {}", dto.getScoreNo(), dto.getPlId(), e);
+            return false;
         }
-        return true;
     }
+
+
+
+
+
+
 
     // 나의 playList조회
     public List<PlayListResponseDTO> findMyPlayList(String account){
@@ -95,9 +118,38 @@ public class PlayListService {
 
 
     // 나의 playList 안에 score를 삭제하고 나의 playList 조회 결과를 반환
+    public boolean deleteMyPlayListAndRetrieve(String account, Long plNo) {
+        try {
+            // 해당 playList를 가져옵니다.
+            playListRepository.findById(plNo).ifPresent(playList -> {
+                AllPlayList allPlayList = playList.getPlId();
 
-    public List<PlayListResponseDTO> deleteMyPlayListAndRetrieve(String account, Long plNo) {
-        playListRepository.deleteByAccountAndPlNo(account, plNo);
-        return findMyPlayList(account);
+                // 해당 playList가 현재 사용자의 것인지 확인합니다.
+                if (allPlayList == null || allPlayList.getAccount() == null || !account.equals(allPlayList.getAccount().getAccount())) {
+                    log.warn("본인의 플레이 리스트가 아닙니다. playList ID: {}", plNo);
+                    return;
+                }
+
+                // playList를 삭제합니다.
+                playListRepository.delete(playList);
+
+                // allPlayList의 scoreCount를 1 감소시킵니다.
+                allPlayList.setScoreCount(allPlayList.getScoreCount() -1);
+                allPlayListRepository.save(allPlayList);
+
+                log.info("playList를 성공적으로 삭제했습니다. playList ID: {}", plNo);
+            });
+
+            // 삭제가 성공했으므로 true를 반환합니다.
+            return true;
+
+        } catch (Exception e) {
+            // 예외가 발생했을 때 예외 정보를 로그로 출력합니다.
+            log.error("삭제를 하던 도중 오류가 발생했습니다. playList ID: {}", plNo, e);
+            // 삭제가 실패했으므로 false를 반환합니다.
+            return false;
+        }
     }
+
+
 }

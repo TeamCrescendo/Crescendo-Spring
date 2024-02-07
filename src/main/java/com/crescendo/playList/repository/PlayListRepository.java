@@ -1,9 +1,9 @@
 package com.crescendo.playList.repository;
 
 import com.crescendo.allPlayList.entity.AllPlayList;
-import com.crescendo.board.dto.response.MyBoardListResponseDTO;
 import com.crescendo.playList.dto.responseDTO.PlayListResponseDTO;
 import com.crescendo.playList.entity.PlayList;
+import com.crescendo.score.entity.Score;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +17,9 @@ public interface PlayListRepository extends JpaRepository<PlayList, Long > {
 
    List<PlayList> findByPlId(AllPlayList allPlayList);
 
-   PlayList findByPlIdAndScore(Long plId, int scoreNo);
+   List<PlayList> findByPlIdAndScore (Long plId, int scoreNo);
+
+
 
 //   @Query("SELECT new com.crescendo.board.dto.response.MyBoardListResponseDTO(" +
 //           "b.boardNo, b.boardTitle, b.boardLikeCount, b.boardDislikeCount, " +
@@ -35,4 +37,5 @@ public interface PlayListRepository extends JpaRepository<PlayList, Long > {
    @Query("DELETE FROM PlayList p WHERE p.plId.account.account = :account AND p.plNo = :plNo")
    void deleteByAccountAndPlNo(@Param("account") String account, @Param("plNo") Long plNo);
 
+   PlayList findByScore(int scoreNo);
 }

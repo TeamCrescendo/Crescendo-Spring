@@ -35,16 +35,10 @@ public class AllPlayListService {
         allPlayListRepository.save(build);
         log.info("새로운 PlayList를 내 마음속에 저★장★ : {}", dto.getPlName());
 
-//        PlusScoreCount(build);
         return retrieve(account);
     }
 
-    //allPlayList안에 playList가 증가하면 scoreCount가 +1 추가 되는 로직
-    private void PlusScoreCount(AllPlayList allPlayList) {
-        allPlayList.setScoreCount(allPlayList.getScoreCount() + 1);
-        allPlayListRepository.save(allPlayList);
-        log.info("재생목록 '{}'의 scoreCount가 1 증가하였습니다.", allPlayList.getPlName());
-    }
+
 
     //AllPlayList 불러오기 !
     public AllPlayResponseDTO retrieve(String account){

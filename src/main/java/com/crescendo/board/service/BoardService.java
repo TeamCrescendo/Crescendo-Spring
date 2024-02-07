@@ -47,7 +47,7 @@ public class BoardService {
         if (member1 == null) {
             return null;
         }
-        Score scoreNo = scoreRepository.findByScoreNo(dto.getScoreNo());
+        Score scoreNo= scoreRepository.findByScoreNo(dto.getScoreNo());
         if (scoreNo == null) {
             return null;
         }
