@@ -103,8 +103,10 @@ public class BoardService {
             Board boards= board.get(0);
             boards.setBoardLikeCount(0);
             boards.setBoardDislikeCount(0);
-
-            //board삭제 전에 좋아요 싫어요 데이터를 삭제
+//
+//            score 넘버를 통해 aws에 저장된 링크 연결해서 삭제
+//            scoreRepository.findByScoreNo(board.ge)
+//            board삭제 전에 좋아요 싫어요 데이터를 삭제
             likeAndDislikeRepository.deleteByBoard(boards);
 
             // 그 다음 board를 삭제
