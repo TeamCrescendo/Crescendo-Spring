@@ -37,22 +37,14 @@ public class PlayListService {
             Member member = memberRepository.findById(account).orElseThrow(() -> {
                 throw new NoMatchAccountException("아이디가 존재 하지 않습니다");
             });
-//            Member member = memberRepository.getOne(account);
-//            if (member == null) {
-//                log.warn("본인의 계정이 아닙니다.");
-//                return false; // 계정을 찾지 못한 경우 false를 반환합니다.
-//            }
+
 
             // 일단 마음에 드는 score를 가져와야 합니다.
             Score score = scoreRepository.findById(dto.getScoreNo()).orElseThrow(() -> {
                 throw new IllegalStateException("악보가 존재 하지 않습니다.");
             });
             log.info("악보를 가져옴 : {}", score);
-            // 악보가 없을 경우
-//            if (score == null) {
-//                log.warn("선택하신 악보는 없는 악보입니다. {}", dto.getScoreNo());
-//                return false;
-//            }
+
 
             // (AllPlayList)플레이리스트 가져옴
             AllPlayList allPlayList = allPlayListRepository.findById(dto.getPlId()).orElseThrow(() -> {
@@ -67,61 +59,17 @@ public class PlayListService {
                         .plId(allPlayList)
                         .score(score)
                         .build());
+
+                //playList 추가 될 때 오르게 함
+                allPlayList.setScoreCount(allPlayList.getScoreCount() +1);
+                allPlayListRepository.save(allPlayList);
                 return true;
             }else{
                 throw new RuntimeException("중복입니다");
             }
 
-            // 나의 (AllPlayList)재생목록들을 가져와야 합니다.
-//            List<AllPlayList> myPlayLists = allPlayListRepository.findByAccount_AccountAndPlId(account, dto.getPlId());
-//            if (!account.equals(member.getAccount())) {
-//                log.warn("본인의 재생목록이 아닙니다.");
-//                return false;
-//            }
-
-//            if (myPlayLists.isEmpty()) {
-//                AllPlayList newMyPlayList = AllPlayList.builder()
-//                        .plShare(false)
-//                        .account(member)
-//                        .plName("New My PlayList Title")
-//                        .build();
-//
-//                // 그리고 새로운 AllPlayList에 악보를 넣습니다.
-//                PlayList playList = PlayList.builder()
-//                        .plId(newMyPlayList)
-//                        .score(score)
-//                        .build();
-//                playListRepository.save(playList);
-//
-//                // AllPlayList의 scoreCount를 1 증가시킵니다.
-//                newMyPlayList.setScoreCount(newMyPlayList.getScoreCount() + 1);
-//                allPlayListRepository.save(newMyPlayList);
-//
-//                return true;
-//            } else {
-//                // 기존 재생목록에 악보를 추가하기 전에 중복 체크를 합니다.
-//                AllPlayList selectPlayList = myPlayLists.get(0);
-//                List<PlayList> scoreList = playListRepository.findByPlIdAndScore(dto.getPlId(), dto.getScoreNo());
-//                if (scoreList == null) {
-//                    log.warn("당신의 플레이 리스트에 선택하신 악보는 이미 있습니다.");
-//                    return false;
-//                }
-//
-//                // 중복 체크에서 악보가 없으면 해당 재생목록에 악보를 추가합니다.
-//                PlayList intoScore = PlayList.builder()
-//                        .plId(selectPlayList)
-//                        .score(score)
-//                        .build();
-//                playListRepository.save(intoScore);
-//
-//                // AllPlayList의 scoreCount를 1 증가시킵니다.
-//                selectPlayList.setScoreCount(selectPlayList.getScoreCount() + 1);
-//                allPlayListRepository.save(selectPlayList);
-//
-//                return true;
-//            }
         } catch (Exception e) {
-            log.error("본인의 플레이 리스트에 악보를 추가하는 도중 오류가 발생했습니다. {}, {}", dto.getScore(), dto.getPlId(), e);
+            log.error("본인의 플레이 리스트에 악보를 추가하는 도중 오류가 발생했습니다. {}, {}", dto.getScoreNo(), dto.getPlId(), e);
             return false;
         }
     }

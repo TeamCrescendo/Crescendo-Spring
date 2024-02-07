@@ -54,7 +54,7 @@ public class PlayListController {
     }
 
     // 플리 중복 체크 여부
-    @PostMapping("duplicate")
+    @PostMapping("/duplicate")
     public ResponseEntity<?> duplicatedCheck(
             @Validated PlayListDuplicateRequestDTO dto,
             BindingResult result
