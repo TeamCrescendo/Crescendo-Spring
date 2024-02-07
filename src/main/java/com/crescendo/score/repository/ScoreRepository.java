@@ -15,5 +15,5 @@ public interface ScoreRepository extends JpaRepository<Score, Integer> {
 
     Score findByScoreImageUrl(String url);
 
-    Score findById(int scoreNo);
+//    Score findById(int scoreNo);
 }

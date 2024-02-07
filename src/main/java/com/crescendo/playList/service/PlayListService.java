@@ -3,7 +3,9 @@ package com.crescendo.playList.service;
 import com.crescendo.allPlayList.entity.AllPlayList;
 import com.crescendo.allPlayList.repository.AllPlayListRepository;
 import com.crescendo.member.entity.Member;
+import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.member.repository.MemberRepository;
+import com.crescendo.playList.dto.requestDTO.PlayListDuplicateRequestDTO;
 import com.crescendo.playList.dto.requestDTO.PlayListRequestDTO;
 import com.crescendo.playList.dto.responseDTO.PlayListResponseDTO;
 import com.crescendo.playList.entity.PlayList;
@@ -15,10 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -34,82 +34,53 @@ public class PlayListService {
     public boolean myPlayList(PlayListRequestDTO dto, String account) {
         try {
             // 내 계정을 찾아야 합니다.
-            Member member = memberRepository.getOne(account);
-            if (member == null) {
-                log.warn("본인의 계정이 아닙니다.");
-                return false; // 계정을 찾지 못한 경우 false를 반환합니다.
-            }
+            Member member = memberRepository.findById(account).orElseThrow(() -> {
+                throw new NoMatchAccountException("아이디가 존재 하지 않습니다");
+            });
+
 
             // 일단 마음에 드는 score를 가져와야 합니다.
-            Score score = scoreRepository.findByScoreNo(dto.getScore());
+            Score score = scoreRepository.findById(dto.getScoreNo()).orElseThrow(() -> {
+                throw new IllegalStateException("악보가 존재 하지 않습니다.");
+            });
             log.info("악보를 가져옴 : {}", score);
-            // 악보가 없을 경우
-            if (score == null) {
-                log.warn("선택하신 악보는 없는 악보입니다. {}", dto.getScore());
-                return false;
-            }
 
-            // 나의 (AllPlayList)재생목록들을 가져와야 합니다.
-            List<AllPlayList> myPlayLists = allPlayListRepository.findByAccount_AccountAndPlId(account, dto.getPlId());
-            if (!account.equals(member.getAccount())) {
-                log.warn("본인의 재생목록이 아닙니다.");
-                return false;
-            }
 
-            if (myPlayLists.isEmpty()) {
-                AllPlayList newMyPlayList = AllPlayList.builder()
-                        .plShare(false)
-                        .account(member)
-                        .plName("New My PlayList Title")
-                        .build();
+            // (AllPlayList)플레이리스트 가져옴
+            AllPlayList allPlayList = allPlayListRepository.findById(dto.getPlId()).orElseThrow(() -> {
+                throw new IllegalStateException("플레이리스트가 존재 하지 않습니다.");
+            });
 
-                // 그리고 새로운 AllPlayList에 악보를 넣습니다.
-                PlayList playList = PlayList.builder()
-                        .plId(newMyPlayList)
+            boolean b = playListRepository.existsByPlIdAndScore(allPlayList, score);
+
+            // 중복이 아니면
+            if (!b) {
+                PlayList save = playListRepository.save(PlayList.builder()
+                        .plId(allPlayList)
                         .score(score)
-                        .build();
-                playListRepository.save(playList);
+                        .build());
 
-                // AllPlayList의 scoreCount를 1 증가시킵니다.
-                newMyPlayList.setScoreCount(newMyPlayList.getScoreCount() + 1);
-                allPlayListRepository.save(newMyPlayList);
-
+                //playList 추가 될 때 오르게 함
+                allPlayList.setScoreCount(allPlayList.getScoreCount() +1);
+                allPlayListRepository.save(allPlayList);
                 return true;
-            } else {
-
-
-                // 기존 재생목록에 악보를 추가하기 전에 중복 체크를 합니다.
-                AllPlayList selectPlayList = myPlayLists.get(0);
-                List<PlayList> scoreList = playListRepository.findByPlIdAndScore(dto.getPlId(), dto.getScore());
-                if (scoreList == null) {
-                    log.warn("당신의 플레이 리스트에 선택하신 악보는 이미 있습니다.");
-                    return false;
-                }
-
-                // 중복 체크에서 악보가 없으면 해당 재생목록에 악보를 추가합니다.
-                PlayList intoScore = PlayList.builder()
-                        .plId(selectPlayList)
-                        .score(score)
-                        .build();
-                playListRepository.save(intoScore);
-
-                // AllPlayList의 scoreCount를 1 증가시킵니다.
-                selectPlayList.setScoreCount(selectPlayList.getScoreCount() + 1);
-                allPlayListRepository.save(selectPlayList);
-                log.info("allPlayList의 scoreCount가 증가");
-
-                return true;
+            }else{
+                throw new RuntimeException("중복입니다");
             }
+
         } catch (Exception e) {
-            log.error("본인의 플레이 리스트에 악보를 추가하는 도중 오류가 발생했습니다. {}, {}", dto.getScore(), dto.getPlId(), e);
+            log.error("본인의 플레이 리스트에 악보를 추가하는 도중 오류가 발생했습니다. {}, {}", dto.getScoreNo(), dto.getPlId(), e);
             return false;
         }
     }
 
+
+
     // 나의 playList조회
-    public List<PlayListResponseDTO> findMyPlayList(String account){
+    public List<PlayListResponseDTO> findMyPlayList(String account) {
         return playListRepository.findByPlNoAndAndPlAddDateTimeAndPlIdAAndScore(account);
     }
+
 
     // 나의 playList 안에 score를 삭제하고 나의 playList 조회 결과를 반환
     public boolean deleteMyPlayListAndRetrieve(String account, Long plNo) {
@@ -128,7 +99,7 @@ public class PlayListService {
                 playListRepository.delete(playList);
 
                 // allPlayList의 scoreCount를 1 감소시킵니다.
-                allPlayList.setScoreCount(allPlayList.getScoreCount() -1);
+                allPlayList.setScoreCount(allPlayList.getScoreCount() - 1);
                 allPlayListRepository.save(allPlayList);
 
                 log.info("playList를 성공적으로 삭제했습니다. playList ID: {}", plNo);
@@ -146,4 +117,30 @@ public class PlayListService {
     }
 
 
+    public List<Boolean> duplicationCheckDTO(PlayListDuplicateRequestDTO dto) {
+        log.info("정상수: {}", dto.toString());
+        List<PlayListRequestDTO> list = dto.getList();
+        List<Boolean> list1 = new ArrayList<>();
+        list.forEach(playListRequestDTO -> {
+            boolean flag = duplicationCheck(playListRequestDTO.getPlId(), playListRequestDTO.getScoreNo());
+            list1.add(flag);
+        });
+        return list1;
+    }
+
+    // 중복 체크
+    public boolean duplicationCheck(Long plId, int scoreNo){
+
+        Score score = scoreRepository.findById(scoreNo).orElseThrow(() -> {
+            throw new IllegalStateException("악보가 존재 하지 않습니다.");
+        });
+
+
+        // (AllPlayList)플레이리스트 가져옴
+        AllPlayList allPlayList = allPlayListRepository.findById(plId).orElseThrow(() -> {
+            throw new IllegalStateException("플레이리스트가 존재 하지 않습니다.");
+        });
+
+        return playListRepository.existsByPlIdAndScore(allPlayList, score);
+    }
 }

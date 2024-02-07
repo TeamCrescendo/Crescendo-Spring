@@ -137,21 +137,9 @@ public class BoardController {
 
     }
 
-//    //조회수 조회
-//    @GetMapping("/{boardNo}/boardViewCount")
-//    public ResponseEntity<?> findboardViewCount(@PathVariable Long boardNo, @PathVariable Long boardViewCount){
-//        try{
-//            boardService.boardViewCount(boardNo, boardViewCount);
-//            log.info("board의 조회수 조회 성공");
-//            return ResponseEntity.ok().build();
-//        }catch (Exception e){
-//            log.error("조회수 조회 중 오류 발생", e);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("조회수 조회 중 오류 발생");
-//        }
-//    }
 
     // 조회수 증가
-    @GetMapping("increaseViewCount")
+    @GetMapping("/increaseViewCount")
     public void increaseViewCount(Long boardNo){
         boardService.increaseViewCount(boardNo);
     }

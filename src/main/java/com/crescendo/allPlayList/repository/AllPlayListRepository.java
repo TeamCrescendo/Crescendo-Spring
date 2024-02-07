@@ -2,6 +2,7 @@ package com.crescendo.allPlayList.repository;
 
 import com.crescendo.allPlayList.entity.AllPlayList;
 import com.crescendo.member.entity.Member;
+import com.crescendo.score.entity.Score;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -34,6 +35,7 @@ public interface AllPlayListRepository extends JpaRepository<AllPlayList, Long> 
 
     //allplayList와 그에 속해있는 모든 각각의 플리 삭제
     boolean deleteByAccount(Member member);
+
 
 
 }
