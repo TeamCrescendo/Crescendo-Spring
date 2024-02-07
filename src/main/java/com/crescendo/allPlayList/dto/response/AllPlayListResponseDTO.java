@@ -24,7 +24,7 @@ public class AllPlayListResponseDTO {
         this.plId = allPlayList.getPlId();
         this.plName = allPlayList.getPlName();
         this.plShare = allPlayList.isPlShare();
-        this.scoreCount = getScoreCount();
+        this.scoreCount = allPlayList.getScoreCount();
     }
 
 }
