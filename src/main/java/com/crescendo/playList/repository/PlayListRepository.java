@@ -38,4 +38,6 @@ public interface PlayListRepository extends JpaRepository<PlayList, Long > {
    void deleteByAccountAndPlNo(@Param("account") String account, @Param("plNo") Long plNo);
 
    PlayList findByScore(int scoreNo);
+
+   boolean existsByPlIdAndScore(AllPlayList allPlayList, Score score);
 }
