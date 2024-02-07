@@ -126,7 +126,13 @@ public class MemberService {
             throw new IncorrectPasswordException("비밀번호가 틀렸습니다.");
         }
 
-        String token = tokenProvider.createToken(foundMember);
+        String token = null;
+        if(dto.isAutoLogin()==true){
+            token=tokenProvider.createAutiLoginJwt(foundMember);
+        }else{
+            token=tokenProvider.createToken(foundMember);
+
+        }
         return new LoginUserResponseDTO(foundMember, token);
     }
 
