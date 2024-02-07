@@ -25,11 +25,11 @@ public class FileUtil {
         String fullPath = newUploadPath + "/" + newFileName;
 
         // 파일 업로드 수행
-        try {
-            file.transferTo(new File(newUploadPath, newFileName));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            file.transferTo(new File(newUploadPath, newFileName));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         // full-path : D:/abcd/uploade/2024/01/02/ㄱㄷㅈㄱㅈㄷㄱㅈㄷㄱㅈㄷㄱㅈㄷㄱ_고양이.jpg
         // return-path: 2024/01/02/ㄱㄷㅈㄱㅈㄷㄱㅈㄷㄱㅈㄷㄱㅈㄷㄱ_고양이.jpg
