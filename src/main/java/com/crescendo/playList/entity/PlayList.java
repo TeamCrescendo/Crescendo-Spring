@@ -1,6 +1,7 @@
 package com.crescendo.playList.entity;
 
 import com.crescendo.allPlayList.entity.AllPlayList;
+import com.crescendo.board.entity.Board;
 import com.crescendo.score.entity.Score;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,6 +32,10 @@ public class PlayList {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "score_no", nullable = false)
     private Score score;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_no", nullable = true)
+    private Board board;
 
     @CreationTimestamp
     @Column(name = "pl_add_date_time")

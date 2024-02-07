@@ -2,6 +2,8 @@ package com.crescendo.playList.service;
 
 import com.crescendo.allPlayList.entity.AllPlayList;
 import com.crescendo.allPlayList.repository.AllPlayListRepository;
+import com.crescendo.board.entity.Board;
+import com.crescendo.board.repository.BoardRepository;
 import com.crescendo.member.entity.Member;
 import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.member.repository.MemberRepository;
@@ -30,6 +32,7 @@ public class PlayListService {
     private final AllPlayListRepository allPlayListRepository;
     private final PlayListRepository playListRepository;
     private final ScoreRepository scoreRepository;
+    private final BoardRepository boardRepository;
 
     public boolean myPlayList(PlayListRequestDTO dto, String account) {
         try {
@@ -51,6 +54,9 @@ public class PlayListService {
                 throw new IllegalStateException("플레이리스트가 존재 하지 않습니다.");
             });
 
+            //board들을 가져옴
+            Board board = boardRepository.findByBoardNo(dto.getBoardNo());
+
             boolean b = playListRepository.existsByPlIdAndScore(allPlayList, score);
 
             // 중복이 아니면
@@ -58,10 +64,11 @@ public class PlayListService {
                 PlayList save = playListRepository.save(PlayList.builder()
                         .plId(allPlayList)
                         .score(score)
+                        .board(board)
                         .build());
 
                 //playList 추가 될 때 오르게 함
-                allPlayList.setScoreCount(allPlayList.getScoreCount() +1);
+                allPlayList.setScoreCount(allPlayList.getScoreCount() + 1);
                 allPlayListRepository.save(allPlayList);
                 return true;
             }else{

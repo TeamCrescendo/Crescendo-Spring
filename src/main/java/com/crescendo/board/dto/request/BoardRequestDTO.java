@@ -25,6 +25,7 @@ public class BoardRequestDTO {
 
 
 
+
 //    public Board toEntity(){
 //        return Board.builder()
 //                .boardTitle(boardTitle)
