@@ -13,6 +13,6 @@ import lombok.*;
 @Builder
 public class PlayListRequestDTO {
     private Long plId;
-    private int scoreNo;
+    private int score;
 //    private String account;
 }

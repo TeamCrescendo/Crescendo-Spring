@@ -28,7 +28,7 @@ public class PlayList {
     @JoinColumn(name = "pl_id", nullable = false)
     private AllPlayList plId;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "score_no", nullable = false)
     private Score score;
 

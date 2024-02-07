@@ -41,12 +41,11 @@ public class PlayListService {
             }
 
             // 일단 마음에 드는 score를 가져와야 합니다.
-            Score score = scoreRepository.findByScoreNo(dto.getScoreNo());
+            Score score = scoreRepository.findByScoreNo(dto.getScore());
             log.info("악보를 가져옴 : {}", score);
-
             // 악보가 없을 경우
             if (score == null) {
-                log.warn("선택하신 악보는 없는 악보입니다. {}", dto.getScoreNo());
+                log.warn("선택하신 악보는 없는 악보입니다. {}", dto.getScore());
                 return false;
             }
 
@@ -77,9 +76,11 @@ public class PlayListService {
 
                 return true;
             } else {
+
+
                 // 기존 재생목록에 악보를 추가하기 전에 중복 체크를 합니다.
                 AllPlayList selectPlayList = myPlayLists.get(0);
-                List<PlayList> scoreList = playListRepository.findByPlIdAndScore(dto.getPlId(), dto.getScoreNo());
+                List<PlayList> scoreList = playListRepository.findByPlIdAndScore(dto.getPlId(), dto.getScore());
                 if (scoreList == null) {
                     log.warn("당신의 플레이 리스트에 선택하신 악보는 이미 있습니다.");
                     return false;
@@ -95,27 +96,20 @@ public class PlayListService {
                 // AllPlayList의 scoreCount를 1 증가시킵니다.
                 selectPlayList.setScoreCount(selectPlayList.getScoreCount() + 1);
                 allPlayListRepository.save(selectPlayList);
+                log.info("allPlayList의 scoreCount가 증가");
 
                 return true;
             }
         } catch (Exception e) {
-            log.error("본인의 플레이 리스트에 악보를 추가하는 도중 오류가 발생했습니다. {}, {}", dto.getScoreNo(), dto.getPlId(), e);
+            log.error("본인의 플레이 리스트에 악보를 추가하는 도중 오류가 발생했습니다. {}, {}", dto.getScore(), dto.getPlId(), e);
             return false;
         }
     }
-
-
-
-
-
-
 
     // 나의 playList조회
     public List<PlayListResponseDTO> findMyPlayList(String account){
         return playListRepository.findByPlNoAndAndPlAddDateTimeAndPlIdAAndScore(account);
     }
-
-
 
     // 나의 playList 안에 score를 삭제하고 나의 playList 조회 결과를 반환
     public boolean deleteMyPlayListAndRetrieve(String account, Long plNo) {
