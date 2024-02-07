@@ -67,3 +67,12 @@ file:
 jackson:
   serialization:
     fail-on-empty-beans: false
+
+
+#s3 imageProfile bucket
+aws:
+  credentials:
+    accessKey: AKIAYS2NWCN3VHO2HWU5
+    secretKey: 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
+  region: ap-northeast-2
+  buketName: spring-todo-api-file-bucket-kyu

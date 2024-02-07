@@ -55,13 +55,7 @@ public class PlayListController {
 
     // 플리 중복 체크 여부
     @PostMapping("/duplicate")
-    public ResponseEntity<?> duplicatedCheck(
-            @Validated PlayListDuplicateRequestDTO dto,
-            BindingResult result
-    ) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.toString());
-        }
+    public ResponseEntity<?> duplicatedCheck(@RequestBody PlayListDuplicateRequestDTO dto) {
         try {
             log.info(dto.toString());
             List<Boolean> booleans = playListService.duplicationCheckDTO(dto);
