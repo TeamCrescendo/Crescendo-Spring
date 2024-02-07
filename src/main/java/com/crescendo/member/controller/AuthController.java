@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,6 +44,8 @@ public class AuthController {
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (DuplicateUserNameException | DuplicateEmailException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
     }

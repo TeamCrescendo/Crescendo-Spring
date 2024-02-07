@@ -1,6 +1,7 @@
 package com.crescendo.member.service;
 
 import com.crescendo.allPlayList.repository.AllPlayListRepository;
+import com.crescendo.aws.S3Service;
 import com.crescendo.member.dto.request.*;
 import com.crescendo.member.dto.response.LoginUserResponseDTO;
 import com.crescendo.member.entity.Member;
@@ -15,11 +16,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+
 @RequiredArgsConstructor
 @Service
 @Slf4j
 @Transactional // JPA 사용시 필수 (서비스에)
 public class MemberService {
+
+    private final S3Service s3Service;
     private final MemberRepository memberRepository;
     private final AllPlayListRepository allPlayListRepository;
     private final PasswordEncoder encoder;
@@ -29,7 +34,7 @@ public class MemberService {
 
 
     // 회원 가입 처리
-    public boolean signUp(SignUpRequestDTO dto) {
+    public boolean signUp(SignUpRequestDTO dto) throws IOException {
         if (dto == null) {
             log.warn("회원정보가 없습니다");
             throw new NoRegisteredArgumentsException("회원가입 입력정보가 없습니다!");
@@ -53,8 +58,10 @@ public class MemberService {
 
         if(dto.getProfileImage().getSize() != 0 && dto.getProfileImage() != null){
             String upload = FileUtil.upload(dto.getProfileImage(), rootPath);
+            //aws 처리하고 파일패스 돌려받기
+            String aws_path = s3Service.uploadToS3Bucket(dto.getProfileImage().getBytes(), upload);
             Member save = memberRepository.save(dto.toEntity(encoder));
-            save.setProfileImageUrl(upload);
+            save.setProfileImageUrl(aws_path);
             log.info("회원가입 성공!! saved user - {}", save);
             return true;
         }
@@ -119,7 +126,13 @@ public class MemberService {
             throw new IncorrectPasswordException("비밀번호가 틀렸습니다.");
         }
 
-        String token = tokenProvider.createToken(foundMember);
+        String token = null;
+        if(dto.isAutoLogin()==true){
+            token=tokenProvider.createAutiLoginJwt(foundMember);
+        }else{
+            token=tokenProvider.createToken(foundMember);
+
+        }
         return new LoginUserResponseDTO(foundMember, token);
     }
 
