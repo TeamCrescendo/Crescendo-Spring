@@ -146,8 +146,7 @@
 
 ### 📄 5. 팀 소개 페이지
 - 소개 글
-  <img src="https://github.com/5slob/ddamddamclub/assets/122959190/36d40ff7-92b2-4e26-87c6-1f8cd7e69341.gif" width="450" />
-
+- 
 ### 📜 개발 이력
 
 ---
