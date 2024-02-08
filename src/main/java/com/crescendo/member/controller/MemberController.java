@@ -1,6 +1,7 @@
 package com.crescendo.member.controller;
 
 import com.crescendo.member.dto.request.ModifyMemberRequestDTO;
+import com.crescendo.member.dto.request.ModifyPasswordRequestDTO;
 import com.crescendo.member.dto.request.ProfileUploadRequestDTO;
 import com.crescendo.member.dto.response.LoginUserResponseDTO;
 import com.crescendo.member.entity.Member;
@@ -79,6 +80,20 @@ public class MemberController {
         }
     }
 
+    //비밀 번호 수정
+    @RequestMapping(method = {PUT,PATCH}, path = "/modifyPassword")
+    public ResponseEntity<?> modifyPassword(@Validated ModifyPasswordRequestDTO dto, BindingResult result){
+        log.info("dto: {}", dto.toString());
+        if(result.hasErrors()){
+            return ResponseEntity.badRequest().body(result.toString());
+        }
+        try{
+            boolean passWord = memberService.modifyPassword(dto);
+            return ResponseEntity.ok().body(passWord);
+        }catch (NoMatchAccountException | DuplicateEmailException | DuplicateUserNameException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
     // 유저 정보 찾기
     @GetMapping
     public ResponseEntity<?> compareTo(@AuthenticationPrincipal TokenUserInfo tokenUserInfo){
