@@ -268,10 +268,10 @@ public class MemberService {
     }
 
     //다운로드 2-> 악보생성시 사용함
-    public int coutDownDownload(Member member) {
+    public void coutDownDownload(Member member) {
 
         Integer userDownloadChance = member.getUserDownloadChance();
-        return member.getUserDownloadChance();
+        member.setUserDownloadChance(userDownloadChance-1);
     }
 
 
