@@ -84,8 +84,8 @@ public class PlayListService {
 
 
     // 나의 playList조회
-    public List<PlayListResponseDTO> findMyPlayList(String account) {
-        return playListRepository.findByPlNoAndAndPlAddDateTimeAndPlIdAAndScore(account);
+    public List<PlayListResponseDTO> findMyPlayList(String account, Long plId) {
+        return playListRepository.findByPlNoAndAndPlAddDateTimeAndPlIdAAndScore(account,plId);
     }
 
 

@@ -34,9 +34,6 @@ public class AllPlayList {
     @Column(name = "pl_name", nullable = false)
     private String plName;
 
-    @Column(name = "pl_share")
-    private boolean plShare;
-
     @CreationTimestamp
     private LocalDateTime plCreateDateTime;
 

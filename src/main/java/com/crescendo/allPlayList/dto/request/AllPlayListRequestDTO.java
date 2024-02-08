@@ -13,7 +13,6 @@ public class AllPlayListRequestDTO {
 
     private String plName;
 //    private String account;
-    private boolean plShare;
     private Long plId;
 
 

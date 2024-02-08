@@ -16,14 +16,12 @@ public class AllPlayListResponseDTO {
     private Member member;
     private Long plId;
     private String plName;
-    private boolean plShare;
     private int scoreCount;
 
     public AllPlayListResponseDTO(AllPlayList allPlayList){
         this.member= allPlayList.getAccount();
         this.plId = allPlayList.getPlId();
         this.plName = allPlayList.getPlName();
-        this.plShare = allPlayList.isPlShare();
         this.scoreCount = allPlayList.getScoreCount();
     }
 

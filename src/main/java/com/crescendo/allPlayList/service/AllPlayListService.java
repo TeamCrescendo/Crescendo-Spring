@@ -31,7 +31,7 @@ public class AllPlayListService {
             return null;
         }
 
-        AllPlayList build = AllPlayList.builder().plName(dto.getPlName()).account(member).plShare(dto.isPlShare()).build();
+        AllPlayList build = AllPlayList.builder().plName(dto.getPlName()).account(member).build();
         allPlayListRepository.save(build);
         log.info("새로운 PlayList를 내 마음속에 저★장★ : {}", dto.getPlName());
 
@@ -58,7 +58,6 @@ public class AllPlayListService {
             return false;
         }
         findId.setPlName(dto.getPlName());
-        findId.setPlShare(dto.isPlShare());
         return true;
     }
 

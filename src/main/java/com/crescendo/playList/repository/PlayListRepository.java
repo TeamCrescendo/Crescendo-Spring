@@ -30,7 +30,7 @@ public interface PlayListRepository extends JpaRepository<PlayList, Long > {
    @Query("SELECT new com.crescendo.playList.dto.responseDTO.PlayListResponseDTO(" +
            "p.plNo, p.plAddDateTime, p.plId.plId, p.board.boardTitle) " +
            "FROM PlayList p WHERE p.plId.account.account = :account")
-   List<PlayListResponseDTO> findByPlNoAndAndPlAddDateTimeAndPlIdAAndScore (@Param("account") String account);
+   List<PlayListResponseDTO> findByPlNoAndAndPlAddDateTimeAndPlIdAAndScore (@Param("account") String account, Long plId);
 
    @Transactional
    @Modifying
