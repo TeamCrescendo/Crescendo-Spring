@@ -25,7 +25,7 @@ public class S3Service {
     private String secretKey;
     @Value("${aws.region}")
     private String region;
-    @Value("${aws.buketName}")
+    @Value("${aws.bucketName}")
     private String bucketName;
 
 

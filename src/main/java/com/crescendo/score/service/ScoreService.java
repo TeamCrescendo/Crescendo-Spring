@@ -58,7 +58,7 @@ public class ScoreService {
             throw new InvalidGenreException("유효하지 않는 장르입니다.");
         }
 
-        Member member = memberRepository.getOne(dto.getAccount());
+        Member member = memberRepository.getMemberByAccount(dto.getAccount());
         Score save = scoreRepository.save(Score.builder()
                 .scoreTitle(dto.getScoreTitle())
                 .scoreGenre(genre)
@@ -76,7 +76,7 @@ public class ScoreService {
         if (!flag) {
             throw new NoMatchAccountException("계정명이 존재 하지 않습니다");
         }
-        Member member = memberRepository.getOne(account);
+        Member member = memberRepository.getMemberByAccount(account);
         List<Score> allByMember = scoreRepository.findAllByMember(member);
 
         List<FindByAccountScoreResponseDTO> responseDTOList = new ArrayList<>();
