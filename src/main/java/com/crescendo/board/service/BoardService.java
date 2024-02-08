@@ -1,5 +1,6 @@
 package com.crescendo.board.service;
 
+import com.crescendo.blackList.entity.BlackList;
 import com.crescendo.blackList.repository.BlackListRepository;
 import com.crescendo.board.dto.request.BoardModifyRequestDTO;
 import com.crescendo.board.dto.request.BoardRequestDTO;
@@ -118,7 +119,7 @@ public class BoardService {
 
 
     //좋아요와 싫어요 기능 처리
-    public void LikeAndDislike(LikeAndDislikeRequestDTO dto,String account) {
+    public void LikeAndDislike(LikeAndDislikeRequestDTO dto, String account) {
 
         //게시글의 번호를 찾기
         Long boardNo = dto.getBoardNo();
@@ -151,19 +152,21 @@ public class BoardService {
                         if (dto.isLike()) {
                             //그 게시물에 좋아요 + 1 추가
                             board.setBoardLikeCount(board.getBoardLikeCount() + 1);
-                        }
-                        else {
-                            if(!dto.isLike()) {
+                        } else {
+                            if (!dto.isLike()) {
                                 //만약에 좋아요를 누르지 않은 상태라면 ? 싫어요 +1 추가
                                 board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
                             }
                             memberAccountAndBoardNo.setBoardLike(false); // 좋아요 상태를 false로 설정
-//                            if(board.getBoardDislikeCount() >= 5){
-//                                BlackList.builder()
-//                                        .member(member)
-//                                        .board(board)
-//                                        .build();
-//                            }
+
+                            if (board.getBoardDislikeCount() >= 5) {
+                                board.setVisible(false);
+                                BlackList build1 = BlackList.builder()
+                                        .member(member)
+                                        .board(board)
+                                        .build();
+                                blackListRepository.save(build1);
+                            }
                         }
                         //아니면
                     } else {
@@ -176,7 +179,7 @@ public class BoardService {
                             memberAccountAndBoardNo.setBoardLike(true);
                             //아니면 내가 싫어요를 눌렀을때, 좋아요를 눌러져 있는 상태라면?
                         } else {
-                            if(!dto.isLike()) {
+                            if (!dto.isLike()) {
                                 if (memberAccountAndBoardNo.isBoardLike()) {
                                     board.setBoardLikeCount(board.getBoardLikeCount() - 1);
                                     board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
@@ -195,6 +198,7 @@ public class BoardService {
             System.out.println("게시글을 찾는 도중 오류가 발생 했습니다.");
         }
     }
+
 
 
     //board의 좋아요 수와 싫어요 수 조회

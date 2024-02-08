@@ -56,4 +56,7 @@ public class Board {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "score_no", nullable = false)
     private Score scoreNo;
+
+    @Column(name = "is_visible")
+    private boolean isVisible = true;
 }
