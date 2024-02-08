@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -29,8 +30,8 @@ public interface PlayListRepository extends JpaRepository<PlayList, Long > {
 
    @Query("SELECT new com.crescendo.playList.dto.responseDTO.PlayListResponseDTO(" +
            "p.plNo, p.plAddDateTime, p.plId.plId, p.board.boardTitle) " +
-           "FROM PlayList p WHERE p.plId.account.account = :account")
-   List<PlayListResponseDTO> findByPlNoAndAndPlAddDateTimeAndPlIdAAndScore (@Param("account") String account, Long plId);
+           "FROM PlayList p WHERE p.plId.account.account = :account AND p.plId.plId = :plId")
+   List<PlayListResponseDTO> findByPlNoAndAndPlAddDateTimeAndPlIdAndScore (@Param("account") String account, @Param("plId") Long plId);
 
    @Transactional
    @Modifying
