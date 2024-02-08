@@ -124,6 +124,7 @@ public class ScoreController {
 
         byte[] aiMp3 = scoreService.postToPython(requestDTO);
         if(aiMp3!=null){
+            memberService.findUserAndCountCheck(user);// 카운트 깍는 서비스
             HttpHeaders headers = new HttpHeaders();
             headers.add("content-type", "audio/mp3");
             memberService.findUserAndCountCheck(user);
