@@ -143,7 +143,6 @@ public class BoardController {
     public void increaseViewCount(Long boardNo){
         boardService.increaseViewCount(boardNo);
     }
-
     //다운로드 증가
     @PostMapping("/{boardNo}/boardDownLoad")
     public ResponseEntity<?>boardDownLoadCount(@AuthenticationPrincipal TokenUserInfo tokenUserInfo,@PathVariable Long boardNo){

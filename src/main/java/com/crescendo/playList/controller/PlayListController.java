@@ -71,8 +71,8 @@ public class PlayListController {
 
 
     //playList 목록 조회 요청
-    @GetMapping()
-    public ResponseEntity<?> findMyPlayList(@AuthenticationPrincipal TokenUserInfo tokenUserInfo, @PathVariable  Long plId){
+    @GetMapping ()
+    public ResponseEntity<?> findMyPlayList(@AuthenticationPrincipal TokenUserInfo tokenUserInfo,   Long plId){
         List<PlayListResponseDTO> myPlayList = playListService.findMyPlayList(tokenUserInfo.getAccount(), plId);
         return ResponseEntity.ok().body(myPlayList);
     }
