@@ -94,18 +94,18 @@ public class BoardService {
     //board 삭제 처리
     public BoardListResponseDTO delete(String account,Long boardNo) {
         try{
-            List<Board> board= boardRepository.findByMember_AccountAndAndBoardNo(account, boardNo);
-            if(board == null || board.isEmpty()){
+            Board board = boardRepository.findByMember_AccountAndAndBoardNo(account, boardNo);
+            if(board == null){
                 log.warn("삭제할 보드를 찾을 수 없습니다. 계정: {}, 보드 번호: {}", account, boardNo);
                 return null;
             }
             //해당 게시글을 삭제 하기 전에 게시글의 좋아요와 싫어요 수를 0으로 복구
-            Board boards= board.get(0);
-            boards.setBoardLikeCount(0);
-            boards.setBoardDislikeCount(0);
+
+            board.setBoardLikeCount(0);
+            board.setBoardDislikeCount(0);
 
             //board삭제 전에 좋아요 싫어요 데이터를 삭제
-            likeAndDislikeRepository.deleteByBoard(boards);
+            likeAndDislikeRepository.deleteByBoard(board);
 
             // 그 다음 board를 삭제
             boardRepository.deleteById(boardNo);
