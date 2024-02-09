@@ -65,32 +65,32 @@ public class MemberController {
         }
     }
 
-    // 회원 정보 수정
-    @RequestMapping(method = {PUT, PATCH}, path = "/modify")
-    public ResponseEntity<?> updateUser(@Validated ModifyMemberRequestDTO dto, BindingResult result){
-        log.info("dto: {}", dto.toString());
-        if(result.hasErrors()){
-            return ResponseEntity.badRequest().body(result.toString());
+    // 아이디와 이메일이 맞는지 검증하는 엔드포인트
+    @PostMapping("/verifyEmail")
+    public ResponseEntity<?> verifyEmail(@RequestBody ModifyPasswordRequestDTO dto,
+                                         BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
         }
-        try{
-            boolean flag = memberService.modifyUser(dto);
-            return ResponseEntity.ok().body(flag);
-        }catch (NoMatchAccountException | DuplicateEmailException | DuplicateUserNameException e){
+        try {
+            boolean isMatch = memberService.verifyAccountAndEmail(dto);
+            return ResponseEntity.ok().body(isMatch);
+        } catch (NoMatchAccountException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    //비밀 번호 수정
-    @RequestMapping(method = {PUT,PATCH}, path = "/modifyPassword")
-    public ResponseEntity<?> modifyPassword(@Validated ModifyPasswordRequestDTO dto, BindingResult result){
-        log.info("dto: {}", dto.toString());
-        if(result.hasErrors()){
-            return ResponseEntity.badRequest().body(result.toString());
+    // 비밀번호 변경하는 엔드포인트
+    @PutMapping("/modifyPassword")
+    public ResponseEntity<?> modifyPassword( @RequestBody ModifyPasswordRequestDTO dto,
+                                            BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body(result.getAllErrors());
         }
-        try{
-            boolean passWord = memberService.modifyPassword(dto);
-            return ResponseEntity.ok().body(passWord);
-        }catch (NoMatchAccountException | DuplicateEmailException | DuplicateUserNameException e){
+        try {
+            memberService.modifyPassword(dto);
+            return ResponseEntity.ok().body("비밀번호 변경 완료");
+        } catch (NoMatchAccountException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

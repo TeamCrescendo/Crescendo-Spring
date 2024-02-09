@@ -200,29 +200,37 @@ public class MemberService {
         return true;
     }
 
-    //비밀번호 찾고 바꾸는 로직
-    public boolean modifyPassword(ModifyPasswordRequestDTO dto) {
+    // 아이디와 이메일이 맞는지 검증하는 메서드
+    public boolean verifyAccountAndEmail(ModifyPasswordRequestDTO dto) {
         // DTO에서 받은 account 값이 null이 아닌지 확인
         if (dto.getAccount() == null) {
             throw new IllegalArgumentException("계정이 제공되지 않았습니다.");
         }
 
         // DTO에서 받은 이메일과 일치하는 사용자 찾기
-        Member member = memberRepository.getOne(dto.getAccount());
+        Member member = memberRepository.getMemberByAccount(dto.getAccount());
         if (member == null) {
             throw new NoMatchAccountException("일치하는 계정을 찾을 수 없습니다.");
         }
-        //이메일이 아니라면 ?
+
+        // DTO에서 받은 이메일과 사용자의 이메일을 비교하여 일치하지 않으면 예외를 던짐
         if (!member.getEmail().equals(dto.getEmail())) {
             throw new NoMatchAccountException("이메일이 일치하지 않습니다.");
         }
 
-        // 새로운 비밀번호를 해싱하여 저장
-        String password = encoder.encode(dto.getPassword());
-        member.setPassword(password);
-        memberRepository.save(member);
-
         return true;
+    }
+
+    // 비밀번호 변경 메서드
+    public void modifyPassword(ModifyPasswordRequestDTO dto) {
+        // 아이디와 이메일이 맞는지 검증
+        if (verifyAccountAndEmail(dto)) {
+            // 새로운 비밀번호를 해싱하여 저장
+            String password = encoder.encode(dto.getPassword());
+            Member member = memberRepository.getMemberByAccount(dto.getAccount());
+            member.setPassword(password);
+            memberRepository.save(member);
+        }
     }
 
 
