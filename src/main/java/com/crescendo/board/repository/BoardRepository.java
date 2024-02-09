@@ -32,7 +32,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "b.boardLikeCount,b.boardDislikeCount ,b.boardViewCount, b.boardDownloadCount, " +
             "s.scoreNo, s.scoreTitle, s.scoreImageUrl, s.scoreUploadDateTime) " +
             "FROM Board b " +
-            "JOIN b.scoreNo s")
+            "JOIN b.scoreNo s "+
+            "ORDER BY b.boardUpdateDateTime DESC ")
     List<BoardResponseDTO> findAllBoardResponseDTO();
 
     //boardNo, boardTitle, boardLikeCount, boardDislikeCount. boardViewCount, boardDownloadCount만 가져오기
