@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -56,7 +57,7 @@ public class MemberService {
             throw new DuplicateUserNameException("중복된 계정명입니다!!");
         }
 
-        if(dto.getProfileImage().getSize() != 0 && dto.getProfileImage() != null){
+      try{
             String upload = FileUtil.upload(dto.getProfileImage(), rootPath);
             //aws 처리하고 파일패스 돌려받기
             String aws_path = s3Service.uploadToS3Bucket(dto.getProfileImage().getBytes(), upload);
@@ -64,12 +65,18 @@ public class MemberService {
             save.setProfileImageUrl(aws_path);
             log.info("회원가입 성공!! saved user - {}", save);
             return true;
-        }
+        }catch (NullPointerException e){
+          log.info("여기로..?");
+          String basicImgUrl="D:\\DEV\\Crescendo-Spring\\src\\main\\resources\\static\\img\\basic_profile.jpg";
+          byte[] basicImg = FileUtil.convertImageToByteArray(basicImgUrl);
+          String aws_path = s3Service.uploadToS3Bucket(basicImg, basicImgUrl);
+          Member save = memberRepository.save(dto.toEntity(encoder));
+          save.setProfileImageUrl(aws_path);
+          log.info("회원가입 성공!! saved user - {}", save);
+          return true;
 
 
-        Member save = memberRepository.save(dto.toEntity(encoder));
-        log.info("회원가입 성공!! saved user - {}", save);
-        return true;
+      }
     }
 
 

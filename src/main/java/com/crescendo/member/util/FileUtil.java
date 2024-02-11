@@ -3,10 +3,12 @@ package com.crescendo.member.util;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -84,5 +86,18 @@ public class FileUtil {
         }
         return uploadPath;
     }
+
+    public static byte[] convertImageToByteArray(String filePath) throws IOException {
+        File imageFile = new File(filePath);
+        FileInputStream inputStream = new FileInputStream(imageFile);
+        try {
+            return StreamUtils.copyToByteArray(inputStream);
+        } finally {
+            inputStream.close();
+        }
+    }
+
+
+
 
 }
