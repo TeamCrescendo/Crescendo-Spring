@@ -72,8 +72,9 @@ public class BoardController {
     @GetMapping("/pageNo/{pageNo}")
     public ResponseEntity<?> retrieveBoardListWithPage(@PathVariable int pageNo){
         log.info("api/board/pageNo GET!!");
-        List<BoardResponseDTO> boardResponseDTOS = boardService.retrieveWithPage(pageNo);
-        int allPageNo = boardService.getAllPageNo(pageNo);
+        List<BoardResponseDTO> boardResponseDTOS = boardService.retrieveWithPage(pageNo-1);
+        System.out.println("boardResponseDTOS = " + boardResponseDTOS);
+        int allPageNo = boardService.getAllPageNo(pageNo-1);
         PageBoardResponseDTO build = PageBoardResponseDTO.builder().list(boardResponseDTOS).allPageNo(allPageNo).build();
         return ResponseEntity.ok().body(build);
     }

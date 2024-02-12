@@ -85,6 +85,8 @@ public class BoardService {
                     .scoreImageUrl(board.getScoreNo().getScoreImageUrl())
                     .scoreNo(board.getScoreNo().getScoreNo())
                     .scoreTitle(board.getScoreNo().getScoreTitle())
+                    .memberAccount(board.getMember().getAccount())
+                    .boardViewCount(board.getBoardViewCount())
                     .build();
             list.add(build);
         });
