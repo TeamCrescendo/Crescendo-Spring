@@ -16,6 +16,9 @@ import com.crescendo.score.entity.Score;
 import com.crescendo.score.repository.ScoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -66,6 +69,34 @@ public class BoardService {
                 .build();
     }
 
+    // 페이징 처리 된 보드 불러오기
+    public List<BoardResponseDTO> retrieveWithPage(int pageNo){
+        PageRequest pageRequest = PageRequest.of(pageNo, 6, Sort.by("boardUpdateDateTime").descending() );
+        Page<Board> result = boardRepository.findAll(pageRequest); // 해당 페이지 리스트
+        int totalPages = result.getTotalPages(); // 총 페이지 수
+        List<BoardResponseDTO> list = new ArrayList<>();
+        result.forEach(board -> {
+            BoardResponseDTO build = BoardResponseDTO.builder()
+                    .boardNo(board.getBoardNo())
+                    .boardTitle(board.getBoardTitle())
+                    .boardDownloadCount(board.getBoardDownloadCount())
+                    .boardLikeCount(board.getBoardLikeCount())
+                    .boardDislikeCount(board.getBoardDislikeCount())
+                    .scoreImageUrl(board.getScoreNo().getScoreImageUrl())
+                    .scoreNo(board.getScoreNo().getScoreNo())
+                    .scoreTitle(board.getScoreNo().getScoreTitle())
+                    .build();
+            list.add(build);
+        });
+        return list;
+    }
+
+    // 총 페이지 수 구하기
+    public int getAllPageNo(int pageNo){
+        PageRequest pageRequest = PageRequest.of(pageNo, 6, Sort.by("boardUpdateDateTime").descending() );
+        Page<Board> result = boardRepository.findAll(pageRequest); // 해당 페이지 리스트
+        return result.getTotalPages();
+    }
     //나의 board 불러오기
     public MyBoardResponseDTO myBoardRetrieve(String account){
         List<Board> byMemberAccount = boardRepository.findByMember_Account(account);

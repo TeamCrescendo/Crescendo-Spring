@@ -3,6 +3,9 @@ package com.crescendo.board.repository;
 import com.crescendo.board.dto.response.BoardResponseDTO;
 import com.crescendo.board.dto.response.MyBoardListResponseDTO;
 import com.crescendo.board.entity.Board;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -48,7 +51,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     //board의 조회수 찾기
     Board findBoardByBoardNoAndBoardViewCount(Long boardNo, Long boardViewCount );
 
-
+    // 페이징 처리 된 보드 찾기
+    Page<Board> findAll(Pageable pageable);
 
 
 }
