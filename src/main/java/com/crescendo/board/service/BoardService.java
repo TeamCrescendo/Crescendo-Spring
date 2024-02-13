@@ -16,6 +16,8 @@ import com.crescendo.score.entity.Score;
 import com.crescendo.score.repository.ScoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,6 +26,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -42,6 +46,7 @@ public class BoardService {
     private final BlackListRepository blackListRepository;
     private final LikeAndDislikeRepository likeAndDislikeRepository;
     private final ScoreRepository scoreRepository;
+//    private final RestTemplate restTemplate;
 
 
     //board에 등록
@@ -51,7 +56,7 @@ public class BoardService {
         if (member1 == null) {
             return null;
         }
-        Score scoreNo= scoreRepository.findByScoreNo(dto.getScoreNo());
+        Score scoreNo = scoreRepository.findByScoreNo(dto.getScoreNo());
         if (scoreNo == null) {
             return null;
         }
@@ -70,8 +75,8 @@ public class BoardService {
     }
 
     // 페이징 처리 된 보드 불러오기
-    public List<BoardResponseDTO> retrieveWithPage(int pageNo){
-        PageRequest pageRequest = PageRequest.of(pageNo, 6, Sort.by("boardUpdateDateTime").descending() );
+    public List<BoardResponseDTO> retrieveWithPage(int pageNo) {
+        PageRequest pageRequest = PageRequest.of(pageNo, 6, Sort.by("boardUpdateDateTime").descending());
         Page<Board> result = boardRepository.findAll(pageRequest); // 해당 페이지 리스트
         int totalPages = result.getTotalPages(); // 총 페이지 수
         List<BoardResponseDTO> list = new ArrayList<>();
@@ -94,13 +99,14 @@ public class BoardService {
     }
 
     // 총 페이지 수 구하기
-    public int getAllPageNo(int pageNo){
-        PageRequest pageRequest = PageRequest.of(pageNo, 6, Sort.by("boardUpdateDateTime").descending() );
+    public int getAllPageNo(int pageNo) {
+        PageRequest pageRequest = PageRequest.of(pageNo, 6, Sort.by("boardUpdateDateTime").descending());
         Page<Board> result = boardRepository.findAll(pageRequest); // 해당 페이지 리스트
         return result.getTotalPages();
     }
+
     //나의 board 불러오기
-    public MyBoardResponseDTO myBoardRetrieve(String account){
+    public MyBoardResponseDTO myBoardRetrieve(String account) {
         List<Board> byMemberAccount = boardRepository.findByMember_Account(account);
         List<MyBoardListResponseDTO> myBoardResponseDTO = new ArrayList<>();
 
@@ -126,10 +132,10 @@ public class BoardService {
     }
 
     //board 삭제 처리
-    public BoardListResponseDTO delete(String account,Long boardNo) {
-        try{
+    public BoardListResponseDTO delete(String account, Long boardNo) {
+        try {
             Board board = boardRepository.findByMember_AccountAndAndBoardNo(account, boardNo);
-            if(board == null){
+            if (board == null) {
                 log.warn("삭제할 보드를 찾을 수 없습니다. 계정: {}, 보드 번호: {}", account, boardNo);
                 return null;
             }
@@ -144,7 +150,7 @@ public class BoardService {
             // 그 다음 board를 삭제
             boardRepository.deleteById(boardNo);
             log.info("보드 삭제 성공. 계정: {}, 보드 번호: {}", account, boardNo);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("보드 삭제 중 오류 발생. 계정: {}, 보드 번호: {}", account, boardNo, e);
         }
         return retrieve();
@@ -233,13 +239,12 @@ public class BoardService {
     }
 
 
-
     //board의 좋아요 수와 싫어요 수 조회
-    public BoardLikeAndDisLikeResponseDTO retrieveBoardLikeAndDislikeCount(Long boardNo){
-        try{
+    public BoardLikeAndDisLikeResponseDTO retrieveBoardLikeAndDislikeCount(Long boardNo) {
+        try {
             Board byBoardNo = boardRepository.findByBoardNo(boardNo);
 
-            if(byBoardNo == null){
+            if (byBoardNo == null) {
                 log.warn("찾으시는 board는 없는 board 입니다.");
             }
             int likeCount = byBoardNo.getBoardLikeCount();
@@ -250,17 +255,17 @@ public class BoardService {
                     .boardLikeCount(likeCount)
                     .build();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("보드 조회 중 오류 발생. 보드 번호: {}", boardNo, e);
             return null;
         }
     }
 
     // board 좋아요 싫어요 했는지 여부 체크
-    public HashMap<String, Boolean> getClickLikeAndDisLike(String account , Long boardNo){
+    public HashMap<String, Boolean> getClickLikeAndDisLike(String account, Long boardNo) {
         boolean flag = likeAndDislikeRepository.existsByBoard_BoardNoAndMemberAccount(boardNo, account);
         HashMap<String, Boolean> map = new HashMap<>();
-        if(flag){
+        if (flag) {
             LikeAndDislike byMemberAccountAndBoardBoardNo = likeAndDislikeRepository.findByMemberAccountAndBoard_BoardNo(account, boardNo);
             boolean boardLike = byMemberAccountAndBoardBoardNo.isBoardLike();
             map.put("like", boardLike);
@@ -270,59 +275,68 @@ public class BoardService {
     }
 
     // Board에 조회수 증가 하는 메서드
-    public void increaseViewCount(Long boardNo){
+    public void increaseViewCount(Long boardNo) {
         Board byBoardNo = boardRepository.findByBoardNo(boardNo);
-        if(byBoardNo==null){
+        if (byBoardNo == null) {
             throw new RuntimeException("유효하지 않은 게시판에 접근했습니다");
         }
-        byBoardNo.setBoardViewCount(byBoardNo.getBoardViewCount()+1);
+        byBoardNo.setBoardViewCount(byBoardNo.getBoardViewCount() + 1);
     }
 
     //board에 누군가가 다운로드를 하면 다운로드 수가 증가 하는 메서드
-    public void increaseDownLoadCount(Long boardNo, String account){
+    public void increaseDownLoadCount(Long boardNo, String account) {
 
-        try{
+        try {
             //게시글을 조회 해야 함
             Board board = boardRepository.findByBoardNo(boardNo);
             //게시글이 없는 경우엔?
-            if(board == null){
+            if (board == null) {
                 //내보내기
                 throw new RuntimeException("유효하지 않는 게시판 입니다.");
             }
             //다운로드 수 증가 조건
             //board의 작성자와 board의 작성자가 일치 한지 검사를 한다(일치 한다면 다운로드 할 수 있게 해줌).
             //board의 작성자와 board의 작성자가 일치 하지 않는지 검사 한다(일치 하지 않는다면 다운로드 할 수 있게 해줌).
-            if(!board.getMember().getAccount().equals(account) || board.getMember().getAccount().equals(account)){
-                board.setBoardDownloadCount(board.getBoardDownloadCount() +1);
+            if (!board.getMember().getAccount().equals(account) || board.getMember().getAccount().equals(account)) {
+                board.setBoardDownloadCount(board.getBoardDownloadCount() + 1);
                 boardRepository.save(board);
                 log.info("다운로드 수가 증가했습니다. boardNo: {}, 다운로드 수: {}", boardNo, board.getBoardDownloadCount());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("board 다운로드에 실패 했습니다. ");
         }
     }
 
     //PDF를 가져와서 byte로 변환하여 클라이언트에 전송하는 메서드
-    public ResponseEntity<?> getBoardPdf(Long boardId){
-        try{
-            Board board = boardRepository.findByBoardNo(boardId);
+    public byte[] getBoardPdf(Long boardId) {
+//        try{
+        Board byBoardNo = boardRepository.findByBoardNo(boardId);
 
-            String score = board.getScoreNo().getScoreImageUrl();
-//            log.info("안녕하세요구르트: {}", score);
+        String scoreImageUrl = byBoardNo.getScoreNo().getScoreImageUrl();
+        RestTemplate restTemplate = new RestTemplate();
+        log.info("123123123");
+        log.info(scoreImageUrl);
+        log.info("123123123");
+        byte[] forObject = restTemplate.getForObject(scoreImageUrl, byte[].class);
+
+
 //            //score로 부터 파일을 읽어서 byte로 변환
-            byte[] bytes = readPdfFile(score);
+//            byte[] bytes = readPdfFile(scoreImageUrl);
+//            byte[] pdfBytes = getPdfBytes(scoreImageUrl);
+        return forObject;
 //            클라이언트에 전송할 HttpHeaders 설정
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-//            //PDF 파일 중에 특수문자가 있더라도 안전하게 처리함
-//            String FileName = URLEncoder.encode(board.getScoreNo().getScoreImageUrl(), "UTF-8");
-//            headers.setContentDispositionFormData("attachment",FileName);
-//
-//            //ResponseEntity를 사용해서 클라이언트에 byte 배열 전송
-            return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_PDF);
+        //PDF 파일 중에 특수문자가 있더라도 안전하게 처리함
+//            String FileName = URLEncoder.encode(byBoardNo.getScoreNo().getScoreImageUrl(), "UTF-8");
+//            headers.setContentDispositionFormData("attachment", FileName);
+
+        //ResponseEntity를 사용해서 클라이언트에 byte 배열 전송
+//            return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+//        }
+//        catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
     }
 
     // pdf 파일을 읽어 byte 배열로 변환하는 메서드
@@ -337,6 +351,8 @@ public class BoardService {
             return outputStream.toByteArray();
         }
     }
+
+
 }
 
 
