@@ -32,12 +32,14 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     @Query("SELECT new com.crescendo.board.dto.response.BoardResponseDTO(" +
             "b.boardNo, b.boardTitle, b.member.account, " +
-            "b.boardLikeCount,b.boardDislikeCount ,b.boardViewCount, b.boardDownloadCount, " +
+            "b.boardLikeCount, b.boardDislikeCount, b.boardViewCount, b.boardDownloadCount, " +
             "s.scoreNo, s.scoreTitle, s.scoreImageUrl, s.scoreUploadDateTime) " +
             "FROM Board b " +
-            "JOIN b.scoreNo s "+
+            "JOIN b.scoreNo s " +
+            "WHERE b.isVisible = true " + // isVisible이 true인 것만 조회
             "ORDER BY b.boardUpdateDateTime DESC ")
     List<BoardResponseDTO> findAllBoardResponseDTO();
+
 
     //boardNo, boardTitle, boardLikeCount, boardDislikeCount. boardViewCount, boardDownloadCount만 가져오기
     @Query("SELECT new com.crescendo.board.dto.response.MyBoardListResponseDTO(" +
