@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -31,6 +32,8 @@ public class MemberService {
     private final TokenProvider tokenProvider;
     @Value("${file.upload.root-path}")
     private String rootPath;
+    @Value("${basic.imgUri}")
+    private String basicImgUri;
 
 
     // 회원 가입 처리
@@ -56,20 +59,24 @@ public class MemberService {
             throw new DuplicateUserNameException("중복된 계정명입니다!!");
         }
 
-        if(dto.getProfileImage().getSize() != 0 && dto.getProfileImage() != null){
+      try{
             String upload = FileUtil.upload(dto.getProfileImage(), rootPath);
+            log.info(upload);
             //aws 처리하고 파일패스 돌려받기
-            String aws_path = s3Service.uploadToS3Bucket(dto.getProfileImage().getBytes(), upload);
+            String aws_path = s3Service.uploadToS3Bucket(dto.getProfileImage().getBytes(),upload);
             Member save = memberRepository.save(dto.toEntity(encoder));
             save.setProfileImageUrl(aws_path);
             log.info("회원가입 성공!! saved user - {}", save);
             return true;
-        }
+        }catch (NullPointerException e){
+          log.info("여기로..?");
+          Member save = memberRepository.save(dto.toEntity(encoder));
+          save.setProfileImageUrl(basicImgUri);
+          log.info("회원가입 성공!! saved user - {}", save);
+          return true;
 
 
-        Member save = memberRepository.save(dto.toEntity(encoder));
-        log.info("회원가입 성공!! saved user - {}", save);
-        return true;
+      }
     }
 
 
@@ -292,6 +299,10 @@ public class MemberService {
         System.out.println("registrationId = " + registrationId);
     }
 
+    public int getUsrCountDown(Member member){
+        return  member.getUserDownloadChance();
+    }
+
 
     //유저를 검색하고 countCheck 를 진행하는 서비스
     public void findUserAndCountCheck(Member member) {
@@ -303,7 +314,6 @@ public class MemberService {
 
     //다운로드 2-> 악보생성시 사용함
     public void coutDownDownload(Member member) {
-
         Integer userDownloadChance = member.getUserDownloadChance();
         member.setUserDownloadChance(userDownloadChance-1);
     }
