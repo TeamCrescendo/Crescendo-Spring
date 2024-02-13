@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -58,7 +59,7 @@ public class MemberService {
             throw new DuplicateUserNameException("중복된 계정명입니다!!");
         }
 
-        if(dto.getProfileImage().getSize() != 0 && dto.getProfileImage() != null){
+      try{
             String upload = FileUtil.upload(dto.getProfileImage(), rootPath);
             log.info(upload);
             //aws 처리하고 파일패스 돌려받기
@@ -75,9 +76,7 @@ public class MemberService {
           return true;
 
 
-        Member save = memberRepository.save(dto.toEntity(encoder));
-        log.info("회원가입 성공!! saved user - {}", save);
-        return true;
+      }
     }
 
 

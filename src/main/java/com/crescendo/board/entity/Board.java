@@ -58,5 +58,6 @@ public class Board {
     private Score scoreNo;
 
     @Column(name = "is_visible")
+    @Builder.Default
     private boolean isVisible = true;
 }
