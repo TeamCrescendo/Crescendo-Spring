@@ -303,22 +303,22 @@ public class BoardService {
     }
 
     //PDF를 가져와서 byte로 변환하여 클라이언트에 전송하는 메서드
-    public ResponseEntity<byte[]> getBoardPdf(Long boardId){
+    public ResponseEntity<?> getBoardPdf(Long boardId){
         try{
             Board board = boardRepository.findByBoardNo(boardId);
+
             String score = board.getScoreNo().getScoreImageUrl();
-
-            //score로 부터 파일을 읽어서 byte로 변환
+//            log.info("안녕하세요구르트: {}", score);
+//            //score로 부터 파일을 읽어서 byte로 변환
             byte[] bytes = readPdfFile(score);
-
-            //클라이언트에 전송할 HttpHeaders 설정
+//            클라이언트에 전송할 HttpHeaders 설정
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_PDF);
-            //PDF 파일 중에 특수문자가 있더라도 안전하게 처리함
-            String FileName = URLEncoder.encode(board.getScoreNo().getScoreImageUrl(), "UTF-8");
-            headers.setContentDispositionFormData("attachment",FileName);
-
-            //ResponseEntity를 사용해서 클라이언트에 byte 배열 전송
+//            //PDF 파일 중에 특수문자가 있더라도 안전하게 처리함
+//            String FileName = URLEncoder.encode(board.getScoreNo().getScoreImageUrl(), "UTF-8");
+//            headers.setContentDispositionFormData("attachment",FileName);
+//
+//            //ResponseEntity를 사용해서 클라이언트에 byte 배열 전송
             return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
         } catch (IOException e) {
             throw new RuntimeException(e);

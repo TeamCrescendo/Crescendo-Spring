@@ -21,20 +21,11 @@ public class FileUtil {
         String newFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
         // 이 파일을 날짜별로 관리하기 위해 날짜별 폴더를 생성
-        String newUploadPath = makeDateFormatDirectory(rootPath);
+        String newUploadPath = makeDateFormatDirectory(rootPath).substring(0, 1);
 
         // 파일의 풀 경로를 생성
         String fullPath = newUploadPath + "/" + newFileName;
 
-        // 파일 업로드 수행
-//        try {
-//            file.transferTo(new File(newUploadPath, newFileName));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-        // full-path : D:/abcd/uploade/2024/01/02/ㄱㄷㅈㄱㅈㄷㄱㅈㄷㄱㅈㄷㄱㅈㄷㄱ_고양이.jpg
-        // return-path: 2024/01/02/ㄱㄷㅈㄱㅈㄷㄱㅈㄷㄱㅈㄷㄱㅈㄷㄱ_고양이.jpg
         return fullPath.substring(rootPath.length());
     }
 

@@ -54,6 +54,7 @@ public class S3Service {
         PutObjectRequest request
                 = PutObjectRequest.builder()
                 .bucket(bucketName) // 버킷이름
+                .contentType("image/jpeg")
                 .key(fileName) // 파일명
                 .build();
 

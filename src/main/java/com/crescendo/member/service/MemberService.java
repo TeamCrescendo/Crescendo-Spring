@@ -32,6 +32,8 @@ public class MemberService {
     private final TokenProvider tokenProvider;
     @Value("${file.upload.root-path}")
     private String rootPath;
+    @Value("${basic.profile}")
+    private String basicImgUrl;
 
 
     // 회원 가입 처리
@@ -67,11 +69,10 @@ public class MemberService {
             return true;
         }catch (NullPointerException e){
           log.info("여기로..?");
-          String basicImgUrl="D:\\DEV\\Crescendo-Spring\\src\\main\\resources\\static\\img\\basic_profile.jpg";
-          byte[] basicImg = FileUtil.convertImageToByteArray(basicImgUrl);
-          String aws_path = s3Service.uploadToS3Bucket(basicImg, basicImgUrl);
           Member save = memberRepository.save(dto.toEntity(encoder));
-          save.setProfileImageUrl(aws_path);
+//          byte[] basicImg = FileUtil.convertImageToByteArray(basicImgUrl);
+//          String aws_path = s3Service.uploadToS3Bucket(basicImg, basicImgUrl);
+          save.setProfileImageUrl(basicImgUrl);
           log.info("회원가입 성공!! saved user - {}", save);
           return true;
 
