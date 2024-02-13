@@ -157,86 +157,84 @@ public class BoardService {
     }
 
 
-    //좋아요와 싫어요 기능 처리
+    // 좋아요와 싫어요 기능 처리
     public void LikeAndDislike(LikeAndDislikeRequestDTO dto, String account) {
-
-        //게시글의 번호를 찾기
+        // 게시글의 번호를 찾기
         Long boardNo = dto.getBoardNo();
-        log.info("boarNo : {}", boardNo);
+        log.info("boardNo: {}", boardNo);
+
         try {
-            Optional<Board> boardId = boardRepository.findById(boardNo);
+            Optional<Board> boardOptional = boardRepository.findById(boardNo);
 
-            //게시글을 찾으면 이제 게시글 작성자를 찾아야 한다.
-            boardId.ifPresent(board -> {
-                //게시글 에서 작성자 찾기
+            // 게시글을 찾았을 경우
+            boardOptional.ifPresent(board -> {
                 try {
-                    //게시글에서 작성자와 member테이블의 member와 비교해서 찾음
+                    // 게시글의 작성자를 찾기
                     Member member = memberRepository.getOne(account);
-                    //나의 좋아요 수와 싫어요 수를 확인 하기 위해 ,
-                    //내 계정과 내가 좋아요나 싫어요를 누른 boardNo를 가져옴
-                    LikeAndDislike memberAccountAndBoardNo =
-                            likeAndDislikeRepository.findByMemberAccountAndBoard_BoardNo(
-                                    account, dto.getBoardNo());
 
-                    //만약에 좋아요나 싫어요를 누르지 않은 상태라면,
-                    //좋아요를 생성함
+                    // 내 계정과 내가 좋아요나 싫어요를 누른 boardNo를 가져옴
+                    LikeAndDislike memberAccountAndBoardNo = likeAndDislikeRepository.findByMemberAccountAndBoard_BoardNo(account, boardNo);
+
+                    // 좋아요나 싫어요를 누르지 않은 상태일 때
                     if (memberAccountAndBoardNo == null) {
-                        LikeAndDislike build = LikeAndDislike.builder()
+                        LikeAndDislike likeAndDislike = LikeAndDislike.builder()
                                 .boardLike(dto.isLike())
                                 .member(member)
                                 .board(board)
                                 .build();
-                        likeAndDislikeRepository.save(build);
-                        //만약에 좋아요를 누른 상태라면?
-                        if (dto.isLike()) {
-                            //그 게시물에 좋아요 + 1 추가
-                            board.setBoardLikeCount(board.getBoardLikeCount() + 1);
-                        } else {
-                            if (!dto.isLike()) {
-                                //만약에 좋아요를 누르지 않은 상태라면 ? 싫어요 +1 추가
-                                board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
-                            }
-                            memberAccountAndBoardNo.setBoardLike(false); // 좋아요 상태를 false로 설정
+                        likeAndDislikeRepository.save(likeAndDislike);
 
-                            if (board.getBoardDislikeCount() >= 5) {
-                                board.setVisible(false);
-                                BlackList build1 = BlackList.builder()
-                                        .member(member)
-                                        .board(board)
-                                        .build();
-                                blackListRepository.save(build1);
-                            }
-                        }
-                        //아니면
-                    } else {
-                        //내가 좋아요를 눌렀을 때, 좋아요가 눌러져 있지 않는 상태라면?
+                        // 좋아요를 누른 경우
                         if (dto.isLike()) {
+                            board.setBoardLikeCount(board.getBoardLikeCount() + 1);
+                        }
+                        // 싫어요를 누른 경우
+                        else {
+                            board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
+                        }
+
+                        // 싫어요 수가 5개 이상인 경우
+                        if (board.getBoardDislikeCount() >= 5) {
+                            board.setVisible(false);
+                            BlackList blackList = BlackList.builder()
+                                    .member(member)
+                                    .board(board)
+                                    .build();
+                            blackListRepository.save(blackList);
+                        }
+                    }
+                    // 좋아요나 싫어요를 이미 누른 경우
+                    else {
+                        // 좋아요를 누른 경우
+                        if (dto.isLike()) {
+                            // 싫어요에서 좋아요로 변경
                             if (!memberAccountAndBoardNo.isBoardLike()) {
                                 board.setBoardLikeCount(board.getBoardLikeCount() + 1);
                                 board.setBoardDislikeCount(board.getBoardDislikeCount() - 1);
                             }
                             memberAccountAndBoardNo.setBoardLike(true);
-                            //아니면 내가 싫어요를 눌렀을때, 좋아요를 눌러져 있는 상태라면?
-                        } else {
-                            if (!dto.isLike()) {
-                                if (memberAccountAndBoardNo.isBoardLike()) {
-                                    board.setBoardLikeCount(board.getBoardLikeCount() - 1);
-                                    board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
-                                }
-                                memberAccountAndBoardNo.setBoardLike(false); // 좋아요 상태를 false로 설정
+                        }
+                        // 싫어요를 누른 경우
+                        else {
+                            // 좋아요에서 싫어요로 변경
+                            if (memberAccountAndBoardNo.isBoardLike()) {
+                                board.setBoardLikeCount(board.getBoardLikeCount() - 1);
+                                board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
                             }
+                            memberAccountAndBoardNo.setBoardLike(false);
                         }
                     }
-                    //게시글의 작성자를 찾을 수가 없다.
+                    // 게시글 작성자를 찾을 수 없을 경우
                 } catch (EntityNotFoundException e) {
-                    System.out.println("작성자를 찾을 수 없습니다");
+                    System.out.println("게시글 작성자를 찾을 수 없습니다.");
                 }
             });
-            //게시글이 없다.
+            // 게시글을 찾을 수 없을 경우
         } catch (Exception e) {
-            System.out.println("게시글을 찾는 도중 오류가 발생 했습니다.");
+            System.out.println("게시글을 찾는 도중 오류가 발생했습니다.");
         }
     }
+
 
 
     //board의 좋아요 수와 싫어요 수 조회
