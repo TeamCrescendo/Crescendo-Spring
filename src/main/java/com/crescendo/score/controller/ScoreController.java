@@ -81,6 +81,11 @@ public class ScoreController {
     private ResponseEntity<?> youtubeLink(@AuthenticationPrincipal TokenUserInfo tokenUser, @RequestBody YoutubeLinkRequestDTO dto){
         // 회원도 받아서 인증해야함.
         Member user = memberService.findUser(tokenUser.getAccount());
+        int usrCountDown = memberService.getUsrCountDown(user);
+        if(usrCountDown<=0){
+            return ResponseEntity.status(403).body("하루 다운횟수초과");
+
+        }
         log.info("/api/score POST {}", dto.getUrl());
 
         //python에 전달할 json 데이터 포장 url ,account
@@ -113,6 +118,12 @@ public class ScoreController {
     private ResponseEntity<?> youtubeLink(@AuthenticationPrincipal TokenUserInfo tokenUser, @RequestBody AiMusicRequestDTO dto){
         // 회원도 받아서 인증해야함.
         Member user = memberService.findUser(tokenUser.getAccount());
+        //카운트가 안되면 반납
+        int usrCountDown = memberService.getUsrCountDown(user);
+        if(usrCountDown<=0){
+            return ResponseEntity.status(403).body("하루 다운횟수초과");
+
+        }
 
         //python에 전달할 json 데이터 포장 url ,account
         CreateAiScoreRequestDTO requestDTO = CreateAiScoreRequestDTO.builder()
