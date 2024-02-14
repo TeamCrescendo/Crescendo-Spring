@@ -33,8 +33,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 @RequestMapping("/api/member")
 @CrossOrigin(origins = {"http://localhost:3000"}, allowCredentials = "true")
 public class MemberController {
-    @Value("${file.upload.root-path}")
-    private String rootPath;
 
     private final MemberService memberService;
 
@@ -53,17 +51,7 @@ public class MemberController {
         }
     }
 
-    // 유저 프로필 이미지 등록
-    @PostMapping("/profile")
-    public ResponseEntity<?> uploadProfileImage(ProfileUploadRequestDTO dto) {
-        log.info("api/member/profile Post!!");
-        try{
-            boolean b = memberService.uploadProfileImage(dto);
-            return ResponseEntity.ok().body(b);
-        }catch (NoMatchAccountException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+
 
     // 아이디와 이메일이 맞는지 검증하는 엔드포인트
     @PostMapping("/verifyEmail")

@@ -30,8 +30,6 @@ public class MemberService {
     private final AllPlayListRepository allPlayListRepository;
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
-    @Value("${file.upload.root-path}")
-    private String rootPath;
     @Value("${basic.profile}")
     private String basicImgUri;
 
@@ -60,10 +58,9 @@ public class MemberService {
         }
 
       try{
-            String upload = FileUtil.upload(dto.getProfileImage(), rootPath);
-            log.info(upload);
+            String upload = FileUtil.convertNewPath(dto.getProfileImage());
             //aws 처리하고 파일패스 돌려받기
-            String aws_path = s3Service.uploadToS3Bucket(dto.getProfileImage().getBytes(),upload);
+            String aws_path = s3Service.uploadToS3Bucket(dto.getProfileImage().getBytes(), upload);
             Member save = memberRepository.save(dto.toEntity(encoder));
             save.setProfileImageUrl(aws_path);
             log.info("회원가입 성공!! saved user - {}", save);
@@ -201,7 +198,7 @@ public class MemberService {
             foundMember.setPassword(encoder.encode(dto.getPassword()));
         }
         if (dto.getProfileImage() != null && dto.getProfileImage().getSize() != 0) {
-            String upload = FileUtil.upload(dto.getProfileImage(), rootPath);
+            String upload = FileUtil.convertNewPath(dto.getProfileImage());
             foundMember.setProfileImageUrl(upload);
         }
         return true;
@@ -278,21 +275,6 @@ public class MemberService {
     }
 
 
-    // 프로필 이미지 저장
-    public boolean uploadProfileImage(ProfileUploadRequestDTO dto) {
-
-        String upload = FileUtil.upload(dto.getFile(), rootPath);
-
-        boolean b = memberRepository.existsByAccount(dto.getAccount());
-        if (!b) {
-            throw new NoMatchAccountException("해당 회원은 없습니다");
-        }
-
-        Member foundMember = memberRepository.getOne(dto.getAccount());
-
-        foundMember.setProfileImageUrl(upload);
-        return true;
-    }
 
     public void googleLogin(String code, String registrationId) {
         System.out.println("code = " + code);

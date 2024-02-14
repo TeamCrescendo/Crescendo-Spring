@@ -16,6 +16,24 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class FileUtil {
+
+    public static String convertNewPath(MultipartFile file){
+        // 원본 파일명을 중복이 없는 랜덤 이름으로 변경
+        String newFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+        LocalDateTime now = LocalDateTime.now();
+        int year = now.getYear();
+        int month = now.getMonthValue();
+        int day = now.getDayOfMonth();
+
+        String[] dateInfo = {year+"", len2(month), len2(day)};
+        String directoryPath = "";
+        for (String s : dateInfo) {
+            directoryPath += "/"+s;
+        }
+        return directoryPath+"/"+newFileName;
+    }
+
     public static String upload(MultipartFile file, String rootPath) {
         // 원본 파일명을 중복이 없는 랜덤 이름으로 변경
         String newFileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
