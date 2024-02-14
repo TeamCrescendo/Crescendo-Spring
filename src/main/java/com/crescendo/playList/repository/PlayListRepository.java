@@ -1,6 +1,7 @@
 package com.crescendo.playList.repository;
 
 import com.crescendo.allPlayList.entity.AllPlayList;
+import com.crescendo.board.entity.Board;
 import com.crescendo.playList.dto.responseDTO.PlayListResponseDTO;
 import com.crescendo.playList.entity.PlayList;
 import com.crescendo.score.entity.Score;
@@ -8,7 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -41,4 +41,6 @@ public interface PlayListRepository extends JpaRepository<PlayList, Long > {
    PlayList findByScore(int scoreNo);
 
    boolean existsByPlIdAndScore(AllPlayList allPlayList, Score score);
+
+   List<PlayList> findByBoard(Board board);
 }

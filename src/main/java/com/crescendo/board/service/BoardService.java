@@ -12,6 +12,8 @@ import com.crescendo.likeAndDislike.repository.LikeAndDislikeRepository;
 import com.crescendo.member.entity.Member;
 import com.crescendo.board.repository.BoardRepository;
 import com.crescendo.member.repository.MemberRepository;
+import com.crescendo.playList.entity.PlayList;
+import com.crescendo.playList.repository.PlayListRepository;
 import com.crescendo.score.entity.Score;
 import com.crescendo.score.repository.ScoreRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +48,7 @@ public class BoardService {
     private final BlackListRepository blackListRepository;
     private final LikeAndDislikeRepository likeAndDislikeRepository;
     private final ScoreRepository scoreRepository;
+    private final PlayListRepository playListRepository;
 //    private final RestTemplate restTemplate;
 
 
@@ -139,22 +142,29 @@ public class BoardService {
                 log.warn("삭제할 보드를 찾을 수 없습니다. 계정: {}, 보드 번호: {}", account, boardNo);
                 return null;
             }
-            //해당 게시글을 삭제 하기 전에 게시글의 좋아요와 싫어요 수를 0으로 복구
 
-            board.setBoardLikeCount(0);
-            board.setBoardDislikeCount(0);
+            // 보드가 특정 사용자의 플레이 리스트에 담겨져 있는지 확인
+            List<PlayList> playlists = playListRepository.findByBoard(board);
+            // 보드를 null로 설정한 후에 해당 플레이 리스트를 삭제
+            for (PlayList playlist : playlists) {
+                playlist.setBoard(null);
+                playListRepository.delete(playlist);
+            }
 
-            //board삭제 전에 좋아요 싫어요 데이터를 삭제
+            // 좋아요와 싫어요 데이터를 삭제
             likeAndDislikeRepository.deleteByBoard(board);
 
-            // 그 다음 board를 삭제
+            // 보드를 삭제
             boardRepository.deleteById(boardNo);
+
             log.info("보드 삭제 성공. 계정: {}, 보드 번호: {}", account, boardNo);
         } catch (Exception e) {
             log.error("보드 삭제 중 오류 발생. 계정: {}, 보드 번호: {}", account, boardNo, e);
         }
         return retrieve();
     }
+
+
 
 
     // 좋아요와 싫어요 기능 처리
