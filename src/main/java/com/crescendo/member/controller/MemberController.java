@@ -80,6 +80,21 @@ public class MemberController {
         }
     }
 
+    // 회원 정보 수정
+    @RequestMapping(method = {PUT, PATCH}, path = "/modify")
+    public ResponseEntity<?> updateUser(@Validated ModifyMemberRequestDTO dto, BindingResult result){
+        log.info("dto: {}", dto.toString());
+        if(result.hasErrors()){
+            return ResponseEntity.badRequest().body(result.toString());
+        }
+        try{
+            boolean flag = memberService.modifyUser(dto);
+            return ResponseEntity.ok().body(flag);
+        }catch (NoMatchAccountException | DuplicateEmailException | DuplicateUserNameException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     // 비밀번호 변경하는 엔드포인트
     @PutMapping("/modifyPassword")
     public ResponseEntity<?> modifyPassword( @RequestBody ModifyPasswordRequestDTO dto,
