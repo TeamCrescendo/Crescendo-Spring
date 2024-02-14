@@ -111,4 +111,19 @@ public class MemberController {
         return  ResponseEntity.badRequest().body("삭제에 실패했습니다! 다시시도해주세요!");
 
     }
+
+    // 회원 정보 수정
+    @RequestMapping(method = {PUT, PATCH}, path = "/modify")
+    public ResponseEntity<?> updateUser(@Validated ModifyMemberRequestDTO dto, BindingResult result){
+        log.info("dto: {}", dto.toString());
+        if(result.hasErrors()){
+            return ResponseEntity.badRequest().body(result.toString());
+        }
+        try{
+            boolean flag = memberService.modifyUser(dto);
+            return ResponseEntity.ok().body(flag);
+        }catch (NoMatchAccountException | DuplicateEmailException | DuplicateUserNameException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
