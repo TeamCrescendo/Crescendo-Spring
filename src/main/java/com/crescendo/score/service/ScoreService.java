@@ -14,6 +14,7 @@ import com.crescendo.score.exception.NoArgumentException;
 import com.crescendo.score.repository.ScoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,9 @@ import java.util.List;
 public class ScoreService {
     private final ScoreRepository scoreRepository;
     private final MemberRepository memberRepository;
+
+    @Value("${python.path}")
+    String pythonPath;
 
     // 악보 추가
     public boolean createScore(CreateScoreRequestDTO dto) {
@@ -120,7 +124,8 @@ public class ScoreService {
 
         HttpEntity<CreateNotationRequestDTO> stringHttpEntity = new HttpEntity<>(dto, headers);
 
-        String pythonUrl = "http://114.70.126.2:8181/youtube/youtube/";
+
+        String pythonUrl = pythonPath+"/youtube/youtube/";
 
         ResponseEntity<byte[]> response = restTemplate.exchange(pythonUrl, HttpMethod.POST, stringHttpEntity, byte[].class);
 
@@ -165,7 +170,7 @@ public class ScoreService {
 
         HttpEntity<CreateAiScoreRequestDTO> stringHttpEntity = new HttpEntity<>(dto, headers);
 
-        String pythonUrl = "http://114.70.126.2:8181/ai/ai/";
+        String pythonUrl = pythonPath+"/ai/ai/";
 
         ResponseEntity<byte[]> response = restTemplate.exchange(pythonUrl, HttpMethod.POST, stringHttpEntity, byte[].class);
 
