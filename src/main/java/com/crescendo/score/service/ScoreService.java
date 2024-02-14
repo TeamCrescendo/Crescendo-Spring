@@ -120,7 +120,7 @@ public class ScoreService {
 
         HttpEntity<CreateNotationRequestDTO> stringHttpEntity = new HttpEntity<>(dto, headers);
 
-        String pythonUrl = "http://127.0.0.1:8181/youtube/youtube/";
+        String pythonUrl = "http://114.70.126.2:8181/youtube/youtube/";
 
         ResponseEntity<byte[]> response = restTemplate.exchange(pythonUrl, HttpMethod.POST, stringHttpEntity, byte[].class);
 
@@ -165,7 +165,7 @@ public class ScoreService {
 
         HttpEntity<CreateAiScoreRequestDTO> stringHttpEntity = new HttpEntity<>(dto, headers);
 
-        String pythonUrl = "http://127.0.0.1:8181/ai/ai/";
+        String pythonUrl = "http://114.70.126.2:8181/ai/ai/";
 
         ResponseEntity<byte[]> response = restTemplate.exchange(pythonUrl, HttpMethod.POST, stringHttpEntity, byte[].class);
 
