@@ -32,7 +32,7 @@ public class MemberService {
     private final TokenProvider tokenProvider;
     @Value("${file.upload.root-path}")
     private String rootPath;
-    @Value("${basic.imgUri}")
+    @Value("${basic.profile}")
     private String basicImgUri;
 
 
