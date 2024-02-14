@@ -198,8 +198,17 @@ public class MemberService {
             foundMember.setPassword(encoder.encode(dto.getPassword()));
         }
         if (dto.getProfileImage() != null && dto.getProfileImage().getSize() != 0) {
-            String upload = FileUtil.convertNewPath(dto.getProfileImage());
-            foundMember.setProfileImageUrl(upload);
+
+            try {
+                String upload = FileUtil.convertNewPath(dto.getProfileImage());
+                String aws_path = s3Service.uploadToS3Bucket(dto.getProfileImage().getBytes(), upload);
+                foundMember.setProfileImageUrl(aws_path);
+            }catch (NullPointerException e){
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         }
         return true;
     }

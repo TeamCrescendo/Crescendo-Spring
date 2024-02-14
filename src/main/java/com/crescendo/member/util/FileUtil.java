@@ -29,9 +29,9 @@ public class FileUtil {
         String[] dateInfo = {year+"", len2(month), len2(day)};
         String directoryPath = "";
         for (String s : dateInfo) {
-            directoryPath += "/"+s;
+            directoryPath += s+"/";
         }
-        return directoryPath+"/"+newFileName;
+        return directoryPath+newFileName;
     }
 
     public static String upload(MultipartFile file, String rootPath) {
