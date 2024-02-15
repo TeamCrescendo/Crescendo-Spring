@@ -39,7 +39,7 @@ public class MemberController {
     // 유저 다운로드 회수 차감
     @GetMapping("/download")
     public ResponseEntity<?> downloadScore(@AuthenticationPrincipal TokenUserInfo tokenUserInfo) {
-        log.info("/api/member/download");
+        log.info("/api/member/download GET!!");
         if (tokenUserInfo.getAccount().isEmpty()) {
             return ResponseEntity.badRequest().body("계정명을 정확히 적어주세요");
         }

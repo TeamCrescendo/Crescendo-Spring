@@ -38,8 +38,8 @@ public class snsController {
     @PostMapping("/google/info")
     public ResponseEntity<?> getAccessToken(@RequestBody String accessToken,HttpSession session) throws IOException {
         LoginUserResponseDTO loginUserResponseDTO = snsLoginService.googleLoginByaccess(accessToken);
-        session.setAttribute("login", loginUserResponseDTO);
-        session.setMaxInactiveInterval(60 * 60);
+//        session.setAttribute("login", loginUserResponseDTO);
+//        session.setMaxInactiveInterval(60 * 60);
         return ResponseEntity.ok().body(loginUserResponseDTO);
 
 

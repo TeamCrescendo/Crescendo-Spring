@@ -63,8 +63,8 @@ public class AuthController {
         try {
             LoginUserResponseDTO loginUserResponseDTO = memberService.signIn(dto);
 
-            session.setAttribute("login", loginUserResponseDTO);
-            session.setMaxInactiveInterval(60 * 60);
+//            session.setAttribute("login", loginUserResponseDTO);
+//            session.setMaxInactiveInterval(60 * 60);
 
             return ResponseEntity.ok().body(loginUserResponseDTO);
         } catch (NoLoginArgumentsException | NoMatchAccountException | IncorrectPasswordException e) {
