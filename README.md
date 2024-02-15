@@ -7,7 +7,8 @@
 <br>
 ※메인 테마 자료
 
-![Uploading 스크롤화면전환.gif…]()
+![스크롤화면전환](https://github.com/TeamCrescendo/Crescendo-Spring/assets/47143547/cceda569-77c0-477d-ae0a-73b9b9fbfa19)
+
 
 <br><br><br>
 
@@ -117,18 +118,24 @@
 - 악보변환과 AI 음악 생성 기능은 로그인 하지 않으면 이용할 수 없습니다.
 - 회원 기능: [등록된 악보 확인, 악보 플리, 쪽지, 문의, 회원정보 변경]
 - 관리자 기능: [문의 답변]
+![로그인 모달](https://github.com/TeamCrescendo/Crescendo-Spring/assets/47143547/5ee66e4e-64b8-49ab-81f4-1d86659a16bd)
+
 
 ### 📄 1. 음악변환 페이지
 - 회원은 유튜브 링크를 복사-> 붙여넣기, 제출을 통해 유튜브 영상을 악보로 변환 할 수 있습니다.
 - 변환된 악보를 저장할 수 있으며, 공유하기를 선택할 시 악보 게시판에 등록됩니다.
 - 일부 유튜브 정책에 따라서 변환이 불가능한 영상도 존재합니다.
 - 악보 변환시 변환횟수가 1회 차감됩니다.
+![악보변환](https://github.com/TeamCrescendo/Crescendo-Spring/assets/47143547/d1a6cf74-7c27-40d4-bd1e-05553c55dbc0)
+
 
 ### 📄 2. AI 음악 생성 페이지
 - 회원은 음악 재생시간을 1초 부터 10초까지 지정할 수 있습니다.
 - 회원은 생성할 음악에 관련된 설명을 입력하여 음악을 생성할 수 있습니다.
 - 생성된 음악은 다운로드가 가능하며, 해당 페이지의 음악 플레이어로 감상할 수 있습니다.
 - 생성된 음악에 사용된 설명을 확인할 수 있습니다.
+![음악생성](https://github.com/TeamCrescendo/Crescendo-Spring/assets/47143547/e0bfca28-4ede-4dd4-ad4a-720f0dc7a6f2)
+
 
 ### 📄 3. 악보 게시판
 - 크레센도의 회원들이 공유한 악보목록을 확인 할 수 있습니다.
@@ -138,6 +145,8 @@
     2. 사용자의 악보 플리에 추가 할 수 있습니다. (플리가 없을 시 추가할 수 있음)
     3. 악보를 신고할 수 있습니다. (신고누적 5회시, 해당 악보 블락처리)
     4. 해당 악보를 등록한 회원에게 쪽지 메세지를 보낼 수 있습니다.
+![악보목록에 추가(다시찍어)](https://github.com/TeamCrescendo/Crescendo-Spring/assets/47143547/f547534d-d501-4664-a991-c5b72370ba44)
+
 
 ### 📄 4. 개인서비스
 - 사용자의 프로필사진, 닉네임, 계정명, 변환횟수가 표시됩니다.
@@ -146,10 +155,13 @@
 - 회원탈퇴가 가능합니다.
     1. 회원탈퇴 버튼을 클릭하면, 사용자 정보를 삭제합니다.
     2. 회원정보는 바로 삭제되지 않고, 유예기간을 갖게 되고 기간이 만료되면 삭제됩니다.
+![회원정보수정(다시찍어)](https://github.com/TeamCrescendo/Crescendo-Spring/assets/47143547/21d34f82-57ad-4260-b2ba-0833a34197e3)
+
 
 ### 📄 5. 팀 소개 페이지
 - 소개 글
-- 
+- ![개발팀소개 페이지](https://github.com/TeamCrescendo/Crescendo-Spring/assets/47143547/0f1963c3-1663-4d0b-91c9-9c3d4b51b8f4)
+
 ### 📜 개발 이력
 
 ---
@@ -388,8 +400,7 @@ flowchart LR
 
 ---
 ### 11 Tables
-
-데이터베이스 이미지 넣기 <<
+![데이터베이스](https://github.com/TeamCrescendo/Crescendo-Spring/assets/47143547/7789d68c-240f-4b42-a0df-2f03bc33f76b)
 
 <br><br>
 
