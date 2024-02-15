@@ -1,8 +1,8 @@
 #  크레센도
 
-### LINK 👉 <span style="color:green"> 크레센도 스프링 (백엔드) </span>
-### LINK 👉 <span style="color:aqua"> 크레센도 파이썬 (백엔드) </span>
-### LINK 👉 <span style="color:blue"> 크레센도 리액트 (프론트) </span>
+### LINK 👉 <span style="color:green"> 크레센도 스프링 (백엔드) https://github.com/TeamCrescendo/Crescendo-Spring </span>
+### LINK 👉 <span style="color:aqua"> 크레센도 파이썬 (백엔드) https://github.com/TeamCrescendo/Crescendo_React </span>
+### LINK 👉 <span style="color:blue"> 크레센도 리액트 (프론트) https://github.com/TeamCrescendo/Crescendo_python </span>
 
 <br>
 ※메인 테마 자료
