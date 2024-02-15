@@ -3,7 +3,7 @@
 ### LINK 👉 <span style="color:green"> 크레센도 스프링 (백엔드) </span>
 ### LINK 👉 <span style="color:aqua"> 크레센도 파이썬 (백엔드) </span>
 ### LINK 👉 <span style="color:blue"> 크레센도 리액트 (프론트) </span>
-이미지
+
 <br>
 ※메인 테마 자료
 
