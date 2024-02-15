@@ -43,5 +43,8 @@ public class Inquiry {
         this.member = null;
     }
 
+    @Column(name = "inquiry_check", nullable = true)
+    @Builder.Default()
+    private boolean check = false;
 
 }

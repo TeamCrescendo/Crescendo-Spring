@@ -9,11 +9,14 @@ import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -60,7 +63,10 @@ public class InquiryService {
     //전체 문의 조회 하기 -> 관리자 이용 전용
     public List<FoundInquiryListResponseDTO> findAllInqury(){
 
+//        List<Inquiry> foundList = inquiryRepository.findAll(Sort.by(Sort.Order.desc("inquiry_date_time")));
+//        List<Inquiry> foundList = inquiryRepository.findAllOrderByInquiryDateTimeDesc();
         List<Inquiry> foundList = inquiryRepository.findAll();
+        foundList.sort(Comparator.comparing(Inquiry::getInquiryDateTime).reversed());
         List<FoundInquiryListResponseDTO> foundListPackage = new ArrayList<>();
         foundList.forEach(inquiry -> {
             foundListPackage.add(new FoundInquiryListResponseDTO(inquiry));
@@ -68,5 +74,11 @@ public class InquiryService {
         return foundListPackage;
     }
 
-
+    // 문의 해결 완료 -> 관리자 전용
+    public void check(String inquiryNo){
+        Inquiry foundInquiry = inquiryRepository.findById(inquiryNo).orElseThrow(() -> {
+            throw new IllegalStateException("해당 문의 없음");
+        });
+        foundInquiry.setCheck(true);
+    }
 }

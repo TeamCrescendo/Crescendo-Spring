@@ -81,6 +81,15 @@ public class InquiryController {
         }catch (NoMatchAccountException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
     }
+
+    /*
+
+     */
+    @GetMapping("/check/{inquiryNo}")
+    private ResponseEntity<?> checkInquiry(@PathVariable String inquiryNo){
+        inquiryService.check(inquiryNo);
+        return ResponseEntity.ok().body("okay");
+    }
+
 }
