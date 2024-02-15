@@ -116,7 +116,7 @@ public class ScoreService {
             "account":"계정명"
           */
 
-        System.out.println("url = " + dto.getUrl());
+//        System.out.println("url = " + dto.getUrl());
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
