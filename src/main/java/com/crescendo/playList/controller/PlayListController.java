@@ -38,11 +38,6 @@ public class PlayListController {
             return ResponseEntity.badRequest().body(result.toString());
         }
         try{
-            log.info("=======================================================");
-            log.info("=======================================================");
-            log.info("{}", dto);
-            log.info("=======================================================");
-            log.info("=======================================================");
             boolean b = playListService.myPlayList(dto, tokenUserInfo.getAccount());
             return ResponseEntity.ok().body(b);
         } catch (RuntimeException e){
@@ -57,7 +52,6 @@ public class PlayListController {
     @PostMapping("/duplicate")
     public ResponseEntity<?> duplicatedCheck(@RequestBody PlayListDuplicateRequestDTO dto) {
         try {
-            log.info(dto.toString());
             List<Boolean> booleans = playListService.duplicationCheckDTO(dto);
             return ResponseEntity.ok().body(booleans);
         } catch (IllegalStateException e) {
