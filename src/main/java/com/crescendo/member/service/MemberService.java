@@ -40,7 +40,7 @@ public class MemberService {
             log.warn("회원정보가 없습니다");
             throw new NoRegisteredArgumentsException("회원가입 입력정보가 없습니다!");
         }
-        System.out.println("dto = " + dto);
+
         String account = dto.getAccount();
         if (memberRepository.existsById(account)) {
             log.warn("계정이 중복되었습니다!! -{}.", account);
@@ -66,7 +66,6 @@ public class MemberService {
             log.info("회원가입 성공!! saved user - {}", save);
             return true;
         }catch (NullPointerException e){
-          log.info("여기로..?");
           Member save = memberRepository.save(dto.toEntity(encoder));
           save.setProfileImageUrl(basicImgUri);
           log.info("회원가입 성공!! saved user - {}", save);
@@ -83,7 +82,6 @@ public class MemberService {
             log.warn("회원정보가 없습니다");
             throw new NoRegisteredArgumentsException("회원가입 입력정보가 없습니다!");
         }
-        System.out.println("dto = " + dto);
         String account = dto.getAccount();
         if (memberRepository.existsById(account)) {
             log.warn("계정이 중복되었습니다!! -{}.", account);
@@ -278,17 +276,16 @@ public class MemberService {
         if (userDownloadChance == 0) {
             throw new NoDownloadChanceException("다운로드 기회가 없습니다");
         }
-        log.info("여기까지 왓나용");
         member.setUserDownloadChance(member.getUserDownloadChance() - 1);
         return member.getUserDownloadChance();
     }
 
 
 
-    public void googleLogin(String code, String registrationId) {
-        System.out.println("code = " + code);
-        System.out.println("registrationId = " + registrationId);
-    }
+//    public void googleLogin(String code, String registrationId) {
+//        System.out.println("code = " + code);
+//        System.out.println("registrationId = " + registrationId);
+//    }
 
     public int getUsrCountDown(Member member){
         return  member.getUserDownloadChance();
