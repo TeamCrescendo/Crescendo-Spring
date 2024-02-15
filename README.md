@@ -156,7 +156,7 @@
 
 ### 📄 5. 팀 소개 페이지
 - 소개 글
-- <img src="https://github.com/TeamCrescendo/Crescendo-Spring/assets/47143547/0f1963c3-1663-4d0b-91c9-9c3d4b51b8f4" style="width:600px; height:350px;">
+<img src="https://github.com/TeamCrescendo/Crescendo-Spring/assets/47143547/0f1963c3-1663-4d0b-91c9-9c3d4b51b8f4" style="width:600px; height:350px;">
 
 
 ### 📜 개발 이력
