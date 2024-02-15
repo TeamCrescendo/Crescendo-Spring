@@ -58,7 +58,7 @@ public class BoardService {
     //board에 등록
     public BoardListResponseDTO create(BoardRequestDTO dto, String account) {
         Member member1 = memberRepository.findById(account).orElseThrow();
-        log.info("member1 토큰 저장 {}", member1);
+//        log.info("member1 토큰 저장 {}", member1);
         if (member1 == null) {
             return null;
         }
@@ -68,7 +68,7 @@ public class BoardService {
         }
         Board build = Board.builder().boardTitle(dto.getBoardTitle()).member(member1).scoreNo(scoreNo).build();
         boardRepository.save(build);
-        log.info("새로운 보드를 내 마음속에 저★장★ : {}", dto.getBoardTitle());
+//        log.info("새로운 보드를 내 마음속에 저★장★ : {}", dto.getBoardTitle());
         return retrieve();
     }
 
@@ -182,7 +182,7 @@ public class BoardService {
     public void LikeAndDislike(LikeAndDislikeRequestDTO dto, String account) {
         // 게시글의 번호를 찾기
         Long boardNo = dto.getBoardNo();
-        log.info("boardNo: {}", boardNo);
+//        log.info("boardNo: {}", boardNo);
 
         try {
             Optional<Board> boardOptional = boardRepository.findById(boardNo);
@@ -333,9 +333,9 @@ public class BoardService {
 
         String scoreImageUrl = byBoardNo.getScoreNo().getScoreImageUrl();
         RestTemplate restTemplate = new RestTemplate();
-        log.info("123123123");
-        log.info(scoreImageUrl);
-        log.info("123123123");
+//        log.info("123123123");
+//        log.info(scoreImageUrl);
+//        log.info("123123123");
         byte[] forObject = restTemplate.getForObject(scoreImageUrl, byte[].class);
 
 

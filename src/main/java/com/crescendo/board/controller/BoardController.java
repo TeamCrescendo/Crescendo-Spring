@@ -45,7 +45,6 @@ public class BoardController {
             BindingResult result,
             @AuthenticationPrincipal TokenUserInfo tokenUserInfo
             ){
-        log.info("123312333123123123");
         if(result.hasErrors()){
             log.warn("DTO 검증 에러 입니다. : {}",result.getFieldError());
             return ResponseEntity.badRequest().body(result.getFieldError());
@@ -140,7 +139,6 @@ public class BoardController {
     // 좋아요 싫어요 여부
     @PostMapping("ChecklikeAndDislike")
     public ResponseEntity<?> isLikeAndDisLike(@AuthenticationPrincipal TokenUserInfo tokenUserInfo, Long boardNo){
-        log.info("{}", boardNo);
         HashMap<String, Boolean> clickLikeAndDisLike = boardService.getClickLikeAndDisLike(tokenUserInfo.getAccount(), boardNo);
         return ResponseEntity.ok().body(clickLikeAndDisLike);
 
