@@ -79,7 +79,7 @@ public class BoardService {
         int totalPages = result.getTotalPages(); // 총 페이지 수
         List<BoardResponseDTO> list = new ArrayList<>();
         result.forEach(board -> {
-            // 싫어요 수가 5개 이상인 경우에는 보드를 숨김 처리
+            // 싫어요 수가 5개 이상인 경우
             if (board.getBoardDislikeCount() >= 5) {
                 board.setVisible(false);
                 BlackList blackList = BlackList.builder()
@@ -87,21 +87,20 @@ public class BoardService {
                         .board(board)
                         .build();
                 blackListRepository.save(blackList);
-            } else {
-                // 숨김 처리되지 않은 보드만 추가
-                BoardResponseDTO build = BoardResponseDTO.builder()
-                        .boardNo(board.getBoardNo())
-                        .boardTitle(board.getBoardTitle())
-                        .boardDownloadCount(board.getBoardDownloadCount())
-                        .boardLikeCount(board.getBoardLikeCount())
-                        .boardDislikeCount(board.getBoardDislikeCount())
-                        .scoreImageUrl(board.getScoreNo().getScoreImageUrl())
-                        .scoreNo(board.getScoreNo().getScoreNo())
-                        .scoreTitle(board.getScoreNo().getScoreTitle())
-                        .memberAccount(board.getMember().getAccount())
-                        .boardViewCount(board.getBoardViewCount())
-                        .build();
-                list.add(build);
+            }else{
+            BoardResponseDTO build = BoardResponseDTO.builder()
+                    .boardNo(board.getBoardNo())
+                    .boardTitle(board.getBoardTitle())
+                    .boardDownloadCount(board.getBoardDownloadCount())
+                    .boardLikeCount(board.getBoardLikeCount())
+                    .boardDislikeCount(board.getBoardDislikeCount())
+                    .scoreImageUrl(board.getScoreNo().getScoreImageUrl())
+                    .scoreNo(board.getScoreNo().getScoreNo())
+                    .scoreTitle(board.getScoreNo().getScoreTitle())
+                    .memberAccount(board.getMember().getAccount())
+                    .boardViewCount(board.getBoardViewCount())
+                    .build();
+            list.add(build);
             }
         });
         return list;
