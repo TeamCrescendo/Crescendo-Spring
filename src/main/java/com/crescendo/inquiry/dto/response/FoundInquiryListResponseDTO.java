@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -19,14 +20,14 @@ public class FoundInquiryListResponseDTO {
     private String inquiryId;
     private String account;
     private boolean check;
-    private LocalDate createTime;
+    private LocalDateTime createTime;
 
     public FoundInquiryListResponseDTO(Inquiry inquiry) {
         this.inquiryTitle = inquiry.getInquiryTitle();
         this.inquiryContent = inquiry.getInquiryContent();
         this.inquiryId = inquiry.getInquiryId();
         this.account = inquiry.getMember().getAccount();
-        this.createTime = LocalDate.from(inquiry.getInquiryDateTime());
+        this.createTime = inquiry.getInquiryDateTime();
         this.check = inquiry.isCheck();
     }
 }
