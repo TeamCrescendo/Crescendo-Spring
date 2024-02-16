@@ -79,16 +79,17 @@ public class BoardService {
         int totalPages = result.getTotalPages(); // 총 페이지 수
         List<BoardResponseDTO> list = new ArrayList<>();
         result.forEach(board -> {
-            // 싫어요 수가 5개 이상인 경우
-            if (board.getBoardDislikeCount() >= 5) {
-                board.setVisible(false);
-                boardRepository.save(board);
-                BlackList blackList = BlackList.builder()
-                        .member(board.getMember())
-                        .board(board)
-                        .build();
-                blackListRepository.save(blackList);
-            } else {
+//            // 싫어요 수가 5개 이상인 경우
+//            if (board.getBoardDislikeCount() >= 5) {
+//                board.setVisible(false);
+//                boardRepository.save(board);
+//                BlackList blackList = BlackList.builder()
+//                        .member(board.getMember())
+//                        .board(board)
+//                        .build();
+//                blackListRepository.save(blackList);
+//            } else
+                {
                 BoardResponseDTO build = BoardResponseDTO.builder()
                         .boardNo(board.getBoardNo())
                         .boardTitle(board.getBoardTitle())
@@ -213,6 +214,15 @@ public class BoardService {
                         // 싫어요를 누른 경우
                         else {
                             board.setBoardDislikeCount(board.getBoardDislikeCount() + 1);
+                        }
+                        // 싫어요 수가 5개 이상인 경우
+                        if (board.getBoardDislikeCount() >= 5) {
+                            board.setVisible(false);
+                            BlackList blackList = BlackList.builder()
+                                    .member(member)
+                                    .board(board)
+                                    .build();
+                            blackListRepository.save(blackList);
                         }
 
                     }
