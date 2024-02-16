@@ -120,7 +120,9 @@ public class ScoreService {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-
+        log.info("안녕하세요 저는 스코어서비스입니다.");
+        log.info("{}", dto.toString());
+        log.info("안녕하세요 저는 스코어서비스입니다.");
 
         HttpEntity<CreateNotationRequestDTO> stringHttpEntity = new HttpEntity<>(dto, headers);
 
