@@ -79,24 +79,35 @@ public class BoardService {
         int totalPages = result.getTotalPages(); // 총 페이지 수
         List<BoardResponseDTO> list = new ArrayList<>();
         result.forEach(board -> {
-            if(board.getBoardDislikeCount() < 5){
-            BoardResponseDTO build = BoardResponseDTO.builder()
-                    .boardNo(board.getBoardNo())
-                    .boardTitle(board.getBoardTitle())
-                    .boardDownloadCount(board.getBoardDownloadCount())
-                    .boardLikeCount(board.getBoardLikeCount())
-                    .boardDislikeCount(board.getBoardDislikeCount())
-                    .scoreImageUrl(board.getScoreNo().getScoreImageUrl())
-                    .scoreNo(board.getScoreNo().getScoreNo())
-                    .scoreTitle(board.getScoreNo().getScoreTitle())
-                    .memberAccount(board.getMember().getAccount())
-                    .boardViewCount(board.getBoardViewCount())
-                    .build();
-            list.add(build);
+            // 싫어요 수가 5개 이상인 경우
+            if (board.getBoardDislikeCount() >= 5) {
+                board.setVisible(false);
+                boardRepository.save(board);
+                BlackList blackList = BlackList.builder()
+                        .member(board.getMember())
+                        .board(board)
+                        .build();
+                blackListRepository.save(blackList);
+            } else {
+                BoardResponseDTO build = BoardResponseDTO.builder()
+                        .boardNo(board.getBoardNo())
+                        .boardTitle(board.getBoardTitle())
+                        .boardDownloadCount(board.getBoardDownloadCount())
+                        .boardLikeCount(board.getBoardLikeCount())
+                        .boardDislikeCount(board.getBoardDislikeCount())
+                        .scoreImageUrl(board.getScoreNo().getScoreImageUrl())
+                        .scoreNo(board.getScoreNo().getScoreNo())
+                        .scoreTitle(board.getScoreNo().getScoreTitle())
+                        .memberAccount(board.getMember().getAccount())
+                        .boardViewCount(board.getBoardViewCount())
+                        .build();
+                list.add(build);
             }
         });
         return list;
     }
+
+
 
 
     // 총 페이지 수 구하기
@@ -167,11 +178,6 @@ public class BoardService {
         }
         return retrieve();
     }
-
-
-
-
-
 
     // 좋아요와 싫어요 기능 처리
     public void LikeAndDislike(LikeAndDislikeRequestDTO dto, String account) {
