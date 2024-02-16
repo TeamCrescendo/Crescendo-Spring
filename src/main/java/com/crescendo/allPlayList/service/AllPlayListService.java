@@ -33,7 +33,7 @@ public class AllPlayListService {
 
         AllPlayList build = AllPlayList.builder().plName(dto.getPlName()).account(member).build();
         allPlayListRepository.save(build);
-        log.info("새로운 PlayList를 내 마음속에 저★장★ : {}", dto.getPlName());
+//        log.info("새로운 PlayList를 내 마음속에 저★장★ : {}", dto.getPlName());
 
         return retrieve(account);
     }
@@ -52,7 +52,7 @@ public class AllPlayListService {
 
     //AllPlayList 수정 하기
     public boolean modifyAllPlayList(AllPlayListRequestDTO dto,String account) {
-        log.info("수정 하기 service : {}", dto);
+//        log.info("수정 하기 service : {}", dto);
         AllPlayList findId = allPlayListRepository.getOne(dto.getPlId());
         if (!findId.getAccount().getAccount().equals(account)) {
             return false;

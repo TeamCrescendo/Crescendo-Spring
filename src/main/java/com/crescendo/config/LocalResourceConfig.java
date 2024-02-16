@@ -8,14 +8,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class LocalResourceConfig implements WebMvcConfigurer {
-    @Value("${file.upload.root-path}")
-    private String rootPath;
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/local/**")
-                .addResourceLocations("file:/"+rootPath);
-
-    }
+//    @Value("${file.upload.root-path}")
+//    private String rootPath;
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/local/**")
+//                .addResourceLocations("file:/"+rootPath);
+//
+//    }
 
 
 }

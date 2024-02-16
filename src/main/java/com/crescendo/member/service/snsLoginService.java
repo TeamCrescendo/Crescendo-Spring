@@ -35,8 +35,8 @@ public class snsLoginService {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
 
-    @Value("${file.upload.root-path}")
-    String imgSavePath;
+//    @Value("${file.upload.root-path}")
+//    String imgSavePath;
 
     @Value("${spring.security.oauth2.google.client-id}")
     String clientId;

@@ -18,6 +18,7 @@ public class FoundInquiryListResponseDTO {
     private String inquiryContent;
     private String inquiryId;
     private String account;
+    private boolean check;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate createTime;
 
@@ -27,5 +28,6 @@ public class FoundInquiryListResponseDTO {
         this.inquiryId = inquiry.getInquiryId();
         this.account = inquiry.getMember().getAccount();
         this.createTime = LocalDate.from(inquiry.getInquiryDateTime());
+        this.check = inquiry.isCheck();
     }
 }

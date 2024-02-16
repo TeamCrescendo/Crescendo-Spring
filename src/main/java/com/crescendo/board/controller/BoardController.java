@@ -2,10 +2,7 @@ package com.crescendo.board.controller;
 
 import com.crescendo.board.dto.request.BoardModifyRequestDTO;
 import com.crescendo.board.dto.request.BoardRequestDTO;
-import com.crescendo.board.dto.response.BoardLikeAndDisLikeResponseDTO;
-import com.crescendo.board.dto.response.BoardListResponseDTO;
-import com.crescendo.board.dto.response.BoardResponseDTO;
-import com.crescendo.board.dto.response.MyBoardResponseDTO;
+import com.crescendo.board.dto.response.*;
 import com.crescendo.board.entity.Board;
 import com.crescendo.board.entity.Dislike;
 import com.crescendo.board.entity.Like;
@@ -25,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.PATCH;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
@@ -47,7 +45,6 @@ public class BoardController {
             BindingResult result,
             @AuthenticationPrincipal TokenUserInfo tokenUserInfo
             ){
-        log.info("123312333123123123");
         if(result.hasErrors()){
             log.warn("DTO 검증 에러 입니다. : {}",result.getFieldError());
             return ResponseEntity.badRequest().body(result.getFieldError());
@@ -68,6 +65,17 @@ public class BoardController {
 
         BoardListResponseDTO retrieve = boardService.retrieve();
         return ResponseEntity.ok().body(retrieve);
+    }
+
+    // Board 페이징 처리 목록 조회 요청
+    @GetMapping("/pageNo/{pageNo}")
+    public ResponseEntity<?> retrieveBoardListWithPage(@PathVariable int pageNo){
+        log.info("api/board/pageNo GET!!");
+        List<BoardResponseDTO> boardResponseDTOS = boardService.retrieveWithPage(pageNo-1);
+        System.out.println("boardResponseDTOS = " + boardResponseDTOS);
+        int allPageNo = boardService.getAllPageNo(pageNo-1);
+        PageBoardResponseDTO build = PageBoardResponseDTO.builder().list(boardResponseDTOS).allPageNo(allPageNo).build();
+        return ResponseEntity.ok().body(build);
     }
 
     //나의 Board만 가져 오기
@@ -131,7 +139,6 @@ public class BoardController {
     // 좋아요 싫어요 여부
     @PostMapping("ChecklikeAndDislike")
     public ResponseEntity<?> isLikeAndDisLike(@AuthenticationPrincipal TokenUserInfo tokenUserInfo, Long boardNo){
-        log.info("{}", boardNo);
         HashMap<String, Boolean> clickLikeAndDisLike = boardService.getClickLikeAndDisLike(tokenUserInfo.getAccount(), boardNo);
         return ResponseEntity.ok().body(clickLikeAndDisLike);
 
@@ -158,10 +165,12 @@ public class BoardController {
     //PDF파일을 byte로 바꾸는 처리
     @GetMapping("/{boardId}")
     public  ResponseEntity<?>downloadPdf(@PathVariable Long boardId){
-        ResponseEntity<byte[]> boardPdf = boardService.getBoardPdf(boardId);
-        HttpHeaders headers=  boardPdf.getHeaders();
+        byte[] boardPdf = boardService.getBoardPdf(boardId);
+        HttpHeaders headers= new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+
 
         //클라이언트에게 HttpHeaders와 함께 PDF를 전송
-        return ResponseEntity.ok().headers(headers).body(boardPdf.getBody());
+        return ResponseEntity.ok().headers(headers).body(boardPdf);
     }
 }

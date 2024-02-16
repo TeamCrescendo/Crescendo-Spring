@@ -125,7 +125,6 @@ public class PlayListService {
 
 
     public List<Boolean> duplicationCheckDTO(PlayListDuplicateRequestDTO dto) {
-        log.info("정상수: {}", dto.toString());
         List<PlayListRequestDTO> list = dto.getList();
         List<Boolean> list1 = new ArrayList<>();
         list.forEach(playListRequestDTO -> {

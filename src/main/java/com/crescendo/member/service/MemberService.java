@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -29,8 +30,8 @@ public class MemberService {
     private final AllPlayListRepository allPlayListRepository;
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
-    @Value("${file.upload.root-path}")
-    private String rootPath;
+    @Value("${basic.profile}")
+    private String basicImgUri;
 
 
     // 회원 가입 처리
@@ -39,7 +40,7 @@ public class MemberService {
             log.warn("회원정보가 없습니다");
             throw new NoRegisteredArgumentsException("회원가입 입력정보가 없습니다!");
         }
-        System.out.println("dto = " + dto);
+
         String account = dto.getAccount();
         if (memberRepository.existsById(account)) {
             log.warn("계정이 중복되었습니다!! -{}.", account);
@@ -56,20 +57,22 @@ public class MemberService {
             throw new DuplicateUserNameException("중복된 계정명입니다!!");
         }
 
-        if(dto.getProfileImage().getSize() != 0 && dto.getProfileImage() != null){
-            String upload = FileUtil.upload(dto.getProfileImage(), rootPath);
+      try{
+            String upload = FileUtil.convertNewPath(dto.getProfileImage());
             //aws 처리하고 파일패스 돌려받기
             String aws_path = s3Service.uploadToS3Bucket(dto.getProfileImage().getBytes(), upload);
             Member save = memberRepository.save(dto.toEntity(encoder));
             save.setProfileImageUrl(aws_path);
             log.info("회원가입 성공!! saved user - {}", save);
             return true;
-        }
+        }catch (NullPointerException e){
+          Member save = memberRepository.save(dto.toEntity(encoder));
+          save.setProfileImageUrl(basicImgUri);
+          log.info("회원가입 성공!! saved user - {}", save);
+          return true;
 
 
-        Member save = memberRepository.save(dto.toEntity(encoder));
-        log.info("회원가입 성공!! saved user - {}", save);
-        return true;
+      }
     }
 
 
@@ -79,7 +82,6 @@ public class MemberService {
             log.warn("회원정보가 없습니다");
             throw new NoRegisteredArgumentsException("회원가입 입력정보가 없습니다!");
         }
-        System.out.println("dto = " + dto);
         String account = dto.getAccount();
         if (memberRepository.existsById(account)) {
             log.warn("계정이 중복되었습니다!! -{}.", account);
@@ -194,8 +196,17 @@ public class MemberService {
             foundMember.setPassword(encoder.encode(dto.getPassword()));
         }
         if (dto.getProfileImage() != null && dto.getProfileImage().getSize() != 0) {
-            String upload = FileUtil.upload(dto.getProfileImage(), rootPath);
-            foundMember.setProfileImageUrl(upload);
+
+            try {
+                String upload = FileUtil.convertNewPath(dto.getProfileImage());
+                String aws_path = s3Service.uploadToS3Bucket(dto.getProfileImage().getBytes(), upload);
+                foundMember.setProfileImageUrl(aws_path);
+            }catch (NullPointerException e){
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         }
         return true;
     }
@@ -265,31 +276,19 @@ public class MemberService {
         if (userDownloadChance == 0) {
             throw new NoDownloadChanceException("다운로드 기회가 없습니다");
         }
-        log.info("여기까지 왓나용");
         member.setUserDownloadChance(member.getUserDownloadChance() - 1);
         return member.getUserDownloadChance();
     }
 
 
-    // 프로필 이미지 저장
-    public boolean uploadProfileImage(ProfileUploadRequestDTO dto) {
 
-        String upload = FileUtil.upload(dto.getFile(), rootPath);
+//    public void googleLogin(String code, String registrationId) {
+//        System.out.println("code = " + code);
+//        System.out.println("registrationId = " + registrationId);
+//    }
 
-        boolean b = memberRepository.existsByAccount(dto.getAccount());
-        if (!b) {
-            throw new NoMatchAccountException("해당 회원은 없습니다");
-        }
-
-        Member foundMember = memberRepository.getOne(dto.getAccount());
-
-        foundMember.setProfileImageUrl(upload);
-        return true;
-    }
-
-    public void googleLogin(String code, String registrationId) {
-        System.out.println("code = " + code);
-        System.out.println("registrationId = " + registrationId);
+    public int getUsrCountDown(Member member){
+        return  member.getUserDownloadChance();
     }
 
 
@@ -303,7 +302,6 @@ public class MemberService {
 
     //다운로드 2-> 악보생성시 사용함
     public void coutDownDownload(Member member) {
-
         Integer userDownloadChance = member.getUserDownloadChance();
         member.setUserDownloadChance(userDownloadChance-1);
     }

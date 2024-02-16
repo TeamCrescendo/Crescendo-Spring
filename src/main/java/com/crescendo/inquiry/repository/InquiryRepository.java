@@ -11,4 +11,6 @@ public interface InquiryRepository extends JpaRepository<Inquiry, String> {
     List<String> getAllByAccount(String account);
 
     List<Inquiry> findAllByMemberAccountOrderByInquiryDateTimeDesc(String account);
+
+
 }

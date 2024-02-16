@@ -54,6 +54,7 @@ public class S3Service {
         PutObjectRequest request
                 = PutObjectRequest.builder()
                 .bucket(bucketName) // 버킷이름
+                .contentType("image/jpeg")
                 .key(fileName) // 파일명
                 .build();
 
@@ -63,8 +64,7 @@ public class S3Service {
         // 업로드된 파일의 URL을 반환
         return s3.utilities()
                 .getUrl(b -> b.bucket(bucketName).key(fileName))
-                .toString()
-                ;
+                .toString();
     }
 
 }
