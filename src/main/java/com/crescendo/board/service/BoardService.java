@@ -20,23 +20,15 @@ import com.crescendo.score.entity.Score;
 import com.crescendo.score.repository.ScoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.io.*;
-import java.net.URLEncoder;
 import java.util.*;
 
 @Service
@@ -87,6 +79,14 @@ public class BoardService {
         int totalPages = result.getTotalPages(); // 총 페이지 수
         List<BoardResponseDTO> list = new ArrayList<>();
         result.forEach(board -> {
+            if(board.getBoardDislikeCount() >= 5){
+                board.setVisible(false);
+                BlackList blackList = BlackList.builder()
+                        .member(board.getMember())
+                        .board(board)
+                        .build();
+                blackListRepository.save(blackList);
+            }
             BoardResponseDTO build = BoardResponseDTO.builder()
                     .boardNo(board.getBoardNo())
                     .boardTitle(board.getBoardTitle())
