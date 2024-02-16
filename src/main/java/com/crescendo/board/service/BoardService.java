@@ -83,19 +83,11 @@ public class BoardService {
     // 페이징 처리 된 보드 불러오기
     public List<BoardResponseDTO> retrieveWithPage(int pageNo) {
         PageRequest pageRequest = PageRequest.of(pageNo, 6, Sort.by("boardUpdateDateTime").descending());
-        Page<Board> result = boardRepository.findAll(pageRequest); // 해당 페이지 리스트
+        Page<Board> result = boardRepository.findAllByVisibleTrue(pageRequest); // 해당 페이지 리스트
         int totalPages = result.getTotalPages(); // 총 페이지 수
         List<BoardResponseDTO> list = new ArrayList<>();
         result.forEach(board -> {
-            // 싫어요 수가 5개 이상인 경우
-            if (board.getBoardDislikeCount() >= 5) {
-                board.setVisible(false);
-                BlackList blackList = BlackList.builder()
-                        .member(board.getMember())
-                        .board(board)
-                        .build();
-                blackListRepository.save(blackList);
-            }else{
+            if(board.getBoardDislikeCount() < 5){
             BoardResponseDTO build = BoardResponseDTO.builder()
                     .boardNo(board.getBoardNo())
                     .boardTitle(board.getBoardTitle())
@@ -117,7 +109,7 @@ public class BoardService {
     // 총 페이지 수 구하기
     public int getAllPageNo(int pageNo) {
         PageRequest pageRequest = PageRequest.of(pageNo, 6, Sort.by("boardUpdateDateTime").descending());
-        Page<Board> result = boardRepository.findAll(pageRequest); // 해당 페이지 리스트
+        Page<Board> result = boardRepository.findAllByVisibleTrue(pageRequest); // 해당 페이지 리스트
         return result.getTotalPages();
     }
 
