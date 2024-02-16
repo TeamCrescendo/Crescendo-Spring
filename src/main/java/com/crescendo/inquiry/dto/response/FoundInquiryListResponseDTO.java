@@ -19,7 +19,6 @@ public class FoundInquiryListResponseDTO {
     private String inquiryId;
     private String account;
     private boolean check;
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate createTime;
 
     public FoundInquiryListResponseDTO(Inquiry inquiry) {
