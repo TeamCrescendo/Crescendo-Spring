@@ -36,7 +36,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "s.scoreNo, s.scoreTitle, s.scoreImageUrl, s.scoreUploadDateTime) " +
             "FROM Board b " +
             "JOIN b.scoreNo s " +
-            "WHERE b.isVisible = true " + // isVisible이 true인 것만 조회
+            "WHERE b.visible = true " + // isVisible이 true인 것만 조회
             "ORDER BY b.boardUpdateDateTime DESC ")
     List<BoardResponseDTO> findAllBoardResponseDTO();
 
@@ -55,6 +55,8 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     // 페이징 처리 된 보드 찾기
     Page<Board> findAll(Pageable pageable);
+
+    Page<Board> findAllByVisibleTrue(Pageable pageable);
 
 
 }

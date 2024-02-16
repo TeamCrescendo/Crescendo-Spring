@@ -59,5 +59,5 @@ public class Board {
 
     @Column(name = "is_visible")
     @Builder.Default
-    private boolean isVisible = true;
+    private boolean visible = true;
 }
