@@ -33,7 +33,7 @@ public class RestoreController {
             boolean add = restoreService.add(tokenUserInfo.getAccount());
             return ResponseEntity.ok().body(add);
         }catch (ExistsInRestoreException | NoMatchAccountException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.ok().body(false);
         }
     }
 
