@@ -97,7 +97,6 @@ public class MemberController {
         if(isDelete)
             return ResponseEntity.ok().body("계정정보가 성공적으로 삭제 되었습니다.");
         return  ResponseEntity.badRequest().body("삭제에 실패했습니다! 다시시도해주세요!");
-
     }
 
     // 회원 정보 수정

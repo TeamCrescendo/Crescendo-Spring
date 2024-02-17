@@ -31,5 +31,5 @@ public class Restore{
     @Column(name = "delete_time", updatable = false)
     //@CreationTimestamp
     @Builder.Default
-    private LocalDateTime deleteTime = LocalDateTime.now().plusMinutes(10);
+    private LocalDateTime deleteTime = LocalDateTime.now().plusSeconds(10);
 }

@@ -63,13 +63,16 @@ public class RestoreService {
 
 
     // 계정 삭제 취소하기
-    public boolean cancel(String restoreNo){
-        boolean flag = restoreRepository.existsById(restoreNo);
+    public boolean cancel(String account){
+        Member member = memberRepository.findById(account).orElseThrow(() -> {
+            throw new NoMatchAccountException("계정없음");
+        });
+        boolean flag = restoreRepository.existsByMemberAccount(account);
         if(!flag){
             throw new ExistsInRestoreException("삭제 요청이 없습니다");
         }
-
-        restoreRepository.deleteById(restoreNo);
+        Restore byMemberAccount = restoreRepository.findByMemberAccount(account);
+        restoreRepository.delete(byMemberAccount);
         return true;
 
     }

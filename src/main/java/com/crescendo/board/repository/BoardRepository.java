@@ -58,6 +58,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Page<Board> findAllByVisibleTrue(Pageable pageable);
 
-
+    List<Board> findAllByMemberAccount(String account);
 }
 

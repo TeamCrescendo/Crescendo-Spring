@@ -34,7 +34,7 @@ public class Inquiry {
     @Column(name = "inquiry_date_time", updatable = false)
     private LocalDateTime inquiryDateTime;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account")
     private Member member;
 

@@ -55,14 +55,14 @@ public class RestoreController {
 
     // 삭제 취소 요청 하기
     @DeleteMapping
-    public ResponseEntity<?> delete(String restoreNo){
-        log.info("/api/restore Delete!! {}", restoreNo);
-        if(restoreNo.isEmpty()){
+    public ResponseEntity<?> delete(@AuthenticationPrincipal TokenUserInfo userInfo){
+        log.info("/api/restore Delete!! {}", userInfo);
+        if(userInfo.getUserId().isEmpty()){
             return ResponseEntity.badRequest().body("제대로된 계정명을 주세요");
         }
 
         try{
-            boolean cancel = restoreService.cancel(restoreNo);
+            boolean cancel = restoreService.cancel(userInfo.getAccount());
             return ResponseEntity.ok().body(cancel);
         }catch (ExistsInRestoreException e){
             return ResponseEntity.badRequest().body(e.getMessage());
