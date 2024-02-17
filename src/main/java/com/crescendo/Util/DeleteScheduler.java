@@ -2,6 +2,8 @@ package com.crescendo.Util;
 
 import com.crescendo.allPlayList.entity.AllPlayList;
 import com.crescendo.allPlayList.repository.AllPlayListRepository;
+import com.crescendo.blackList.entity.BlackList;
+import com.crescendo.blackList.repository.BlackListRepository;
 import com.crescendo.board.dto.response.MyBoardResponseDTO;
 import com.crescendo.board.entity.Board;
 import com.crescendo.board.repository.BoardRepository;
@@ -11,6 +13,8 @@ import com.crescendo.inquiry.repository.InquiryRepository;
 import com.crescendo.member.entity.Member;
 import com.crescendo.member.exception.NoMatchAccountException;
 import com.crescendo.member.repository.MemberRepository;
+import com.crescendo.post_message.entity.PostMessage;
+import com.crescendo.post_message.repository.PostMessageRepository;
 import com.crescendo.restore.entity.Restore;
 import com.crescendo.restore.repository.RestoreRepository;
 import com.crescendo.score.entity.Score;
@@ -35,6 +39,8 @@ public class DeleteScheduler {
     private final EntityManager entityManager;
     private final BoardRepository boardRepository;
     private final AllPlayListRepository allPlayListRepository;
+    private final PostMessageRepository postMessageRepository;
+    private final BlackListRepository blackListRepository;
     private final BoardService boardService;
 
     @Scheduled(fixedRate = 1000 * 60 * 1) // 1분 마다
@@ -44,17 +50,14 @@ public class DeleteScheduler {
         if (restoreByOverTime != null) {
             for (Restore restore : restoreByOverTime) {
                 String account = restore.getMember().getAccount();
-                changeInquiryMemberToNull(account);
-                log.info("문의 널");
-                changeScoreMemberToNull(account);
-                log.info("악보 널");
-                changeBoardMemberToNull(account);
-                log.info("게시판 널");
                 deleteAllPlayList(account);
-                log.info("올 플리 삭제함");
-                log.info("다 널 했음");
+                deletePostMessage(account);
+                deleteBlackList(account);
+                changeInquiryMemberToNull(account);
+                changeScoreMemberToNull(account);
+                changeBoardMemberToNull(account);
+
                 restoreRepository.deleteById(restore.getRestoreNo());
-                log.info("리스토어 삭제했음");
                 Member member = restore.getMember();
                 memberRepository.delete(member);
                 log.info("삭제했냐 ?");
@@ -67,9 +70,7 @@ public class DeleteScheduler {
     @Transactional
     public void changeInquiryMemberToNull(String account) {
         List<Inquiry> allByMemberAccountOrderByInquiryDateTimeDesc = inquiryRepository.findAllByMemberAccountOrderByInquiryDateTimeDesc(account);
-        allByMemberAccountOrderByInquiryDateTimeDesc.forEach(inquiry -> {
-            inquiry.setMember(null);
-        });
+        inquiryRepository.deleteAll(allByMemberAccountOrderByInquiryDateTimeDesc);
     }
 
     // 악보 member null 로 바꾸기
@@ -85,7 +86,6 @@ public class DeleteScheduler {
     @Transactional
     public void deleteAllPlayList(String account){
         List<AllPlayList> allByAccount = allPlayListRepository.findByAccount_Account(account);
-        log.info("올플리 있음??: {}", allByAccount);
         allPlayListRepository.deleteAll(allByAccount);
     }
 
@@ -105,5 +105,17 @@ public class DeleteScheduler {
                 boardService.delete(account, board.getBoardNo());
             });
         }
+    }
+
+    @Transactional
+    public void deletePostMessage(String account){
+        List<PostMessage> aLlByMemberAccount = postMessageRepository.findALlByMemberAccount(account);
+        postMessageRepository.deleteAll(aLlByMemberAccount);
+    }
+
+    @Transactional
+    public void deleteBlackList(String account){
+        List<BlackList> allByMemberAccount = blackListRepository.findAllByMemberAccount(account);
+        blackListRepository.deleteAll(allByMemberAccount);
     }
 }
