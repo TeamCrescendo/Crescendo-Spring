@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 public class HealthController {
 
-    @GetMapping("/health-check")
+    @GetMapping("/api//health-check")
     public ResponseEntity<Void> checkHealthStatus() {
 
         return new ResponseEntity<>(HttpStatus.OK);
