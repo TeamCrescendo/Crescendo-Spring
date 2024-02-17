@@ -49,7 +49,7 @@ public class RestoreController {
             RestoreWhetherResponseDTO restoreWhetherResponseDTO = restoreService.find(tokenUserInfo.getAccount());
             return ResponseEntity.ok().body(restoreWhetherResponseDTO);
         }catch (ExistsInRestoreException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.ok().body(false);
         }
     }
 
