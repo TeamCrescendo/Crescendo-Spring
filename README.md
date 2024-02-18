@@ -394,8 +394,8 @@ flowchart LR
 ### ⚙ 데이터베이스
 
 ---
-### 11 Tables
-<img src="https://github.com/TeamCrescendo/Crescendo-Spring/assets/47143547/7789d68c-240f-4b42-a0df-2f03bc33f76b" style="width:600px; height:350px;">
+### 10 Tables
+<img src="https://github.com/TeamCrescendo/Crescendo-Spring/assets/134356148/b21bf292-6197-4e35-b3d1-776bc73bffe2" style="width:600px; height:350px;">
 
 <br><br>
 
