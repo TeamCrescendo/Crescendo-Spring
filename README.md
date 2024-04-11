@@ -57,7 +57,7 @@
 | 👨‍💻 김다빈  | <b>✨FRONT</b>       | https://github.com/daveen99 |
 | 👨‍💻 경규현  | FRONT, <b>✨BACK</b> | https://github.com/rudrbgus   |
 | 👩‍💻 장선경  | BACK, <b>✨AI</b>    | https://github.com/sunk-dev  |
-| 👨‍💻 원용제  | <b>✨FRONT</b>       | https://github.com/Y-ja   |
+| 👨‍💻 원용재  | <b>✨FRONT</b>       | https://github.com/Y-ja   |
 
 <br><br>
 
